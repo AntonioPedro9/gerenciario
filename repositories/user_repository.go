@@ -24,12 +24,12 @@ func (ur *UserRepository) Create(user *models.User) error {
 	`
 
 	err := ur.db.QueryRow(query, user.Name, user.Email, user.Password, time.Now()).Scan(&user.ID)
-
 	if err != nil {
-		log.Println("Erro ao criar o usuário:", err)
+		log.Println("Failed to create a new user: ", err)
 		return err
 	}
 
+	log.Println("New user created: ", user.ID)
 	return nil
 }
 
@@ -40,9 +40,8 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 	`
 
 	rows, err := ur.db.Query(query)
-
 	if err != nil {
-		log.Println("Erro ao buscar os usuários:", err)
+		log.Println("Failed to fetch users: ", err)
 		return nil, err
 	}
 
@@ -52,16 +51,17 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 
 	for rows.Next() {
 		user := &models.User{}
-		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
 
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
 		if err != nil {
-			log.Println("Erro ao ler os usuários:", err)
+			log.Println("Failed to scan user row: ", err)
 			return nil, err
 		}
 
 		users = append(users, user)
 	}
 
+	log.Println("Fetched", len(users), "users")
 	return users, nil
 }
 
@@ -73,12 +73,12 @@ func (ur *UserRepository) Update(user *models.User) error {
 	`
 
 	_, err := ur.db.Exec(query, user.Name, user.Email, user.Password, user.ID)
-
 	if err != nil {
-		log.Println("Erro ao atualizar o usuário:", err)
+		log.Println("Failed to update user: ", err)
 		return err
 	}
 
+	log.Println("User updated: ", user.ID)
 	return nil
 }
 
@@ -89,11 +89,11 @@ func (ur *UserRepository) Delete(id int) error {
 	`
 
 	_, err := ur.db.Exec(query, id)
-
 	if err != nil {
-		log.Println("Erro ao excluir o usuário:", err)
+		log.Println("Failed to delete user: ", err)
 		return err
 	}
 
+	log.Println("User deleted: ", id)
 	return nil
 }
