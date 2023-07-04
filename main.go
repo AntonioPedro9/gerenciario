@@ -13,10 +13,11 @@ import (
 )
 
 func main() {
-	db, err := database.Connect()
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	
+	db, err := database.CreateDatabaseConnection()
 	if err != nil {
-		log.Fatal("Error connecting to database:", err)
+		log.Fatal("Error connecting to database: ", err)
 	}
 	
 	defer db.Close()
