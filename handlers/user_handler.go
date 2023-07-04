@@ -33,7 +33,6 @@ func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("User created: ", user.ID)
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -45,7 +44,6 @@ func (uh *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("Fetched", len(users), "users")
 	json.NewEncoder(w).Encode(users)
 }
 
@@ -64,7 +62,6 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("User updated: ", user.ID)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -82,6 +79,5 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("User deleted: ", id)
 	w.WriteHeader(http.StatusNoContent)
 }
