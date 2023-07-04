@@ -65,6 +65,30 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 	return users, nil
 }
 
+func (ur *UserRepository) FindByEmail(email string) (*models.User, error) {
+	query := `
+		SELECT id, name, email, password, created_at
+		FROM users
+		WHERE email = $1
+		LIMIT 1
+	`
+
+	row := ur.db.QueryRow(query, email)
+	user := &models.User{}
+
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		log.Println("Failed to fetch user by email:", err)
+		return nil, err
+	}
+
+	log.Println("Fetched user by email:", email)
+	return user, nil
+}
+
 func (ur *UserRepository) Update(user *models.User) error {
 	query := `
 		UPDATE users
@@ -96,32 +120,4 @@ func (ur *UserRepository) Delete(id int) error {
 
 	log.Println("User deleted:", id)
 	return nil
-}
-
-func (ur *UserRepository) FindByEmail(email string) (*models.User, error) {
-	query := `
-		SELECT id, name, email, password, created_at
-		FROM users
-		WHERE email = $1
-		LIMIT 1
-	`
-
-	row := ur.db.QueryRow(query,email)
-
-	user := &models.User{}
-
-	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
-
-	if err == sql.ErrNoRows{
-	    return nil, nil
-    }
-
-	if err != nil{
-	    log.Println("Failed to fetch user by email:", err)
-	    return nil, err
-    }
-
-    log.Println("Fetched user by email:", email)
-
-    return user, nil
 }

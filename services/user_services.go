@@ -38,7 +38,7 @@ func (us *UserService) UpdateUser(user *models.User) error {
 	if existingUser != nil && existingUser.ID != user.ID {
 		return errors.New("Email already in use")
 	}
-	
+
 	return us.userRepository.Update(user)
 }
 

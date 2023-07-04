@@ -14,12 +14,12 @@ import (
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	
+
 	db, err := database.CreateDatabaseConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
-	
+
 	defer db.Close()
 
 	userRepository := repositories.NewUserRepository(db)
