@@ -31,7 +31,7 @@ func main() {
 	r.HandleFunc("/users", userHandler.CreateUser).Methods(http.MethodPost)
 	r.HandleFunc("/users", userHandler.ListUsers).Methods(http.MethodGet)
 	r.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
-	r.HandleFunc("/users", userHandler.DeleteUser).Methods(http.MethodDelete)
+	r.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
 	log.Println("Server started on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

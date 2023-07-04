@@ -8,6 +8,8 @@ import (
 
 	"server/models"
 	"server/services"
+
+	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
@@ -66,14 +68,22 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	id := mux.Vars(r)["id"]
+
+	if id == "" {
+		log.Println("User ID not provided")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	convertedId, err := strconv.Atoi(id)
 	if err != nil {
 		log.Println("Invalid user ID: ", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err := uh.userService.DeleteUser(id); err != nil {
+	if err := uh.userService.DeleteUser(convertedId); err != nil {
 		log.Println("Failed to delete user: ", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -81,3 +91,5 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+
