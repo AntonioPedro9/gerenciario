@@ -14,24 +14,33 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 	return &UserService{userRepository}
 }
 
-func (us *UserService) CreateUser(user *models.User) error {
-	existingUser, err := us.userRepository.FindByEmail(user.Email)
+func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
+	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if existingUser != nil {
-		return errors.New("Email already in use")
+		return nil, errors.New("Email already in use")
 	}
 
 	return us.userRepository.Create(user)
 }
 
+
 func (us *UserService) ListUsers() ([]*models.User, error) {
 	return us.userRepository.List()
 }
 
+func (us *UserService) GetUserById(id int) (*models.User, error) {
+	return us.userRepository.GetUserById(id)
+}
+
+func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
+	return us.userRepository.GetUserByEmail(email)
+}
+
 func (us *UserService) UpdateUser(user *models.User) error {
-	existingUser, err := us.userRepository.FindByEmail(user.Email)
+	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
 	}

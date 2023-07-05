@@ -16,7 +16,7 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (ur *UserRepository) Create(user *models.User) error {
+func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
 	query := `
 		INSERT INTO users (name, email, password, created_at)
 		VALUES ($1, $2, $3, $4)
@@ -26,11 +26,11 @@ func (ur *UserRepository) Create(user *models.User) error {
 	err := ur.db.QueryRow(query, user.Name, user.Email, user.Password, time.Now()).Scan(&user.ID)
 	if err != nil {
 		log.Println("Failed to create a new user:", err)
-		return err
+		return nil, err
 	}
 
 	log.Println("New user created:", user.ID)
-	return nil
+	return user, nil
 }
 
 func (ur *UserRepository) List() ([]*models.User, error) {
@@ -44,7 +44,6 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 		log.Println("Failed to fetch users:", err)
 		return nil, err
 	}
-
 	defer rows.Close()
 
 	users := []*models.User{}
@@ -65,7 +64,31 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) FindByEmail(email string) (*models.User, error) {
+func (ur *UserRepository) GetUserById(id int) (*models.User, error) {
+	query := `
+		SELECT id, name, email, password, created_at
+		FROM users
+		WHERE id = $1
+		LIMIT 1
+	`
+
+	row := ur.db.QueryRow(query, id)
+	user := &models.User{}
+
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		log.Println("Failed to fetch user by email:", err)
+		return nil, err
+	}
+
+	log.Println("Fetched user by ID:", id)
+	return user, nil
+}
+
+func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	query := `
 		SELECT id, name, email, password, created_at
 		FROM users

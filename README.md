@@ -21,8 +21,7 @@ Dentro do arquivo `/database/connection.go` altere a variável "connStr" com o u
 Em seguida execute os seguintes comandos dentro do diretório do projeto:
 
 ```
-$ go mod tidy
 $ go run main.go
 ```
 
-**OBS:** Porta padrão da API é a 8080 mas pode ser alterada no arquivo `main.go`.
+**OBS:** Porta padrão da API é a 8080 mas pode ser alterada no arquivo `/cmd/main.go`.

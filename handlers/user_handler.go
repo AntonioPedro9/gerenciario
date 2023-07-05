@@ -5,11 +5,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"server/models"
 	"server/services"
-
-	"github.com/gorilla/mux"
 )
 
 type UserHandler struct {
@@ -29,7 +28,7 @@ func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := uh.userService.CreateUser(user); err != nil {
+	if _, err := uh.userService.CreateUser(user); err != nil {
 		log.Println("Failed to create user:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -68,7 +67,8 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
+	urlParts := strings.Split(r.URL.Path, "/")
+	id := urlParts[len(urlParts)-1]
 
 	if id == "" {
 		log.Println("User ID not provided")
