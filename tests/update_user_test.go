@@ -18,12 +18,14 @@ import (
 )
 
 func TestUpdateUser(t *testing.T) {
+	// Create a test database connection
 	db, err := database.CreateTestDatabaseConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
 	defer db.Close()
 
+	// Create a cleanup function to delete all users after each test
 	cleanup := func() {
 		_, err := db.Exec("DELETE FROM users")
 		if err != nil {
@@ -32,6 +34,7 @@ func TestUpdateUser(t *testing.T) {
 	}
 	defer cleanup()
 
+	// Create a transaction to run the test inside
 	tx, err := db.Begin()
 	if err != nil {
 		t.Fatal(err)
@@ -48,6 +51,7 @@ func TestUpdateUser(t *testing.T) {
 		Password: "password",
 	}
 
+	// Create user to update
 	_, err = userService.CreateUser(user)
 	if err != nil {
 		t.Fatal(err)
@@ -60,20 +64,22 @@ func TestUpdateUser(t *testing.T) {
 		Password: "newpassword",
 	}
 
+	// Convert editedUser to JSON
 	editedUserJSON, err := json.Marshal(editedUser)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	// Create a PUT request to update the user
 	req, err := http.NewRequest("PUT", "/users", bytes.NewBuffer(editedUserJSON))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	recorder := httptest.NewRecorder()
+	recorder := httptest.NewRecorder()    // Create a ResponseRecorder
+	userHandler.UpdateUser(recorder, req) // Call the UpdateUser handler function
 
-	userHandler.UpdateUser(recorder, req)
-
+	// Check the status code is what we expect
 	if recorder.Code != http.StatusOK {
 		t.Errorf("Expected status %d but got %d", http.StatusOK, recorder.Code)
 	}
@@ -83,14 +89,17 @@ func TestUpdateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Check if the name was updated
 	if updatedUser.Name != editedUser.Name {
 		t.Errorf("Expected name %s but got %s", editedUser.Name, updatedUser.Name)
 	}
 
+	// Check if the email was updated
 	if updatedUser.Password != editedUser.Password {
 		t.Errorf("Expected password %s but got %s", editedUser.Password, updatedUser.Password)
 	}
 
+	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		t.Fatal(err)

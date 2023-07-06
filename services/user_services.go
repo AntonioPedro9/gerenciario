@@ -26,7 +26,6 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	return us.userRepository.Create(user)
 }
 
-
 func (us *UserService) ListUsers() ([]*models.User, error) {
 	return us.userRepository.List()
 }

@@ -17,12 +17,14 @@ import (
 )
 
 func TestDeleteUser(t *testing.T) {
+	// Create a test database connection
 	db, err := database.CreateTestDatabaseConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
 	defer db.Close()
 
+	// Create a cleanup function to delete all users after each test
 	cleanup := func() {
 		_, err := db.Exec("DELETE FROM users")
 		if err != nil {
@@ -31,6 +33,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 	defer cleanup()
 
+	// Create a transaction to run the test inside
 	tx, err := db.Begin()
 	if err != nil {
 		t.Fatal(err)
@@ -47,6 +50,7 @@ func TestDeleteUser(t *testing.T) {
 		Password: "password",
 	}
 
+	// Create user to delete
 	createdUser, err := userService.CreateUser(user)
 	if err != nil {
 		t.Fatal(err)
@@ -54,21 +58,21 @@ func TestDeleteUser(t *testing.T) {
 
 	url := "/users/" + strconv.Itoa(createdUser.ID)
 
-	log.Println(url)
-
+	// Create a DELETE request to delete the user
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	recorder := httptest.NewRecorder()
+	recorder := httptest.NewRecorder()    // Create a recorder to record the response
+	userHandler.DeleteUser(recorder, req) // Call the DeleteUser handler function
 
-	userHandler.DeleteUser(recorder, req)
-
+	// Check if the status code is what we expect
 	if recorder.Code != http.StatusNoContent {
 		t.Errorf("Expected status %d but got %d", http.StatusNoContent, recorder.Code)
 	}
 
+	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		t.Fatal(err)

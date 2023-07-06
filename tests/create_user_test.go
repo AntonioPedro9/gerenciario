@@ -18,12 +18,14 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
+	// Create a test database connection
 	db, err := database.CreateTestDatabaseConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
 	}
 	defer db.Close()
 
+	// Create a cleanup function to delete all users after each test
 	cleanup := func() {
 		_, err := db.Exec("DELETE FROM users")
 		if err != nil {
@@ -32,6 +34,7 @@ func TestCreateUser(t *testing.T) {
 	}
 	defer cleanup()
 
+	// Create a transaction to run the test inside
 	tx, err := db.Begin()
 	if err != nil {
 		t.Fatal(err)
@@ -48,24 +51,27 @@ func TestCreateUser(t *testing.T) {
 		Password: "password",
 	}
 
+	// Convert user model to JSON
 	userJSON, err := json.Marshal(user)
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	// Create a POST request to create a user
 	req, err := http.NewRequest("POST", "/users", bytes.NewBuffer(userJSON))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	recorder := httptest.NewRecorder()
+	recorder := httptest.NewRecorder()    // Create a recorder to record the response
+	userHandler.CreateUser(recorder, req) // Call the CreateUser handler function
 
-	userHandler.CreateUser(recorder, req)
-
+	// Check if the status code is what we expect
 	if recorder.Code != http.StatusCreated {
 		t.Errorf("Expected status %d but got %d", http.StatusCreated, recorder.Code)
 	}
 
+	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		t.Fatal(err)
