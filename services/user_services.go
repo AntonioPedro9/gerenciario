@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server/models"
 	"server/repositories"
+	"server/utils"
 )
 
 type UserService struct {
@@ -15,6 +16,14 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 }
 
 func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
+	if !utils.IsValidEmail(user.Email) {
+		return nil, errors.New("Invalid email")
+	}
+
+	if !utils.IsValidName(user.Name) {
+		return nil, errors.New("Invalid name")
+	}
+
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return nil, err
@@ -31,14 +40,38 @@ func (us *UserService) ListUsers() ([]*models.User, error) {
 }
 
 func (us *UserService) GetUserById(id int) (*models.User, error) {
-	return us.userRepository.GetUserById(id)
+	user, err := us.userRepository.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("User not found")
+	}
+
+	return user, nil
 }
 
 func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
-	return us.userRepository.GetUserByEmail(email)
+	user, err := us.userRepository.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("User not found")
+	}
+
+	return user, nil
 }
 
 func (us *UserService) UpdateUser(user *models.User) error {
+	if !utils.IsValidEmail(user.Email) {
+		return errors.New("Invalid email")
+	}
+
+	if !utils.IsValidName(user.Name) {
+		return errors.New("Invalid name")
+	}
+
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
@@ -47,9 +80,19 @@ func (us *UserService) UpdateUser(user *models.User) error {
 		return errors.New("Email already in use")
 	}
 
-	return us.userRepository.Update(user)
+	err = us.userRepository.Update(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (us *UserService) DeleteUser(id int) error {
-	return us.userRepository.Delete(id)
+	err := us.userRepository.Delete(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
