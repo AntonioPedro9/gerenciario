@@ -45,20 +45,20 @@ func TestCreateUser(t *testing.T) {
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	user := &models.User{
+	userData := &models.User{
 		Name:     "John Doe",
 		Email:    "john@example.com",
 		Password: "password",
 	}
 
-	// Convert user model to JSON
-	userJSON, err := json.Marshal(user)
+	// Convert user data to JSON
+	userDataJSON, err := json.Marshal(userData)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Create a POST request to create a user
-	req, err := http.NewRequest("POST", "/users", bytes.NewBuffer(userJSON))
+	req, err := http.NewRequest("POST", "/users", bytes.NewBuffer(userDataJSON))
 	if err != nil {
 		t.Fatal(err)
 	}

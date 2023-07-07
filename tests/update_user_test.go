@@ -57,21 +57,21 @@ func TestUpdateUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	editedUser := &models.User{
+	userData := &models.User{
 		ID:       user.ID,
 		Name:     "John Smith",
 		Email:    "john@example.com",
 		Password: "newpassword",
 	}
 
-	// Convert editedUser to JSON
-	editedUserJSON, err := json.Marshal(editedUser)
+	// Convert user data to JSON
+	userDataJSON, err := json.Marshal(userData)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Create a PUT request to update the user
-	req, err := http.NewRequest("PUT", "/users", bytes.NewBuffer(editedUserJSON))
+	req, err := http.NewRequest("PUT", "/users", bytes.NewBuffer(userDataJSON))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -90,13 +90,13 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	// Check if the name was updated
-	if updatedUser.Name != editedUser.Name {
-		t.Errorf("Expected name %s but got %s", editedUser.Name, updatedUser.Name)
+	if updatedUser.Name != userData.Name {
+		t.Errorf("Expected name %s but got %s", userData.Name, updatedUser.Name)
 	}
 
 	// Check if the email was updated
-	if updatedUser.Password != editedUser.Password {
-		t.Errorf("Expected password %s but got %s", editedUser.Password, updatedUser.Password)
+	if updatedUser.Password != userData.Password {
+		t.Errorf("Expected password %s but got %s", userData.Password, updatedUser.Password)
 	}
 
 	// Commit the transaction
