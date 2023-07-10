@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 ```
 
-Dentro do arquivo `/database/connection.go` altere a variável "connStr" com o usuário, nome, senha, host e porta do seu banco de dados.
+Dentro do arquivo `/database/connection.go` altere a variável "connectionString" com o usuário, nome, senha, host e porta do seu banco de dados.
 
 Em seguida execute os seguintes comandos dentro do diretório do projeto:
 

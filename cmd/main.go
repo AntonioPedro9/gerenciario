@@ -25,13 +25,13 @@ func main() {
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
-	r.HandleFunc("/users", userHandler.CreateUser).Methods(http.MethodPost)
-	r.HandleFunc("/users", userHandler.ListUsers).Methods(http.MethodGet)
-	r.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
-	r.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
+	router.HandleFunc("/users", userHandler.CreateUser).Methods(http.MethodPost)
+	router.HandleFunc("/users", userHandler.ListUsers).Methods(http.MethodGet)
+	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
+	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
 	log.Println("Server started on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }
