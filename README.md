@@ -16,9 +16,29 @@ CREATE TABLE IF NOT EXISTS users (
 );
 ```
 
-Dentro do arquivo `/database/connection.go` altere a variável "connectionString" com o usuário, nome, senha, host e porta do seu banco de dados.
+Em seguida crie um arquivo `.env` e preencha as informações do seu banco de dados de produção e de testes:
 
-Em seguida execute os seguintes comandos dentro do diretório do projeto:
+```
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+DB_NAME=
+
+TEST_DB_USER=
+TEST_DB_PASSWORD=
+TEST_DB_HOST=
+TEST_DB_PORT=
+TEST_DB_NAME=
+```
+
+Executando testes E2E:
+
+```
+$ go test ./...
+```
+
+Executando a aplicação:
 
 ```
 $ go run main.go
