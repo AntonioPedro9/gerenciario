@@ -44,4 +44,4 @@ Executando a aplicação:
 $ go run main.go
 ```
 
-**OBS:** Porta padrão da API é a 8080 mas pode ser alterada no arquivo `/cmd/main.go`.
+**OBS:** Porta padrão da API é a 8080 mas pode ser alterada no arquivo `main.go`.
