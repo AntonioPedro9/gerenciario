@@ -24,4 +24,3 @@ func IsValidName(name string) bool {
 
 	return true
 }
-
