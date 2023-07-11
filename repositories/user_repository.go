@@ -80,7 +80,7 @@ func (ur *UserRepository) GetUserById(id int) (*models.User, error) {
 		return nil, nil
 	}
 	if err != nil {
-		log.Println("Failed to fetch user by email:", err)
+		log.Println("Failed to fetch user by ID:", err)
 		return nil, err
 	}
 
