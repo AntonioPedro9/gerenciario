@@ -10,17 +10,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func loadEnvVariables() error {
-	err := godotenv.Load("../.env")
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func CreateDatabaseConnection() (*sql.DB, error) {
-	err := loadEnvVariables()
+	err := godotenv.Load(".env")
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +39,7 @@ func CreateDatabaseConnection() (*sql.DB, error) {
 }
 
 func CreateTestDatabaseConnection() (*sql.DB, error) {
-	err := loadEnvVariables()
+	err := godotenv.Load("../.env")
 	if err != nil {
 		return nil, err
 	}
