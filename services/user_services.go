@@ -89,7 +89,15 @@ func (us *UserService) UpdateUser(user *models.User) error {
 }
 
 func (us *UserService) DeleteUser(id int) error {
-	err := us.userRepository.Delete(id)
+	user, err := us.userRepository.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("User not found")
+	}
+
+	err = us.userRepository.Delete(id)
 	if err != nil {
 		return err
 	}

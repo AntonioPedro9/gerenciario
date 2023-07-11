@@ -70,12 +70,6 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	urlParts := strings.Split(r.URL.Path, "/")
 	id := urlParts[len(urlParts)-1]
 
-	if id == "" {
-		log.Println("User ID not provided")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	convertedId, err := strconv.Atoi(id)
 	if err != nil {
 		log.Println("Invalid user ID:", err)
