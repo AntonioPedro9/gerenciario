@@ -64,20 +64,16 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 }
 
 func (us *UserService) UpdateUser(user *models.User) error {
-	if !utils.IsValidEmail(user.Email) {
-		return errors.New("Invalid email")
-	}
-
 	if !utils.IsValidName(user.Name) {
 		return errors.New("Invalid name")
 	}
 
-	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
+	existingUser, err := us.userRepository.GetUserById(user.ID)
 	if err != nil {
 		return err
 	}
-	if existingUser != nil && existingUser.ID != user.ID {
-		return errors.New("Email already in use")
+	if existingUser == nil {
+		return errors.New("User not found")
 	}
 
 	err = us.userRepository.Update(user)

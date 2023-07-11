@@ -115,11 +115,11 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 func (ur *UserRepository) Update(user *models.User) error {
 	query := `
 		UPDATE users
-		SET name = $1, email = $2, password = $3
-		WHERE id = $4
+		SET name = $1, password = $2
+		WHERE id = $3
 	`
 
-	_, err := ur.db.Exec(query, user.Name, user.Email, user.Password, user.ID)
+	_, err := ur.db.Exec(query, user.Name, user.Password, user.ID)
 	if err != nil {
 		log.Println("Failed to update user:", err)
 		return err

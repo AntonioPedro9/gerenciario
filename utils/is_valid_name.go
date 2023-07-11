@@ -1,14 +1,27 @@
 package utils
 
 import (
-	"regexp"
 	"strings"
+	"unicode"
 )
 
 func IsValidName(name string) bool {
-	name = strings.Trim(name, " ")
-	nameRegex := `^[A-Za-z0-9 ]{3,}$`
-	match, _ := regexp.MatchString(nameRegex, name)
+	name = strings.TrimSpace(name)
 
-	return match
+	if name == "" {
+		return false
+	}
+
+	if len(name) < 2 || len(name) > 64 {
+		return false
+	}
+
+	for _, char := range name {
+		if !unicode.IsLetter(char) && !unicode.IsSpace(char) {
+			return false
+		}
+	}
+
+	return true
 }
+
