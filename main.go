@@ -21,6 +21,11 @@ func main() {
 	}
 	defer db.Close()
 
+	err = database.CreateDatabaseTables(db)
+	if err != nil {
+		log.Fatal("Error creating database tables: ", err)
+	}
+
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)

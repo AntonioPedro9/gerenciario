@@ -4,19 +4,7 @@ CRUD de usuários criado em Go no formato de API RESTful usando banco de dados P
 
 ## Setup
 
-Crie um banco de dados Postgres na sua máquina e crie a tabela "users":
-
-```
-CREATE TABLE IF NOT EXISTS users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-Em seguida crie um arquivo `.env` e preencha as informações do seu banco de dados de produção e de testes:
+Crie um arquivo `.env` e preencha as informações do seu banco de dados de produção e de testes:
 
 ```
 DB_USER=
