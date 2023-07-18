@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -20,7 +19,7 @@ func TestDeleteUser(t *testing.T) {
 	// Create a test database connection
 	db, err := database.CreateTestDatabaseConnection()
 	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
+		t.Fatal("Error connecting to database: ", err)
 	}
 	defer db.Close()
 

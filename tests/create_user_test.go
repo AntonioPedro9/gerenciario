@@ -3,7 +3,6 @@ package tests
 import (
 	"bytes"
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -21,7 +20,7 @@ func TestCreateUser(t *testing.T) {
 	// Create a test database connection
 	db, err := database.CreateTestDatabaseConnection()
 	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
+		t.Fatal("Error connecting to database: ", err)
 	}
 	defer db.Close()
 

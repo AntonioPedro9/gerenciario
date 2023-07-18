@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"server/database"
@@ -10,11 +9,10 @@ import (
 	"server/services"
 
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
-
 	db, err := database.CreateDatabaseConnection()
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err)
@@ -37,6 +35,6 @@ func main() {
 	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
 	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
-	log.Println("Server started on port 8080")
+	log.Info("Server started on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

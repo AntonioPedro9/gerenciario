@@ -3,11 +3,11 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 )
 
 func CreateDatabaseConnection() (*sql.DB, error) {
@@ -34,7 +34,7 @@ func CreateDatabaseConnection() (*sql.DB, error) {
 		return nil, err
 	}
 
-	log.Println("Database connection successfully established")
+	log.Info("Database connection successfully established")
 	return db, nil
 }
 
@@ -62,6 +62,6 @@ func CreateTestDatabaseConnection() (*sql.DB, error) {
 		return nil, err
 	}
 
-	log.Println("Test database connection successfully established")
+	log.Info("Test database connection successfully established")
 	return db, nil
 }

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 )
 
 func CreateDatabaseTables(db *sql.DB) error {
@@ -22,6 +23,6 @@ func CreateDatabaseTables(db *sql.DB) error {
 		return err
 	}
 
+	log.Info("Database tables successfully created")
 	return nil
 }
-

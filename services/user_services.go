@@ -5,6 +5,8 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type UserService struct {
@@ -32,10 +34,12 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 		return nil, errors.New("Email already in use")
 	}
 
+	log.Info("Creating user")
 	return us.userRepository.Create(user)
 }
 
 func (us *UserService) ListUsers() ([]*models.User, error) {
+	log.Info("Listing users")
 	return us.userRepository.List()
 }
 
@@ -48,6 +52,7 @@ func (us *UserService) GetUserById(id int) (*models.User, error) {
 		return nil, errors.New("User not found")
 	}
 
+	log.Info("Getting user by id")
 	return user, nil
 }
 
@@ -60,6 +65,7 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 		return nil, errors.New("User not found")
 	}
 
+	log.Info("Getting user by email")
 	return user, nil
 }
 
@@ -81,6 +87,7 @@ func (us *UserService) UpdateUser(user *models.User) error {
 		return err
 	}
 
+	log.Info("Updating user")
 	return nil
 }
 
@@ -98,5 +105,6 @@ func (us *UserService) DeleteUser(id int) error {
 		return err
 	}
 
+	log.Info("Deleting user")
 	return nil
 }

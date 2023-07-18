@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"server/models"
 	"server/services"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type UserHandler struct {
@@ -23,13 +24,13 @@ func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
-		log.Println("Failed to decode user data:", err)
+		log.Error("Failed to decode user data:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if _, err := uh.userService.CreateUser(user); err != nil {
-		log.Println("Failed to create user:", err)
+		log.Error("Failed to create user:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -40,7 +41,7 @@ func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (uh *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := uh.userService.ListUsers()
 	if err != nil {
-		log.Println("Failed to fetch users:", err)
+		log.Error("Failed to fetch users:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -52,13 +53,13 @@ func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user := &models.User{}
 
 	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
-		log.Println("Failed to decode user data:", err)
+		log.Error("Failed to decode user data:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if err := uh.userService.UpdateUser(user); err != nil {
-		log.Println("Failed to update user:", err)
+		log.Error("Failed to update user:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -72,13 +73,13 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	convertedId, err := strconv.Atoi(id)
 	if err != nil {
-		log.Println("Invalid user ID:", err)
+		log.Warn("Invalid user ID:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	if err := uh.userService.DeleteUser(convertedId); err != nil {
-		log.Println("Failed to delete user:", err)
+		log.Error("Failed to delete user:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
