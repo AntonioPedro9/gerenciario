@@ -5,15 +5,14 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"testing"
-
-	_ "github.com/lib/pq"
-
 	"server/database"
 	"server/handlers"
 	"server/models"
 	"server/repositories"
 	"server/services"
+	"testing"
+
+	_ "github.com/lib/pq"
 )
 
 func TestUpdateUser(t *testing.T) {

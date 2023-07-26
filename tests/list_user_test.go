@@ -3,15 +3,14 @@ package tests
 import (
 	"net/http"
 	"net/http/httptest"
-	"testing"
-
-	_ "github.com/lib/pq"
-
 	"server/database"
 	"server/handlers"
 	"server/models"
 	"server/repositories"
 	"server/services"
+	"testing"
+
+	_ "github.com/lib/pq"
 )
 
 func TestListUsers(t *testing.T) {
