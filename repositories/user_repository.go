@@ -2,10 +2,10 @@ package repositories
 
 import (
 	"database/sql"
+	"server/models"
 	"time"
 
-	"server/models"
-
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,14 +19,20 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 
 func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
 	query := `
-		INSERT INTO users (name, email, password, created_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO users (id, name, email, password, created_at)
+		VALUES ($1, $2, $3, $4, $5)
 		RETURNING id
 	`
 
-	err := ur.db.QueryRow(query, user.Name, user.Email, user.Password, time.Now()).Scan(&user.ID)
+	userID, err := uuid.NewRandom()
 	if err != nil {
-		log.Error("Failed to create a new user:", err)
+		log.Error("Failed to generate UUID: ", err)
+		return nil, err
+	}
+
+	err = ur.db.QueryRow(query, userID, user.Name, user.Email, user.Password, time.Now()).Scan(&user.ID)
+	if err != nil {
+		log.Error("Failed to create a new user: ", err)
 		return nil, err
 	}
 
@@ -41,7 +47,7 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 
 	rows, err := ur.db.Query(query)
 	if err != nil {
-		log.Error("Failed to fetch users:", err)
+		log.Error("Failed to fetch users: ", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -53,7 +59,7 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 
 		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
 		if err != nil {
-			log.Error("Failed to scan user row:", err)
+			log.Error("Failed to scan user row: ", err)
 			return nil, err
 		}
 
@@ -63,7 +69,7 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) GetUserById(id int) (*models.User, error) {
+func (ur *UserRepository) GetUserById(id string) (*models.User, error) {
 	query := `
 		SELECT id, name, email, password, created_at
 		FROM users
@@ -79,7 +85,7 @@ func (ur *UserRepository) GetUserById(id int) (*models.User, error) {
 		return nil, nil
 	}
 	if err != nil {
-		log.Error("Failed to fetch user by ID:", err)
+		log.Error("Failed to fetch user by ID: ", err)
 		return nil, err
 	}
 
@@ -102,7 +108,7 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 		return nil, nil
 	}
 	if err != nil {
-		log.Error("Failed to fetch user by email:", err)
+		log.Error("Failed to fetch user by email: ", err)
 		return nil, err
 	}
 
@@ -118,14 +124,14 @@ func (ur *UserRepository) Update(user *models.User) error {
 
 	_, err := ur.db.Exec(query, user.Name, user.Password, user.ID)
 	if err != nil {
-		log.Error("Failed to update user:", err)
+		log.Error("Failed to update user: ", err)
 		return err
 	}
 
 	return nil
 }
 
-func (ur *UserRepository) Delete(id int) error {
+func (ur *UserRepository) Delete(id string) error {
 	query := `
 		DELETE FROM users
 		WHERE id = $1
@@ -133,7 +139,7 @@ func (ur *UserRepository) Delete(id int) error {
 
 	_, err := ur.db.Exec(query, id)
 	if err != nil {
-		log.Error("Failed to delete user:", err)
+		log.Error("Failed to delete user: ", err)
 		return err
 	}
 

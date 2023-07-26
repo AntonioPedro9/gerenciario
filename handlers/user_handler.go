@@ -3,11 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
-	"strings"
-
 	"server/models"
 	"server/services"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -71,14 +69,7 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	urlParts := strings.Split(r.URL.Path, "/")
 	id := urlParts[len(urlParts)-1]
 
-	convertedId, err := strconv.Atoi(id)
-	if err != nil {
-		log.Warn("Invalid user ID:", err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if err := uh.userService.DeleteUser(convertedId); err != nil {
+	if err := uh.userService.DeleteUser(id); err != nil {
 		log.Error("Failed to delete user:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

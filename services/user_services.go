@@ -43,7 +43,7 @@ func (us *UserService) ListUsers() ([]*models.User, error) {
 	return us.userRepository.List()
 }
 
-func (us *UserService) GetUserById(id int) (*models.User, error) {
+func (us *UserService) GetUserById(id string) (*models.User, error) {
 	user, err := us.userRepository.GetUserById(id)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func (us *UserService) UpdateUser(user *models.User) error {
 	return nil
 }
 
-func (us *UserService) DeleteUser(id int) error {
+func (us *UserService) DeleteUser(id string) error {
 	user, err := us.userRepository.GetUserById(id)
 	if err != nil {
 		return err

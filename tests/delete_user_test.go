@@ -3,16 +3,14 @@ package tests
 import (
 	"net/http"
 	"net/http/httptest"
-	"strconv"
-	"testing"
-
-	_ "github.com/lib/pq"
-
 	"server/database"
 	"server/handlers"
 	"server/models"
 	"server/repositories"
 	"server/services"
+	"testing"
+
+	_ "github.com/lib/pq"
 )
 
 func TestDeleteUser(t *testing.T) {
@@ -55,7 +53,7 @@ func TestDeleteUser(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	url := "/users/" + strconv.Itoa(createdUser.ID)
+	url := "/users/" + createdUser.ID
 
 	// Create a DELETE request to delete the user
 	req, err := http.NewRequest("DELETE", url, nil)
