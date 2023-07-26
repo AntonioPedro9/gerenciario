@@ -2,12 +2,15 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"server/database"
 	"server/handlers"
 	"server/repositories"
 	"server/services"
+	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -34,6 +37,16 @@ func main() {
 	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
 	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
+	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file: ", err)
+	}
+
+	port, err := strconv.Atoi(os.Getenv("PORT"))
+	if err != nil {
+		log.Fatal("Error parsing PORT environment variable: ", err)
+	}
+
 	log.Info("Server started on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), router))
 }

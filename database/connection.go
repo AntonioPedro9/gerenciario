@@ -13,7 +13,7 @@ import (
 func CreateDatabaseConnection() (*sql.DB, error) {
 	err := godotenv.Load(".env")
 	if err != nil {
-		return nil, err
+		log.Fatal("Error loading .env file: ", err)
 	}
 
 	user := os.Getenv("DB_USER")
@@ -41,7 +41,7 @@ func CreateDatabaseConnection() (*sql.DB, error) {
 func CreateTestDatabaseConnection() (*sql.DB, error) {
 	err := godotenv.Load("../.env")
 	if err != nil {
-		return nil, err
+		log.Fatal("Error loading .env file: ", err)
 	}
 
 	user := os.Getenv("TEST_DB_USER")
