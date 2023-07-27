@@ -14,6 +14,13 @@ import (
 )
 
 func main() {
+	// Configure logger
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors:     true,
+		FullTimestamp:   true,
+		TimestampFormat: "02/01/2006 15:04",
+	})
+
 	// Create database connection
 	db, err := database.CreateDatabaseConnection()
 	if err != nil {
