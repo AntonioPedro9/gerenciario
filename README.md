@@ -4,7 +4,7 @@ CRUD de usuários criado em Go no formato de API RESTful usando banco de dados P
 
 ## Setup
 
-Crie um arquivo `.env` na raiz do projeto e preencha as informações do seu banco de dados de produção e de testes:
+Crie um arquivo `.env` na raiz do projeto e especifique a porta da aplicação e as informações do banco de dados de produção e de testes
 
 ```
 PORT=8080
