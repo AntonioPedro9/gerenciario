@@ -41,8 +41,12 @@ func (uh *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	json.NewEncoder(w).Encode(users)
+	
+    if err := json.NewEncoder(w).Encode(users); err != nil {
+		log.Error("Failed to encode users:", err)
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
 }
 
 func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
