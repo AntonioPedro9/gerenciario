@@ -3,9 +3,8 @@ package repositories
 import (
 	"database/sql"
 	"server/models"
-	"time"
+	"server/utils"
 
-	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,13 +23,10 @@ func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
 		RETURNING id
 	`
 
-	userID, err := uuid.NewRandom()
-	if err != nil {
-		log.Error("Failed to generate UUID: ", err)
-		return nil, err
-	}
+	userID := utils.GenerateUUDI()
+	createdAt := utils.GetTodaysDate()
 
-	err = ur.db.QueryRow(query, userID, user.Name, user.Email, user.Password, time.Now()).Scan(&user.ID)
+	err := ur.db.QueryRow(query, userID, user.Name, user.Email, user.Password, createdAt).Scan(&user.ID)
 	if err != nil {
 		log.Error("Failed to create a new user: ", err)
 		return nil, err
