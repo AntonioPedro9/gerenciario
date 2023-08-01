@@ -19,15 +19,17 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 }
 
 func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	user := &models.User{}
+	userData := &models.CreateUserRequest{}
 
-	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(userData); err != nil {
 		log.Error("Failed to decode user data:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if _, err := uh.userService.CreateUser(user); err != nil {
+	newUser := models.NewUser(userData.Name, userData.Email, userData.Password)
+
+	if _, err := uh.userService.CreateUser(newUser); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -41,24 +43,24 @@ func (uh *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	
-    if err := json.NewEncoder(w).Encode(users); err != nil {
+
+	if err := json.NewEncoder(w).Encode(users); err != nil {
 		log.Error("Failed to encode users:", err)
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }
 
 func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	user := &models.User{}
+	userData := &models.UpdateUserRequest{}
 
-	if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(userData); err != nil {
 		log.Error("Failed to decode user data:", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	if err := uh.userService.UpdateUser(user); err != nil {
+	if err := uh.userService.UpdateUser(userData); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

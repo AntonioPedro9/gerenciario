@@ -40,20 +40,15 @@ func TestDeleteUser(t *testing.T) {
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-
-	user := &models.User{
-		Name:     "John Doe",
-		Email:    "john@example.com",
-		Password: "password",
-	}
+	user := models.NewUser("John Doe", "john@example.com", "password")
 
 	// Create user to delete
-	createdUser, err := userService.CreateUser(user)
+	tempUser, err := userService.CreateUser(user)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	url := "/users/" + createdUser.ID
+	url := "/users/" + tempUser.ID
 
 	// Create a DELETE request to delete the user
 	req, err := http.NewRequest("DELETE", url, nil)

@@ -40,12 +40,7 @@ func TestListUsers(t *testing.T) {
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-
-	user := &models.User{
-		Name:     "John Doe",
-		Email:    "john@example.com",
-		Password: "password",
-	}
+	user := models.NewUser("John Doe", "john@example.com", "password")
 
 	// Create user to list
 	_, err = userService.CreateUser(user)

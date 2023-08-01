@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"server/models"
-	"server/utils"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -23,10 +22,7 @@ func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
 		RETURNING id
 	`
 
-	userID := utils.GenerateUUDI()
-	createdAt := utils.GetTodaysDate()
-
-	err := ur.db.QueryRow(query, userID, user.Name, user.Email, user.Password, createdAt).Scan(&user.ID)
+	err := ur.db.QueryRow(query, user.ID, user.Name, user.Email, user.Password, user.CreatedAt).Scan(&user.ID)
 	if err != nil {
 		log.Error("Failed to create a new user: ", err)
 		return nil, err
@@ -111,7 +107,7 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (ur *UserRepository) Update(user *models.User) error {
+func (ur *UserRepository) Update(user *models.UpdateUserRequest) error {
 	query := `
 		UPDATE users
 		SET name = $1, password = $2

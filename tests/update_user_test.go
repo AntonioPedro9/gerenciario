@@ -42,34 +42,29 @@ func TestUpdateUser(t *testing.T) {
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-
-	user := &models.User{
-		Name:     "John Doe",
-		Email:    "john@example.com",
-		Password: "password",
-	}
+	user := models.NewUser("John Doe", "john@example.com", "password")
 
 	// Create user to update
-	_, err = userService.CreateUser(user)
+	tempUser, err := userService.CreateUser(user)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	userData := &models.User{
-		ID:       user.ID,
+	userData := &models.UpdateUserRequest{
+		ID:       tempUser.ID,
 		Name:     "John Smith",
-		Email:    "john@example.com",
+		Email:    "johnsmith@example.com",
 		Password: "newpassword",
 	}
 
 	// Convert user data to JSON
-	userDataJSON, err := json.Marshal(userData)
+	jsonUserData, err := json.Marshal(userData)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Create a PUT request to update the user
-	req, err := http.NewRequest("PUT", "/users", bytes.NewBuffer(userDataJSON))
+	req, err := http.NewRequest("PUT", "/users", bytes.NewBuffer(jsonUserData))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +77,7 @@ func TestUpdateUser(t *testing.T) {
 		t.Errorf("Expected status %d but got %d", http.StatusOK, recorder.Code)
 	}
 
-	updatedUser, err := userService.GetUserById(user.ID)
+	updatedUser, err := userService.GetUserById(tempUser.ID)
 	if err != nil {
 		t.Fatal(err)
 	}

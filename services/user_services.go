@@ -69,7 +69,7 @@ func (us *UserService) GetUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
-func (us *UserService) UpdateUser(user *models.User) error {
+func (us *UserService) UpdateUser(user *models.UpdateUserRequest) error {
 	if !utils.IsValidName(user.Name) {
 		return errors.New("Invalid name")
 	}
