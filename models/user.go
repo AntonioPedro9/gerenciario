@@ -19,11 +19,11 @@ type UpdateUserRequest struct {
 }
 
 type User struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	Password  string    `json:"password"`
-	CreatedAt time.Time `json:"created_at"`
+	ID        string
+	Name      string
+	Email     string
+	Password  string
+	CreatedAt time.Time
 }
 
 func NewUser(name, email, password string) *User {
