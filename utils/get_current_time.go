@@ -2,6 +2,6 @@ package utils
 
 import "time"
 
-func GetTodaysDate() time.Time {
+func GetCurrentTime() time.Time {
 	return time.Now()
 }
