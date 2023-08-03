@@ -51,6 +51,6 @@ func main() {
 	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
 	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
-	log.Info("Server started on port 8080")
+	log.Info("Server started on port ", os.Getenv("PORT"))
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
 }
