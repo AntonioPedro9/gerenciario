@@ -22,10 +22,6 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 		return nil, errors.New("Invalid email")
 	}
 
-	if !utils.IsValidName(user.Name) {
-		return nil, errors.New("Name can only contain letters and must be at least 2 characters long")
-	}
-
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return nil, err
@@ -33,6 +29,12 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	if existingUser != nil {
 		return nil, errors.New("Email already in use")
 	}
+
+	if !utils.IsValidName(user.Name) {
+		return nil, errors.New("Name can only contain letters and must be at least 2 characters long")
+	}
+
+	user.Name = utils.CapitalizeName(user.Name)
 
 	log.Info("Creating user")
 	return us.userRepository.Create(user)
@@ -73,6 +75,8 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest) error {
 	if !utils.IsValidName(user.Name) {
 		return errors.New("Invalid name")
 	}
+
+	user.Name = utils.CapitalizeName(user.Name)
 
 	existingUser, err := us.userRepository.GetUserById(user.ID)
 	if err != nil {
