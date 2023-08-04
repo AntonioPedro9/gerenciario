@@ -23,7 +23,7 @@ func (us *UserService) CreateUser(user *models.User) (*models.User, error) {
 	}
 
 	if !utils.IsValidName(user.Name) {
-		return nil, errors.New("Invalid name")
+		return nil, errors.New("Name can only contain letters and must be at least 2 characters long")
 	}
 
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
