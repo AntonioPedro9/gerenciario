@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"server/database"
 	"server/models"
 
 	log "github.com/sirupsen/logrus"
@@ -28,10 +29,21 @@ func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
 		return nil, err
 	}
 
+	database.ClearCache()
+
 	return user, nil
 }
 
 func (ur *UserRepository) List() ([]*models.User, error) {
+	cachedUsers, err := database.GetCachedUsers()
+	if err != nil {
+		log.Warn("Error fetching cached users: ", err)
+	}
+
+	if cachedUsers != nil {
+		return cachedUsers, nil
+	}
+
 	query := `
 		SELECT id, name, email, password, created_at
 		FROM users
@@ -56,6 +68,13 @@ func (ur *UserRepository) List() ([]*models.User, error) {
 		}
 
 		users = append(users, user)
+	}
+
+	if len(users) > 0 {
+		err = database.SetCachedUsers(users)
+		if err != nil {
+			log.Warn("Error caching users:", err)
+		}
 	}
 
 	return users, nil
@@ -120,6 +139,8 @@ func (ur *UserRepository) Update(user *models.UpdateUserRequest) error {
 		return err
 	}
 
+	database.ClearCache()
+
 	return nil
 }
 
@@ -134,6 +155,8 @@ func (ur *UserRepository) Delete(id string) error {
 		log.Error("Failed to delete user: ", err)
 		return err
 	}
+
+	database.ClearCache()
 
 	return nil
 }

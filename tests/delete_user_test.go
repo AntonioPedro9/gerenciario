@@ -64,6 +64,12 @@ func TestDeleteUser(t *testing.T) {
 		t.Errorf("Expected status %d but got %d", http.StatusNoContent, recorder.Code)
 	}
 
+	// Clear cache
+	err = database.ClearCache()
+	if err != nil {
+		t.Fatal("Error clearing cache:", err)
+	}
+
 	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {

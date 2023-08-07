@@ -62,6 +62,12 @@ func TestListUsers(t *testing.T) {
 		t.Errorf("Expected status %d but got %d", http.StatusOK, recorder.Code)
 	}
 
+	// Clear cache
+	err = database.ClearCache()
+	if err != nil {
+		t.Error("Error clearing cache:", err)
+	}
+
 	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
