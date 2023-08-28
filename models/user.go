@@ -18,9 +18,9 @@ type UpdateUserRequest struct {
 }
 
 type User struct {
-	ID       string
+	ID       string `gorm:"primaryKey"`
 	Name     string
-	Email    string
+	Email    string `gorm:"unique"`
 	Password string
 }
 
