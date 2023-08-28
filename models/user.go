@@ -2,7 +2,6 @@ package models
 
 import (
 	"server/utils"
-	"time"
 )
 
 type CreateUserRequest struct {
@@ -19,22 +18,20 @@ type UpdateUserRequest struct {
 }
 
 type User struct {
-	ID        string
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
+	ID       string
+	Name     string
+	Email    string
+	Password string
 }
 
 func NewUser(name, email, password string) *User {
 	userId := utils.GenerateUUDI()
-	createdAt := utils.GetCurrentTime()
+	hashedPassword := utils.HashPassword(password)
 
 	return &User{
-		ID:        userId,
-		Name:      name,
-		Email:     email,
-		Password:  password,
-		CreatedAt: createdAt,
+		ID:       userId,
+		Name:     name,
+		Email:    email,
+		Password: hashedPassword,
 	}
 }
