@@ -3,17 +3,16 @@ package main
 import (
 	"net/http"
 	"os"
-	"server/database"
 	"server/handlers"
+	"server/initializers"
 	"server/repositories"
 	"server/services"
 
 	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 )
 
-func main() {
+func init() {
 	// Configure logger
 	log.SetFormatter(&log.TextFormatter{
 		ForceColors:     true,
@@ -21,26 +20,13 @@ func main() {
 		TimestampFormat: "02/01/2006 15:04",
 	})
 
-	// Create database connection
-	db, err := database.CreateDatabaseConnection()
-	if err != nil {
-		log.Fatal("Error connecting to database: ", err)
-	}
-	defer db.Close()
+	initializers.LoadEnvVariables()
+	initializers.ConnectToDatabase()
+	initializers.CreateDatabaseTables()
+}
 
-	// Create database tables
-	err = database.CreateDatabaseTables(db)
-	if err != nil {
-		log.Fatal("Error creating database tables: ", err)
-	}
-
-	// Load environment variables
-	err = godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file: ", err)
-	}
-
-	userRepository := repositories.NewUserRepository(db)
+func main() {
+	userRepository := repositories.NewUserRepository(initializers.DB)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
@@ -51,6 +37,8 @@ func main() {
 	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
 	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
 
-	log.Info("Server started on port ", os.Getenv("PORT"))
-	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), router))
+	port := os.Getenv("PORT")
+
+	log.Info("Server started on port ", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }
