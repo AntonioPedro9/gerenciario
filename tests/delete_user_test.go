@@ -20,7 +20,7 @@ func TestDeleteUser(t *testing.T) {
 		initializers.TestDB.Exec("DELETE FROM users")
 	}
 	defer cleanup()
-	
+
 	userRepository := repositories.NewUserRepository(initializers.TestDB)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
