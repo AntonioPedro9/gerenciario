@@ -79,3 +79,31 @@ func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
+	loginData := &models.LoginUserResquest{}
+
+	if err := json.NewDecoder(r.Body).Decode(loginData); err != nil {
+		log.Error("Failed to decode login data:", err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	token, err := uh.userService.Login(loginData.Email, loginData.Password)
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	response := map[string]string{
+		"token": token,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Error("Failed to encode response:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}

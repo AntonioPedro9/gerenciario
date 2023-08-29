@@ -4,6 +4,13 @@ import (
 	"server/utils"
 )
 
+type User struct {
+	ID       string `gorm:"primaryKey"`
+	Name     string
+	Email    string `gorm:"unique"`
+	Password string
+}
+
 type CreateUserRequest struct {
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -17,10 +24,8 @@ type UpdateUserRequest struct {
 	Password string `json:"password"`
 }
 
-type User struct {
-	ID       string `gorm:"primaryKey"`
-	Name     string
-	Email    string `gorm:"unique"`
+type LoginUserResquest struct {
+	Email    string
 	Password string
 }
 

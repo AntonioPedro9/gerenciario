@@ -19,6 +19,8 @@ require (
 )
 
 require (
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/google/uuid v1.3.0
 	golang.org/x/sys v0.10.0 // indirect
 	gorm.io/driver/postgres v1.5.2

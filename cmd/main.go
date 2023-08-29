@@ -36,6 +36,7 @@ func main() {
 	router.HandleFunc("/users", userHandler.ListUsers).Methods(http.MethodGet)
 	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
 	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
+	router.HandleFunc("/users/login", userHandler.Login).Methods(http.MethodPost)
 
 	port := os.Getenv("PORT")
 
