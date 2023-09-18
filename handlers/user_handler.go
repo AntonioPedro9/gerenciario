@@ -17,6 +17,17 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 	return &UserHandler{userService}
 }
 
+// CreateUser godoc
+//	@Summary		Create a new user
+//	@Description	Create a new user with the provided data
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.CreateUserRequest	true	"User data to create"
+//	@Success		201		{}			null
+//	@Failure		400		{object}	gin.H	"Failed to bind JSON request"
+//	@Failure		500		{object}	gin.H	"Internal Server Error"
+//	@Router			/users [post]
 func (uh *UserHandler) CreateUser(c *gin.Context) {
 	var user models.CreateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -32,6 +43,15 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
+// ListUsers godoc
+//	@Summary		List users
+//	@Description	Get a list of all users
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		models.User
+//	@Failure		500	{object}	gin.H	"Internal Server Error"
+//	@Router			/users [get]
 func (uh *UserHandler) ListUsers(c *gin.Context) {
 	users, err := uh.userService.ListUsers()
 	if err != nil {
@@ -42,6 +62,17 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// UpdateUser godoc
+//	@Summary		Update a user
+//	@Description	Update an existing user with the provided data
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.UpdateUserRequest	true	"User data to update"
+//	@Success		204		{}			null
+//	@Failure		400		{object}	gin.H	"Failed to bind JSON request"
+//	@Failure		500		{object}	gin.H	"Internal Server Error"
+//	@Router			/users [put]
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	var user models.UpdateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -57,6 +88,17 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+// DeleteUser godoc
+//	@Summary		Delete a user
+//	@Description	Delete a user by ID
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"User ID"
+//	@Success		204	{}			null
+//	@Failure		400	{object}	gin.H	"Invalid ID"
+//	@Failure		500	{object}	gin.H	"Internal Server Error"
+//	@Router			/users/{id} [delete]
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
@@ -74,6 +116,17 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
+// LoginUser godoc
+//	@Summary		Login as a user
+//	@Description	Login with user credentials and receive an authentication token
+//	@Tags			users
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		models.LoginUserResquest	true	"User login data"
+//	@Success		200		{string}	string						"token"
+//	@Failure		400		{object}	gin.H						"Failed to bind JSON request"
+//	@Failure		500		{object}	gin.H						"Internal Server Error"
+//	@Router			/users/login [post]
 func (uh *UserHandler) LoginUser(c *gin.Context) {
 	var loginUserRequest models.LoginUserResquest
 	if err := c.ShouldBindJSON(&loginUserRequest); err != nil {

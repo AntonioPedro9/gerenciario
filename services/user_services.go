@@ -45,14 +45,6 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 }
 
 func (us *UserService) ListUsers() ([]models.User, error) {
-	// pegar o token pelo cookie
-
-	// parsear o token
-
-	// extrair o id de usuário do token
-
-	// verificar se o id do token é igual o id do usuário que fez a requisição
-
 	return us.userRepository.List()
 }
 
