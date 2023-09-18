@@ -3,7 +3,7 @@ package repositories
 import (
 	"server/models"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -15,87 +15,51 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db}
 }
 
-func (ur *UserRepository) Create(user *models.User) (*models.User, error) {
-	result := ur.db.Create(user)
-
-	if result.Error != nil {
-		log.Error("Failed to create a new user: ", result.Error)
-		return nil, result.Error
-	}
-
-	return user, nil
+func (ur *UserRepository) Create(user *models.User) error {
+	return ur.db.Create(user).Error
 }
 
-func (ur *UserRepository) List() ([]*models.User, error) {
-	var users []*models.User
+func (ur *UserRepository) List() ([]models.User, error) {
+	var users []models.User
 
-	result := ur.db.Find(&users)
-
-	if result.Error != nil {
-		log.Error("Failed to fetch users: ", result.Error)
-		return nil, result.Error
+	if err := ur.db.Find(&users).Error; err != nil {
+		return nil, err
 	}
 
 	return users, nil
 }
 
-func (ur *UserRepository) GetUserById(id string) (*models.User, error) {
-	var user models.User
-
-	result := ur.db.First(&user, "id = ?", id)
-
-	if result.Error != nil {
-		if result.Error == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
-
-		log.Error("Failed to fetch user by ID: ", result.Error)
-
-		return nil, result.Error
-	}
-
-	return &user, nil
-}
-
 func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 
-	result := ur.db.First(&user, "email = ?", email)
-
-	if result.Error != nil {
-		if result.Error == gorm.ErrRecordNotFound {
+	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
-
-		log.Error("Failed to fetch user by email: ", result.Error)
-
-		return nil, result.Error
+		return nil, err
 	}
 
 	return &user, nil
 }
 
-func (ur *UserRepository) Update(user *models.UpdateUserRequest) error {
-	result := ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(map[string]interface{}{
-		"name":     user.Name,
-		"password": user.Password,
-	})
+func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
+	var user models.User
 
-	if result.Error != nil {
-		log.Error("Failed to update user: ", result.Error)
-		return result.Error
+	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
 	}
 
-	return nil
+	return &user, nil
 }
 
-func (ur *UserRepository) Delete(id string) error {
-	result := ur.db.Delete(&models.User{}, "id = ?", id)
+func (ur *UserRepository) UpdateUser(user *models.UpdateUserRequest) error {
+	return ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(models.User{Name: user.Name, Password: user.Password}).Error
+}
 
-	if result.Error != nil {
-		log.Error("Failed to delete user: ", result.Error)
-		return result.Error
-	}
-
-	return nil
+func (ur *UserRepository) DeleteUser(id uuid.UUID) error {
+	user := models.User{ID: id}
+	return ur.db.Delete(&user).Error
 }

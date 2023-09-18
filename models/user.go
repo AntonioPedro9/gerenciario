@@ -1,11 +1,9 @@
 package models
 
-import (
-	"server/utils"
-)
+import "github.com/google/uuid"
 
 type User struct {
-	ID       string `gorm:"primaryKey"`
+	ID       uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	Name     string
 	Email    string `gorm:"unique"`
 	Password string
@@ -18,25 +16,12 @@ type CreateUserRequest struct {
 }
 
 type UpdateUserRequest struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	Password string    `json:"password"`
 }
 
 type LoginUserResquest struct {
 	Email    string
 	Password string
-}
-
-func NewUser(name, email, password string) *User {
-	userId := utils.GenerateUUDI()
-	hashedPassword := utils.HashPassword(password)
-
-	return &User{
-		ID:       userId,
-		Name:     name,
-		Email:    email,
-		Password: hashedPassword,
-	}
 }

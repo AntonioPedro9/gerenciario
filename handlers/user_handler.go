@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"server/models"
 	"server/services"
-	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -18,92 +17,77 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 	return &UserHandler{userService}
 }
 
-func (uh *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	userData := &models.CreateUserRequest{}
-
-	if err := json.NewDecoder(r.Body).Decode(userData); err != nil {
-		log.Error("Failed to decode user data:", err)
-		w.WriteHeader(http.StatusBadRequest)
+func (uh *UserHandler) CreateUser(c *gin.Context) {
+	var user models.CreateUserRequest
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	newUser := models.NewUser(userData.Name, userData.Email, userData.Password)
-
-	if _, err := uh.userService.CreateUser(newUser); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+	if err := uh.userService.CreateUser(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	c.JSON(http.StatusCreated, nil)
 }
 
-func (uh *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
+func (uh *UserHandler) ListUsers(c *gin.Context) {
 	users, err := uh.userService.ListUsers()
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := json.NewEncoder(w).Encode(users); err != nil {
-		log.Error("Failed to encode users:", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
+	c.JSON(http.StatusOK, users)
 }
 
-func (uh *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	userData := &models.UpdateUserRequest{}
-
-	if err := json.NewDecoder(r.Body).Decode(userData); err != nil {
-		log.Error("Failed to decode user data:", err)
-		w.WriteHeader(http.StatusBadRequest)
+func (uh *UserHandler) UpdateUser(c *gin.Context) {
+	var user models.UpdateUserRequest
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	if err := uh.userService.UpdateUser(userData); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+	if err := uh.userService.UpdateUser(&user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	c.JSON(http.StatusNoContent, nil)
 }
 
-func (uh *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	urlParts := strings.Split(r.URL.Path, "/")
-	id := urlParts[len(urlParts)-1]
+func (uh *UserHandler) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
 
-	if err := uh.userService.DeleteUser(id); err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusNoContent)
-}
-
-func (uh *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
-	loginData := &models.LoginUserResquest{}
-
-	if err := json.NewDecoder(r.Body).Decode(loginData); err != nil {
-		log.Error("Failed to decode login data:", err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	token, err := uh.userService.Login(loginData.Email, loginData.Password)
+	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
 
-	response := map[string]string{
-		"token": token,
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-
-	if err := json.NewEncoder(w).Encode(response); err != nil {
-		log.Error("Failed to encode response:", err)
-		w.WriteHeader(http.StatusInternalServerError)
+	if err := uh.userService.DeleteUser(parsedID); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	c.JSON(http.StatusNoContent, nil)
+}
+
+func (uh *UserHandler) LoginUser(c *gin.Context) {
+	var loginUserRequest models.LoginUserResquest
+	if err := c.ShouldBindJSON(&loginUserRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
+		return
+	}
+
+	tokenString, err := uh.userService.LoginUser(&loginUserRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", tokenString, 3600*24*30, "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }

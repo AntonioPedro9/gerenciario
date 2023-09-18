@@ -1,45 +1,48 @@
 package main
 
 import (
-	"net/http"
-	"os"
+	"server/database"
 	"server/handlers"
-	"server/initializers"
+	"server/middlewares"
 	"server/repositories"
 	"server/services"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
 )
 
 func init() {
-	// Configure logger
 	log.SetFormatter(&log.TextFormatter{
 		ForceColors:     true,
 		FullTimestamp:   true,
-		TimestampFormat: "02/01/2006 15:04",
+		TimestampFormat: "04/04/2001 15:00",
 	})
 
-	initializers.LoadEnvVariables()
-	initializers.ConnectToDatabase()
-	initializers.CreateDatabaseTables()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	database.ConnectToDatabase()
+	database.CreateDatabaseTables()
 }
 
 func main() {
-	userRepository := repositories.NewUserRepository(initializers.DB)
+	userRepository := repositories.NewUserRepository(database.DB)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	router := mux.NewRouter()
+	r := gin.Default()
 
-	router.HandleFunc("/users", userHandler.CreateUser).Methods(http.MethodPost)
-	router.HandleFunc("/users", userHandler.ListUsers).Methods(http.MethodGet)
-	router.HandleFunc("/users", userHandler.UpdateUser).Methods(http.MethodPut)
-	router.HandleFunc("/users/{id}", userHandler.DeleteUser).Methods(http.MethodDelete)
-	router.HandleFunc("/users/login", userHandler.Login).Methods(http.MethodPost)
+	userGroup := r.Group("/users")
+	{
+		userGroup.POST("/", userHandler.CreateUser)
+		userGroup.GET("/", userHandler.ListUsers)
+		userGroup.PUT("/", middlewares.RequireAuth, userHandler.UpdateUser)
+		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
+		userGroup.POST("/login", userHandler.LoginUser)
+	}
 
-	port := os.Getenv("PORT")
-
-	log.Info("Server started on port ", port)
-	log.Fatal(http.ListenAndServe(":"+port, router))
+	r.Run()
 }
