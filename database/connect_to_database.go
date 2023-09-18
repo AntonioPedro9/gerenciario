@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
+var DB, TEST_DB *gorm.DB
 
 func ConnectToDatabase() {
 	var err error
@@ -22,7 +22,7 @@ func ConnectToDatabase() {
 func ConnectToTestDatabase() {
 	var err error
 
-	DB, err = gorm.Open(postgres.Open(os.Getenv("TEST_CONNECTION_STRING")), &gorm.Config{})
+	TEST_DB, err = gorm.Open(postgres.Open(os.Getenv("TEST_CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to test database")
 	}
