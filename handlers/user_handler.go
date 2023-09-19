@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 	"server/models"
 	"server/services"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
+	"github.com/golang-jwt/jwt"
 )
 
 type UserHandler struct {
@@ -18,6 +19,7 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 }
 
 // CreateUser godoc
+//
 //	@Summary		Create a new user
 //	@Description	Create a new user with the provided data
 //	@Tags			users
@@ -44,6 +46,7 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 }
 
 // ListUsers godoc
+//
 //	@Summary		List users
 //	@Description	Get a list of all users
 //	@Tags			users
@@ -63,6 +66,7 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 }
 
 // UpdateUser godoc
+//
 //	@Summary		Update a user
 //	@Description	Update an existing user with the provided data
 //	@Tags			users
@@ -70,25 +74,44 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 //	@Produce		json
 //	@Param			user	body		models.UpdateUserRequest	true	"User data to update"
 //	@Success		204		{}			null
+//	@Failure		400		{object}	gin.H	"No token provided"
 //	@Failure		400		{object}	gin.H	"Failed to bind JSON request"
 //	@Failure		500		{object}	gin.H	"Internal Server Error"
+//	@Failure		401		{object}	gin.H	"Invalid token"
 //	@Router			/users [put]
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
-	var user models.UpdateUserRequest
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
 		return
 	}
 
-	if err := uh.userService.UpdateUser(&user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET")), nil
+	})
 
-	c.JSON(http.StatusNoContent, nil)
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		tokenID := claims["sub"].(string)
+
+		var user models.UpdateUserRequest
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
+			return
+		}
+
+		if err := uh.userService.UpdateUser(&user, tokenID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusNoContent, nil)
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+	}
 }
 
 // DeleteUser godoc
+//
 //	@Summary		Delete a user
 //	@Description	Delete a user by ID
 //	@Tags			users
@@ -96,27 +119,46 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 //	@Produce		json
 //	@Param			id	path		string	true	"User ID"
 //	@Success		204	{}			null
-//	@Failure		400	{object}	gin.H	"Invalid ID"
+//	@Failure		400	{object}	gin.H	"No token provided"
+//	@Failure		400	{object}	gin.H	"Failed to bind JSON request"
 //	@Failure		500	{object}	gin.H	"Internal Server Error"
+//	@Failure		401	{object}	gin.H	"Invalid token"
 //	@Router			/users/{id} [delete]
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
-	parsedID, err := uuid.Parse(id)
+	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
 		return
 	}
 
-	if err := uh.userService.DeleteUser(parsedID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("SECRET")), nil
+	})
 
-	c.JSON(http.StatusNoContent, nil)
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		tokenID := claims["sub"].(string)
+
+		var user models.UpdateUserRequest
+		if err := c.ShouldBindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
+			return
+		}
+
+		if err := uh.userService.DeleteUser(id, tokenID); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusNoContent, nil)
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+	}
 }
 
 // LoginUser godoc
+//
 //	@Summary		Login as a user
 //	@Description	Login with user credentials and receive an authentication token
 //	@Tags			users
