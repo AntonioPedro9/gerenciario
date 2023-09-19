@@ -19,11 +19,11 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 
 func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 	if !utils.IsValidName(user.Name) {
-		return models.InvalidNameError
+		return utils.InvalidNameError
 	}
 
 	if !utils.IsValidEmail(user.Email) {
-		return models.InvalidEmailError
+		return utils.InvalidEmailError
 	}
 
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
@@ -31,7 +31,7 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 		return err
 	}
 	if existingUser != nil {
-		return models.EmailInUseError
+		return utils.EmailInUseError
 	}
 
 	hashedPassword, err := utils.HashPassword(user.Password)
@@ -54,11 +54,11 @@ func (us *UserService) ListUsers() ([]models.User, error) {
 
 func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) error {
 	if user.ID != tokenID {
-		return models.UnauthorizedActionError
+		return utils.UnauthorizedActionError
 	}
 
 	if !utils.IsValidName(user.Name) {
-		return models.InvalidNameError
+		return utils.InvalidNameError
 	}
 
 	existingUser, err := us.userRepository.GetUserById(user.ID)
@@ -66,7 +66,7 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		return err
 	}
 	if existingUser == nil {
-		return models.NotFoundError
+		return utils.NotFoundError
 	}
 
 	hashedPassword, err := utils.HashPassword(user.Password)
@@ -85,7 +85,7 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 
 func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 	if id != tokenID {
-		return models.UnauthorizedActionError
+		return utils.UnauthorizedActionError
 	}
 
 	existingUser, err := us.userRepository.GetUserById(id)
@@ -93,7 +93,7 @@ func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 		return err
 	}
 	if existingUser == nil {
-		return models.EmailInUseError
+		return utils.EmailInUseError
 	}
 
 	return us.userRepository.DeleteUser(id)
@@ -102,11 +102,11 @@ func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 func (us *UserService) LoginUser(loginUserRequest *models.LoginUserResquest) (string, error) {
 	existingUser, err := us.userRepository.GetUserByEmail(loginUserRequest.Email)
 	if err != nil {
-		return "", models.InvalidEmailOrPasswordError
+		return "", utils.InvalidEmailOrPasswordError
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(loginUserRequest.Password)); err != nil {
-		return "", models.InvalidEmailOrPasswordError
+		return "", utils.InvalidEmailOrPasswordError
 	}
 
 	tokenString, err := utils.GenerateToken(existingUser.ID)
