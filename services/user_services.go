@@ -34,10 +34,15 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 		return models.EmailInUseError
 	}
 
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
 	validUser := &models.User{
 		Name:     utils.CapitalizeName(user.Name),
 		Email:    user.Email,
-		Password: utils.HashPassword(user.Password),
+		Password: hashedPassword,
 	}
 
 	return us.userRepository.Create(validUser)
@@ -64,10 +69,15 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		return models.NotFoundError
 	}
 
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
 	validUser := &models.UpdateUserRequest{
 		ID:       user.ID,
 		Name:     utils.CapitalizeName(user.Name),
-		Password: utils.HashPassword(user.Password),
+		Password: hashedPassword,
 	}
 
 	return us.userRepository.UpdateUser(validUser)
@@ -99,7 +109,10 @@ func (us *UserService) LoginUser(loginUserRequest *models.LoginUserResquest) (st
 		return "", models.InvalidEmailOrPasswordError
 	}
 
-	tokenString := utils.GenerateToken(existingUser.ID)
+	tokenString, err := utils.GenerateToken(existingUser.ID)
+	if err != nil {
+		return "", err
+	}
 
 	return tokenString, nil
 }
