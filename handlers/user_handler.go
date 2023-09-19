@@ -140,12 +140,6 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		tokenID := claims["sub"].(string)
 
-		var user models.UpdateUserRequest
-		if err := c.ShouldBindJSON(&user); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
-			return
-		}
-
 		if err := uh.userService.DeleteUser(id, tokenID); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
