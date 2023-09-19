@@ -5,10 +5,11 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
-func GenerateToken(sub string) string {
+func GenerateToken(sub uuid.UUID) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": sub,
 		"exp": time.Now().Add(time.Hour * 24 * 30).Unix(),

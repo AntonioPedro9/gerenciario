@@ -1,7 +1,9 @@
 package models
 
+import "github.com/google/uuid"
+
 type User struct {
-	ID       string `gorm:"primaryKey"`
+	ID       uuid.UUID `gorm:"type:uuid;primaryKey;default:gen_random_uuid()"`
 	Name     string
 	Email    string `gorm:"unique"`
 	Password string
@@ -14,9 +16,9 @@ type CreateUserRequest struct {
 }
 
 type UpdateUserRequest struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	Password string    `json:"password"`
 }
 
 type LoginUserResquest struct {

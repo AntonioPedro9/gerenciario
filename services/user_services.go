@@ -6,6 +6,7 @@ import (
 	"server/repositories"
 	"server/utils"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,7 +36,6 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 	}
 
 	validUser := &models.User{
-		ID:       utils.GenerateUUID(),
 		Name:     utils.CapitalizeName(user.Name),
 		Email:    user.Email,
 		Password: utils.HashPassword(user.Password),
@@ -48,7 +48,7 @@ func (us *UserService) ListUsers() ([]models.User, error) {
 	return us.userRepository.List()
 }
 
-func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID string) error {
+func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) error {
 	if user.ID != tokenID {
 		return errors.New("Unauthorized action")
 	}
@@ -74,7 +74,7 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID string
 	return us.userRepository.UpdateUser(validUser)
 }
 
-func (us *UserService) DeleteUser(id, tokenID string) error {
+func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 	if id != tokenID {
 		return errors.New("Unauthorized action")
 	}

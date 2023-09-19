@@ -3,6 +3,7 @@ package repositories
 import (
 	"server/models"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -41,7 +42,7 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (ur *UserRepository) GetUserById(id string) (*models.User, error) {
+func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
 	var user models.User
 
 	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
@@ -58,7 +59,7 @@ func (ur *UserRepository) UpdateUser(user *models.UpdateUserRequest) error {
 	return ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(models.User{Name: user.Name, Password: user.Password}).Error
 }
 
-func (ur *UserRepository) DeleteUser(id string) error {
+func (ur *UserRepository) DeleteUser(id uuid.UUID) error {
 	user := models.User{ID: id}
 	return ur.db.Delete(&user).Error
 }
