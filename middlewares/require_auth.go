@@ -5,12 +5,11 @@ import (
 	"net/http"
 	"os"
 	"server/database"
-	"server/models"
+	"server/repositories"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 )
 
 func RequireAuth(c *gin.Context) {
@@ -45,21 +44,17 @@ func RequireAuth(c *gin.Context) {
 		return
 	}
 
-	userIDStr, ok := claims["sub"].(string)
+	userID, ok := claims["sub"].(string)
 	if !ok {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
-	parsedUserID, err := uuid.Parse(userIDStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
-		return
-	}
+	userRepository := repositories.NewUserRepository(database.DB)
 
-	var user models.User
-	if err := database.DB.First(&user, parsedUserID).Error; err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+	user, err := userRepository.GetUserById(userID)
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 
