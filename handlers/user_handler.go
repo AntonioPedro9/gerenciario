@@ -26,7 +26,13 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	if err := uh.userService.CreateUser(&user); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		customError, ok := err.(*models.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
 		return
 	}
 
@@ -36,7 +42,13 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 func (uh *UserHandler) ListUsers(c *gin.Context) {
 	users, err := uh.userService.ListUsers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		customError, ok := err.(*models.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
 		return
 	}
 
@@ -63,7 +75,13 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	}
 
 	if err := uh.userService.UpdateUser(&user, tokenID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		customError, ok := err.(*models.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
 		return
 	}
 
@@ -92,7 +110,13 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	}
 
 	if err := uh.userService.DeleteUser(parsedID, tokenID); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		customError, ok := err.(*models.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
 		return
 	}
 
@@ -108,7 +132,13 @@ func (uh *UserHandler) LoginUser(c *gin.Context) {
 
 	tokenString, err := uh.userService.LoginUser(&loginUserRequest)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		customError, ok := err.(*models.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
 		return
 	}
 
