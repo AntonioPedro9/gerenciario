@@ -21,11 +21,11 @@ var (
 		Message:    "Invalid email",
 	}
 	EmailInUseError = &CustomError{
-		StatusCode: http.StatusBadRequest,
+		StatusCode: http.StatusConflict,
 		Message:    "Email already in use",
 	}
 	UnauthorizedActionError = &CustomError{
-		StatusCode: http.StatusUnauthorized,
+		StatusCode: http.StatusForbidden,
 		Message:    "Unauthorized action",
 	}
 	NotFoundError = &CustomError{
@@ -33,7 +33,7 @@ var (
 		Message:    "Not found",
 	}
 	InvalidEmailOrPasswordError = &CustomError{
-		StatusCode: http.StatusBadRequest,
+		StatusCode: http.StatusUnauthorized,
 		Message:    "Invalid email or password",
 	}
 )
