@@ -39,7 +39,13 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 		return err
 	}
 
+	userID, err := utils.GenerateUUID()
+	if err != nil {
+		return err
+	}
+
 	validUser := &models.User{
+		ID:       userID,
 		Name:     utils.CapitalizeName(user.Name),
 		Email:    user.Email,
 		Password: hashedPassword,
