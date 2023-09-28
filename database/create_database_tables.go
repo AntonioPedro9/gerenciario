@@ -1,7 +1,11 @@
 package database
 
-import "server/models"
+import (
+	"server/models"
 
-func CreateDatabaseTables() {
-	DB.AutoMigrate(&models.User{})
+	"gorm.io/gorm"
+)
+
+func CreateDatabaseTables(db *gorm.DB) {
+	db.AutoMigrate(&models.User{})
 }

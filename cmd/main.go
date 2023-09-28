@@ -25,23 +25,11 @@ func init() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
-	database.ConnectToDatabase()
-	database.CreateDatabaseTables()
 }
 
-//	@title			Gerenciario Backend
-//	@version		1.0
-//	@description	REST API to help small business owners manage their business.
-
-//	@contact.name	Antônio Pedro Rodrigues Santos
-//	@contact.email	antoniopedro.rs9@gmail.com
-
-//	@host		localhost:8080
-//	@BasePath	/
-
 func main() {
-	userRepository := repositories.NewUserRepository(database.DB)
+	db := database.ConnectToDatabase()
+	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 

@@ -22,7 +22,8 @@ func RequireAuth(c *gin.Context) {
 		return
 	}
 
-	userRepository := repositories.NewUserRepository(database.DB)
+	db := database.ConnectToDatabase()
+	userRepository := repositories.NewUserRepository(db)
 
 	user, err := userRepository.GetUserById(tokenID)
 	if err != nil {

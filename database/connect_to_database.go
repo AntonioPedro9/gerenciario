@@ -8,22 +8,24 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB, TEST_DB *gorm.DB
-
-func ConnectToDatabase() {
+func ConnectToDatabase() *gorm.DB {
 	var err error
 
-	DB, err = gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database")
 	}
+
+	return db
 }
 
-func ConnectToTestDatabase() {
+func ConnectToTestDatabase() *gorm.DB {
 	var err error
 
-	TEST_DB, err = gorm.Open(postgres.Open(os.Getenv("TEST_CONNECTION_STRING")), &gorm.Config{})
+	test_db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to test database")
+		log.Fatal("Failed to connect to database")
 	}
+
+	return test_db
 }
