@@ -9,6 +9,8 @@ TEST_CONNECTION_STRING="user=seu_usuario password=sua_senha host=seu_host port=5
 SECRET=sua_chave
 ```
 
+**OBS:** O campo `SECRET` é usado para gerar os tokens [JWT](https://https://jwt.io/), pode preencher com uma string aleatória, mas lembre-se de criar uma string forte caso vá usar o projeto em produção.
+
 Feito isso, dentro do terminal na pasta do projeto você pode executar os seguintes comando para testar ou executar a aplicação respectivamente:
 
 ```
