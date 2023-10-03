@@ -28,13 +28,12 @@ func init() {
 }
 
 func main() {
+	r := gin.Default()
 	db := database.ConnectToDatabase()
+
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-
-	r := gin.Default()
-
 	userGroup := r.Group("/users")
 	{
 		userGroup.POST("/", userHandler.CreateUser)
@@ -42,6 +41,17 @@ func main() {
 		userGroup.PUT("/", middlewares.RequireAuth, userHandler.UpdateUser)
 		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
 		userGroup.POST("/login", userHandler.LoginUser)
+	}
+
+	clientRepository := repositories.NewClientRepository(db)
+	clientService := services.NewClientService(clientRepository)
+	clientHandler := handlers.NewClientHandler(clientService)
+	clientGroup := r.Group("/clients")
+	{
+		clientGroup.POST("/", middlewares.RequireAuth, clientHandler.CreateClient)
+		clientGroup.GET("/:userID", middlewares.RequireAuth, clientHandler.ListClients)
+		clientGroup.PUT("/", middlewares.RequireAuth, clientHandler.UpdateClient)
+		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
 	}
 
 	r.Run()

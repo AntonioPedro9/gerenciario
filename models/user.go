@@ -7,6 +7,7 @@ type User struct {
 	Name     string
 	Email    string `gorm:"unique"`
 	Password string
+	Clients  []Client
 }
 
 type CreateUserRequest struct {

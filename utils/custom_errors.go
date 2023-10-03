@@ -36,4 +36,8 @@ var (
 		StatusCode: http.StatusUnauthorized,
 		Message:    "Invalid email or password",
 	}
+	InvalidPhoneError = &CustomError{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Invalid phone number",
+	}
 )

@@ -9,23 +9,23 @@ import (
 )
 
 func ConnectToDatabase() *gorm.DB {
-	var err error
-
 	db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database")
 	}
 
+	log.Info("Database connection successfully established")
+
 	return db
 }
 
 func ConnectToTestDatabase() *gorm.DB {
-	var err error
-
 	test_db, err := gorm.Open(postgres.Open(os.Getenv("CONNECTION_STRING")), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Failed to connect to database")
 	}
+
+	log.Info("Test database connection successfully established")
 
 	return test_db
 }
