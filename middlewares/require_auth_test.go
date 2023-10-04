@@ -47,25 +47,27 @@ func TestRequireAuth(t *testing.T) {
 	})
 
 	t.Run("Authorized", func(t *testing.T) {
-		req, _ := http.NewRequest(http.MethodGet, "/", nil)
-		req.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
+		request, _ := http.NewRequest(http.MethodGet, "/", nil)
+		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
+		response := httptest.NewRecorder()
+		r.ServeHTTP(response, request)
 
-		resp := httptest.NewRecorder()
-		r.ServeHTTP(resp, req)
+		expectedStatus := http.StatusOK
 
-		if resp.Code != http.StatusOK {
-			t.Errorf("Expected status %d, got %d", http.StatusOK, resp.Code)
+		if response.Code != expectedStatus {
+			t.Errorf("Expected status %d, got %d", expectedStatus, response.Code)
 		}
 	})
 
 	t.Run("Unauthorized", func(t *testing.T) {
-		req, _ := http.NewRequest(http.MethodGet, "/", nil)
+		request, _ := http.NewRequest(http.MethodGet, "/", nil)
+		response := httptest.NewRecorder()
+		r.ServeHTTP(response, request)
 
-		resp := httptest.NewRecorder()
-		r.ServeHTTP(resp, req)
+		expectedStatus := http.StatusForbidden
 
-		if resp.Code != http.StatusForbidden {
-			t.Errorf("Expected status %d, got %d", http.StatusForbidden, resp.Code)
+		if response.Code != expectedStatus {
+			t.Errorf("Expected status %d, got %d", expectedStatus, response.Code)
 		}
 	})
 
