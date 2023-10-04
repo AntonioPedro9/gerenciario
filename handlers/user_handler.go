@@ -8,6 +8,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 type UserHandler struct {
@@ -21,11 +22,14 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 func (uh *UserHandler) CreateUser(c *gin.Context) {
 	var user models.CreateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
+		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
 	if err := uh.userService.CreateUser(&user); err != nil {
+		log.Error(err)
+		
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -42,6 +46,8 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 func (uh *UserHandler) ListUsers(c *gin.Context) {
 	users, err := uh.userService.ListUsers()
 	if err != nil {
+		log.Error(err)
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -58,23 +64,28 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
+		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
 		return
 	}
 
 	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
+		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	var user models.UpdateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
+		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
 	if err := uh.userService.UpdateUser(&user, tokenID); err != nil {
+		log.Error(err)
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -93,23 +104,28 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
+		log.Error(err)
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
+		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
 		return
 	}
 
 	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
+		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
 	if err := uh.userService.DeleteUser(parsedID, tokenID); err != nil {
+		log.Error(err)
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -126,12 +142,15 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 func (uh *UserHandler) LoginUser(c *gin.Context) {
 	var loginUserRequest models.LoginUserResquest
 	if err := c.ShouldBindJSON(&loginUserRequest); err != nil {
+		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
 	tokenString, err := uh.userService.LoginUser(&loginUserRequest)
 	if err != nil {
+		log.Error(err)
+		
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
