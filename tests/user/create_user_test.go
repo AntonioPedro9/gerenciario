@@ -60,4 +60,3 @@ func TestCreateUser(t *testing.T) {
 
 	database.ClearTestDatabase(test_db)
 }
-

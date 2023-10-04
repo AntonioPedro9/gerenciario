@@ -60,7 +60,7 @@ func (ur *UserRepository) UpdateUser(user *models.UpdateUserRequest) error {
 		Where("id = ?", user.ID).
 		Updates(
 			models.User{
-				Name: user.Name, 
+				Name:     user.Name,
 				Password: user.Password,
 			},
 		).Error

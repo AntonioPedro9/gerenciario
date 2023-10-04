@@ -43,15 +43,15 @@ func (cr *ClientRepository) GetClientById(id uint) (*models.Client, error) {
 }
 
 func (cr *ClientRepository) UpdateClient(client *models.UpdateClientRequest) error {
-    return cr.db.Model(&models.Client{}).
-        Where("id = ?", client.ID).
-        Updates(
-            models.Client{
-                Name:  client.Name,
-                Email: client.Email,
-                Phone: client.Phone,
-            },
-        ).Error
+	return cr.db.Model(&models.Client{}).
+		Where("id = ?", client.ID).
+		Updates(
+			models.Client{
+				Name:  client.Name,
+				Email: client.Email,
+				Phone: client.Phone,
+			},
+		).Error
 }
 
 func (cr *ClientRepository) DeleteClient(clientID uint) error {

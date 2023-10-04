@@ -29,7 +29,7 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 
 	if err := uh.userService.CreateUser(&user); err != nil {
 		log.Error(err)
-		
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -150,7 +150,7 @@ func (uh *UserHandler) LoginUser(c *gin.Context) {
 	tokenString, err := uh.userService.LoginUser(&loginUserRequest)
 	if err != nil {
 		log.Error(err)
-		
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)

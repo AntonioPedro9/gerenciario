@@ -4,7 +4,7 @@ import "github.com/google/uuid"
 
 type Client struct {
 	ID     uint `gorm:"primaryKey;autoIncrement"`
-	CPF    string 
+	CPF    string
 	Name   string
 	Email  string
 	Phone  string

@@ -47,4 +47,3 @@ func TestListUsers(t *testing.T) {
 
 	database.ClearTestDatabase(test_db)
 }
-

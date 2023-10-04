@@ -30,7 +30,7 @@ func (ch *ClientHandler) CreateClient(c *gin.Context) {
 
 	if err := ch.clientService.CreateClient(&client); err != nil {
 		log.Error(err)
-		
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
@@ -150,7 +150,7 @@ func (ch *ClientHandler) DeleteClient(c *gin.Context) {
 
 	if err := ch.clientService.DeleteClient(clientID, authUserID); err != nil {
 		log.Error(err)
-		
+
 		customError, ok := err.(*utils.CustomError)
 		if !ok {
 			c.JSON(http.StatusInternalServerError, nil)
