@@ -36,6 +36,10 @@ var (
 		StatusCode: http.StatusUnauthorized,
 		Message:    "Invalid email or password",
 	}
+	InvalidCpfError = &CustomError{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Invalid CPF",
+	}
 	InvalidPhoneError = &CustomError{
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid phone number",

@@ -4,6 +4,7 @@ import "github.com/google/uuid"
 
 type Client struct {
 	ID     uint `gorm:"primaryKey;autoIncrement"`
+	CPF    string 
 	Name   string
 	Email  string
 	Phone  string
@@ -11,6 +12,7 @@ type Client struct {
 }
 
 type CreateClientRequest struct {
+	CPF    string    `json:"cpf"`
 	Name   string    `json:"name"`
 	Email  string    `json:"email"`
 	Phone  string    `json:"phone"`
@@ -19,6 +21,7 @@ type CreateClientRequest struct {
 
 type UpdateClientRequest struct {
 	ID     uint      `json:"id"`
+	CPF    string    `json:"cpf"`
 	Name   string    `json:"name"`
 	Email  string    `json:"email"`
 	Phone  string    `json:"phone"`

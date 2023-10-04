@@ -25,15 +25,21 @@ func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error 
 		return utils.InvalidEmailError
 	}
 
-	formattedNumber, err := utils.FormatPhone(client.Phone)
+	formattedCPF, err := utils.FormatCPF(client.CPF)
+	if err != nil {
+		return utils.InvalidCpfError
+	}
+
+	formattedPhone, err := utils.FormatPhone(client.Phone)
 	if err != nil {
 		return utils.InvalidPhoneError
 	}
 
 	validClient := &models.Client{
+		CPF:    formattedCPF,
 		Name:   utils.CapitalizeName(client.Name),
 		Email:  client.Email,
-		Phone:  formattedNumber,
+		Phone:  formattedPhone,
 		UserID: client.UserID,
 	}
 
@@ -69,10 +75,19 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 		return utils.NotFoundError
 	}
 
+	formattedCPF, err := utils.FormatCPF(client.CPF)
+	if err != nil {
+		return utils.InvalidCpfError
+	}
+
 	formattedPhone, err := utils.FormatPhone(client.Phone)
+	if err != nil {
+		return utils.InvalidPhoneError
+	}
 
 	validClient := &models.UpdateClientRequest{
 		ID:     client.ID,
+		CPF:    formattedCPF,
 		Name:   utils.CapitalizeName(client.Name),
 		Email:  client.Email,
 		Phone:  formattedPhone,
