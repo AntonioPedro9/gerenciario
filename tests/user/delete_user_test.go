@@ -1,8 +1,6 @@
 package middlewares_test
 
 import (
-	"bytes"
-	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -25,7 +23,7 @@ func init() {
 	}
 }
 
-func TestCreateUser(t *testing.T) {
+func TestDeleteUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
@@ -35,7 +33,7 @@ func TestCreateUser(t *testing.T) {
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	// user model to create request
+	// create a user to be deleted
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -43,20 +41,25 @@ func TestCreateUser(t *testing.T) {
 		Email:    "jonhdoe@email.com",
 		Password: "password",
 	}
+	userRepository.Create(user)
 
-	r.POST("/users", userHandler.CreateUser)
+	// generate jwt token to authorize action
+	tokenString, _ := utils.GenerateToken(userID)
 
-	t.Run("Create user", func(t *testing.T) {
-		requestBody, _ := json.Marshal(user)
-		request, _ := http.NewRequest(http.MethodPost, "/users", bytes.NewBuffer(requestBody))
-		response := httptest.NewRecorder()
+	r.DELETE("/users/:id", userHandler.DeleteUser)
 
-		r.ServeHTTP(response, request)
+	t.Run("Delete user", func(t *testing.T) {
+		requestEndPoint := "/users/" + userID.String()
+		request, _ := http.NewRequest(http.MethodDelete, requestEndPoint, nil)
+		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
-		expectedStatus := http.StatusCreated
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, request)
 
-		if response.Code != expectedStatus {
-			t.Errorf("Expected status %d but got %d", expectedStatus, response.Code)
+		expectedStatus := http.StatusNoContent
+
+		if w.Code != expectedStatus {
+			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)
 		}
 	})
 

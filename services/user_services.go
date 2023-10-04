@@ -99,7 +99,7 @@ func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 		return err
 	}
 	if existingUser == nil {
-		return utils.EmailInUseError
+		return utils.NotFoundError
 	}
 
 	return us.userRepository.DeleteUser(id)

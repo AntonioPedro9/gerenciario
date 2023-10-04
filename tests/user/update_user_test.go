@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-func TestCreateUser(t *testing.T) {
+func TestUpdateUser(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
@@ -35,7 +35,7 @@ func TestCreateUser(t *testing.T) {
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	// user model to create request
+	// create a user to be updated
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -43,20 +43,32 @@ func TestCreateUser(t *testing.T) {
 		Email:    "jonhdoe@email.com",
 		Password: "password",
 	}
+	userRepository.Create(user)
 
-	r.POST("/users", userHandler.CreateUser)
+	// generate jwt token to authorize action
+	tokenString, _ := utils.GenerateToken(userID)
 
-	t.Run("Create user", func(t *testing.T) {
-		requestBody, _ := json.Marshal(user)
-		request, _ := http.NewRequest(http.MethodPost, "/users", bytes.NewBuffer(requestBody))
-		response := httptest.NewRecorder()
+	// user model to update request
+	updateUser := &models.UpdateUserRequest{
+		ID:       userID,
+		Name:     "New Jonh Doe",
+		Password: "newpassword",
+	}
 
-		r.ServeHTTP(response, request)
+	r.PUT("/users", userHandler.UpdateUser)
 
-		expectedStatus := http.StatusCreated
+	t.Run("Update user", func(t *testing.T) {
+		requestBody, _ := json.Marshal(updateUser)
+		request, _ := http.NewRequest(http.MethodPut, "/users", bytes.NewBuffer(requestBody))
+		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
-		if response.Code != expectedStatus {
-			t.Errorf("Expected status %d but got %d", expectedStatus, response.Code)
+		w := httptest.NewRecorder()
+		r.ServeHTTP(w, request)
+
+		expectedStatus := http.StatusNoContent
+
+		if w.Code != expectedStatus {
+			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)
 		}
 	})
 

@@ -25,6 +25,7 @@ func TestListUsers(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
+	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
 	userService := services.NewUserService(userRepository)

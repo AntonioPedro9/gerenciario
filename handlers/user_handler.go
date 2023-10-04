@@ -102,10 +102,10 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
 
-	parsedID, err := uuid.Parse(id)
+	userID, err := uuid.Parse(id)
 	if err != nil {
 		log.Error(err)
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse user ID"})
 		return
 	}
 
@@ -123,7 +123,7 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := uh.userService.DeleteUser(parsedID, tokenID); err != nil {
+	if err := uh.userService.DeleteUser(userID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
