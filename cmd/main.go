@@ -54,5 +54,16 @@ func main() {
 		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
 	}
 
+	serviceRepository := repositories.NewServiceRepository(db)
+	serviceService := services.NewServiceService(serviceRepository)
+	serviceHandler := handlers.NewServiceHandler(serviceService)
+	serviceGroup := r.Group("/services")
+	{
+		serviceGroup.POST("/", middlewares.RequireAuth, serviceHandler.CreateService)
+		serviceGroup.GET("/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
+		serviceGroup.PUT("/", middlewares.RequireAuth, serviceHandler.UpdateService)
+		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
+	}
+
 	r.Run()
 }
