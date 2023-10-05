@@ -3,11 +3,13 @@ package models
 import "github.com/google/uuid"
 
 type User struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string
-	Clients  []Client
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Name         string
+	Email        string `gorm:"unique"`
+	Password     string
+	Clients      []Client
+	Service      []Service
+	Contracts    []Contract
 }
 
 type CreateUserRequest struct {
