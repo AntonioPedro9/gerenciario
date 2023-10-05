@@ -49,11 +49,11 @@ func TestDeleteService(t *testing.T) {
 
 	// create service that will deleted
 	service := &models.Service{
-        Name:        "Jonh Doe",
-        Description: "jonhdoe@email.com",
-        Duration:    60,
-        UserID:      userID,
-    }
+		Name:        "Jonh Doe",
+		Description: "jonhdoe@email.com",
+		Duration:    60,
+		UserID:      userID,
+	}
 	serviceRepository.Create(service)
 
 	r.DELETE("/services/:serviceID", serviceHandler.DeleteService)
@@ -70,7 +70,7 @@ func TestDeleteService(t *testing.T) {
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)
 		}
-    })
+	})
 
 	database.ClearTestDatabase(test_db)
 }

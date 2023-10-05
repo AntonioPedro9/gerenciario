@@ -16,7 +16,7 @@ type Contract struct {
 }
 
 type CreateContractRequest struct {
-	UserID    uuid.UUID `json:"userID"`
-	ClientID  uint      `json:"clientID"`
-	Price     float32   `json:"price"`
+	UserID   uuid.UUID `json:"userID"`
+	ClientID uint      `json:"clientID"`
+	Price    float32   `json:"price"`
 }

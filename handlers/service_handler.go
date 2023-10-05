@@ -108,19 +108,19 @@ func (sh *ServiceHandler) UpdateService(c *gin.Context) {
 	}
 
 	if err := sh.serviceService.UpdateService(&service, authUserID); err != nil {
-        log.Error(err)
+		log.Error(err)
 
-        customError, ok := err.(*utils.CustomError)
-        if !ok {
-            c.JSON(http.StatusInternalServerError, nil)
-            return
-        }
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
 
-        c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
-        return
-    }
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
 
-    c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusNoContent, nil)
 }
 
 func (sh *ServiceHandler) DeleteService(c *gin.Context) {
@@ -128,38 +128,38 @@ func (sh *ServiceHandler) DeleteService(c *gin.Context) {
 
 	parsedID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-        log.Error(err)
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid service ID"})
-        return
-    }
-    serviceID := uint(parsedID)
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid service ID"})
+		return
+	}
+	serviceID := uint(parsedID)
 
-    tokenString, err := c.Cookie("Authorization")
-    if err != nil {
-        log.Error(err)
-        c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-        return
-    }
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
 
-    authUserID, err := utils.GetIDFromToken(tokenString)
-    if err != nil {
-        log.Error(err)
-        c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-        return
-    }
+	authUserID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
 
-    if err := sh.serviceService.DeleteService(serviceID, authUserID); err != nil {
-        log.Error(err)
+	if err := sh.serviceService.DeleteService(serviceID, authUserID); err != nil {
+		log.Error(err)
 
-        customError, ok := err.(*utils.CustomError)
-        if !ok {
-            c.JSON(http.StatusInternalServerError, nil)
-            return
-        }
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
 
-        c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
-        return
-    }
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
 
-    c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusNoContent, nil)
 }

@@ -52,20 +52,20 @@ func TestUpdateService(t *testing.T) {
 	// create service that will updated
 	service := &models.Service{
 		Name:        "Jonh Doe",
-        Description: "jonhdoe@email.com",
-        Duration:    60,
-        UserID:      userID,
+		Description: "jonhdoe@email.com",
+		Duration:    60,
+		UserID:      userID,
 	}
 	serviceRepository.Create(service)
 
 	// service model to update request
 	updateService := &models.UpdateServiceRequest{
 		ID:          1,
-        Name:        "Jonh Doe",
-        Description: "jonhdoe@email.com",
-        Duration:    60,
-        UserID:      userID,
-    }
+		Name:        "Jonh Doe",
+		Description: "jonhdoe@email.com",
+		Duration:    60,
+		UserID:      userID,
+	}
 
 	r.PUT("/services", serviceHandler.UpdateService)
 
@@ -82,7 +82,7 @@ func TestUpdateService(t *testing.T) {
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)
 		}
-    })
+	})
 
 	database.ClearTestDatabase(test_db)
 }
