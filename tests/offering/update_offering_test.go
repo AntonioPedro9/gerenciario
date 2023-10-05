@@ -25,18 +25,18 @@ func init() {
 	}
 }
 
-func TestUpdateService(t *testing.T) {
+func TestUpdateOffering(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	serviceRepository := repositories.NewServiceRepository(test_db)
-	serviceService := services.NewServiceService(serviceRepository)
-	serviceHandler := handlers.NewServiceHandler(serviceService)
+	offeringRepository := repositories.NewOfferingRepository(test_db)
+	offeringService := services.NewOfferingService(offeringRepository)
+	offeringHandler := handlers.NewOfferingHandler(offeringService)
 
-	// create user that will update the service
+	// create user that will update the offering
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -49,29 +49,29 @@ func TestUpdateService(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	// create service that will updated
-	service := &models.Service{
-		Name:        "Jonh Doe",
-		Description: "jonhdoe@email.com",
-		Duration:    60,
+	// create offering that will updated
+	offering := &models.Offering{
+		Name:        "Offering",
+		Description: "Offering description",
+		Duration:    1,
 		UserID:      userID,
 	}
-	serviceRepository.Create(service)
+	offeringRepository.Create(offering)
 
-	// service model to update request
-	updateService := &models.UpdateServiceRequest{
+	// offering model to update request
+	updateOffering := &models.UpdateOfferingRequest{
 		ID:          1,
-		Name:        "Jonh Doe",
-		Description: "jonhdoe@email.com",
-		Duration:    60,
+		Name:        "New Offering",
+		Description: "New offering description",
+		Duration:    2,
 		UserID:      userID,
 	}
 
-	r.PUT("/services", serviceHandler.UpdateService)
+	r.PUT("/offerings", offeringHandler.UpdateOffering)
 
-	t.Run("Update service", func(t *testing.T) {
-		requestBody, _ := json.Marshal(updateService)
-		request, _ := http.NewRequest(http.MethodPut, "/services", bytes.NewBuffer(requestBody))
+	t.Run("Update offering", func(t *testing.T) {
+		requestBody, _ := json.Marshal(updateOffering)
+		request, _ := http.NewRequest(http.MethodPut, "/offerings", bytes.NewBuffer(requestBody))
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
 		w := httptest.NewRecorder()

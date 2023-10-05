@@ -23,18 +23,18 @@ func init() {
 	}
 }
 
-func TestDeleteService(t *testing.T) {
+func TestDeleteOffering(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	serviceRepository := repositories.NewServiceRepository(test_db)
-	serviceService := services.NewServiceService(serviceRepository)
-	serviceHandler := handlers.NewServiceHandler(serviceService)
+	offeringRepository := repositories.NewOfferingRepository(test_db)
+	offeringService := services.NewOfferingService(offeringRepository)
+	offeringHandler := handlers.NewOfferingHandler(offeringService)
 
-	// create user that will delete the service
+	// create user that will delete the offering
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -47,19 +47,19 @@ func TestDeleteService(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	// create service that will deleted
-	service := &models.Service{
-		Name:        "Jonh Doe",
-		Description: "jonhdoe@email.com",
-		Duration:    60,
+	// create offering that will deleted
+	offering := &models.Offering{
+		Name:        "Offering",
+		Description: "Offering description",
+		Duration:    1,
 		UserID:      userID,
 	}
-	serviceRepository.Create(service)
+	offeringRepository.Create(offering)
 
-	r.DELETE("/services/:serviceID", serviceHandler.DeleteService)
+	r.DELETE("/offerings/:offeringID", offeringHandler.DeleteOffering)
 
-	t.Run("Delete service", func(t *testing.T) {
-		request, _ := http.NewRequest(http.MethodDelete, "/services/1", nil)
+	t.Run("Delete offering", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodDelete, "/offerings/1", nil)
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
 		w := httptest.NewRecorder()

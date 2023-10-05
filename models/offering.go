@@ -2,7 +2,7 @@ package models
 
 import "github.com/google/uuid"
 
-type Service struct {
+type Offering struct {
 	ID          uint `gorm:"primaryKey;autoIncrement"`
 	Name        string
 	Description string
@@ -10,14 +10,14 @@ type Service struct {
 	UserID      uuid.UUID
 }
 
-type CreateServiceRequest struct {
+type CreateOfferingRequest struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Duration    uint      `json:"duration"`
 	UserID      uuid.UUID `json:"userID"`
 }
 
-type UpdateServiceRequest struct {
+type UpdateOfferingRequest struct {
 	ID          uint      `json:"id"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`

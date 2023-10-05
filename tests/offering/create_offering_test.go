@@ -1,6 +1,8 @@
 package middlewares_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -23,18 +25,18 @@ func init() {
 	}
 }
 
-func TestListServices(t *testing.T) {
+func TestCreateOffering(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	serviceRepository := repositories.NewServiceRepository(test_db)
-	serviceService := services.NewServiceService(serviceRepository)
-	serviceHandler := handlers.NewServiceHandler(serviceService)
+	offeringRepository := repositories.NewOfferingRepository(test_db)
+	offeringService := services.NewOfferingService(offeringRepository)
+	offeringHandler := handlers.NewOfferingHandler(offeringService)
 
-	// create user that will list the services
+	// create user that will create the offering
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -47,17 +49,25 @@ func TestListServices(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	r.GET("/services/:userID", serviceHandler.ListServices)
+	// offering model to create request
+	offering := &models.CreateOfferingRequest{
+		Name:        "Offering",
+		Description: "Offering description",
+		Duration:    1,
+		UserID:      userID,
+	}
 
-	t.Run("List services", func(t *testing.T) {
-		requestEndPoint := "/services/" + userID.String()
-		request, _ := http.NewRequest(http.MethodGet, requestEndPoint, nil)
+	r.POST("/offerings", offeringHandler.CreateOffering)
+
+	t.Run("Create offering", func(t *testing.T) {
+		requestBody, _ := json.Marshal(offering)
+		request, _ := http.NewRequest(http.MethodPost, "/offerings", bytes.NewBuffer(requestBody))
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusOK
+		expectedStatus := http.StatusCreated
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

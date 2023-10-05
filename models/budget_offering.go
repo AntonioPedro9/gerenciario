@@ -1,6 +1,6 @@
 package models
 
-type ContractService struct {
+type BudgetOffering struct {
 	ID         uint `gorm:"primaryKey;autoIncrement"`
 	ContractID uint
 	ServiceID  uint
