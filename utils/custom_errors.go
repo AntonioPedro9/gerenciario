@@ -44,4 +44,8 @@ var (
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid phone number",
 	}
+	InvalidPriceError = &CustomError{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Invalid price",
+	}
 )

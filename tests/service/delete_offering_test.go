@@ -1,8 +1,6 @@
 package middlewares_test
 
 import (
-	"bytes"
-	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -25,18 +23,18 @@ func init() {
 	}
 }
 
-func TestCreateOffering(t *testing.T) {
+func TestDeleteService(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	offeringRepository := repositories.NewOfferingRepository(test_db)
-	offeringService := services.NewOfferingService(offeringRepository)
-	offeringHandler := handlers.NewOfferingHandler(offeringService)
+	serviceRepository := repositories.NewServiceRepository(test_db)
+	serviceService := services.NewServiceService(serviceRepository)
+	serviceHandler := handlers.NewServiceHandler(serviceService)
 
-	// create user that will create the offering
+	// create user that will delete the service
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -49,25 +47,26 @@ func TestCreateOffering(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	// offering model to create request
-	offering := &models.CreateOfferingRequest{
-		Name:        "Offering",
-		Description: "Offering description",
+	// create service that will deleted
+	service := &models.Service{
+		Name:        "Service",
+		Description: "Service description",
 		Duration:    1,
+		Price:       50,
 		UserID:      userID,
 	}
+	serviceRepository.Create(service)
 
-	r.POST("/offerings", offeringHandler.CreateOffering)
+	r.DELETE("/services/:serviceID", serviceHandler.DeleteService)
 
-	t.Run("Create offering", func(t *testing.T) {
-		requestBody, _ := json.Marshal(offering)
-		request, _ := http.NewRequest(http.MethodPost, "/offerings", bytes.NewBuffer(requestBody))
+	t.Run("Delete service", func(t *testing.T) {
+		request, _ := http.NewRequest(http.MethodDelete, "/services/1", nil)
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusCreated
+		expectedStatus := http.StatusNoContent
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

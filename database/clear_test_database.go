@@ -13,6 +13,6 @@ func ClearTestDatabase(test_db *gorm.DB) {
 	test_db.Migrator().DropTable(&models.Client{})
 	test_db.AutoMigrate(&models.Client{})
 
-	test_db.Migrator().DropTable(&models.Offering{})
-	test_db.AutoMigrate(&models.Offering{})
+	test_db.Migrator().DropTable(&models.Service{})
+	test_db.AutoMigrate(&models.Service{})
 }

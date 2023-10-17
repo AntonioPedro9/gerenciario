@@ -8,7 +8,7 @@ type User struct {
 	Email    string `gorm:"unique"`
 	Password string
 	Clients  []Client
-	Offering []Offering
+	Services []Service
 	Budgets  []Budget
 }
 

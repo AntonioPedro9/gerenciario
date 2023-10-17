@@ -10,7 +10,7 @@ import (
 func CreateDatabaseTables(db *gorm.DB) {
 	db.AutoMigrate(&models.User{})
 	db.AutoMigrate(&models.Client{})
-	db.AutoMigrate(&models.Offering{})
+	db.AutoMigrate(&models.Service{})
 
 	log.Info("Database tables created")
 }

@@ -12,23 +12,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type OfferingHandler struct {
-	offeringService *services.OfferingService
+type ServiceHandler struct {
+	serviceService *services.ServiceService
 }
 
-func NewOfferingHandler(offeringService *services.OfferingService) *OfferingHandler {
-	return &OfferingHandler{offeringService}
+func NewServiceHandler(serviceService *services.ServiceService) *ServiceHandler {
+	return &ServiceHandler{serviceService}
 }
 
-func (oh *OfferingHandler) CreateOffering(c *gin.Context) {
-	var offering models.CreateOfferingRequest
-	if err := c.ShouldBindJSON(&offering); err != nil {
+func (sh *ServiceHandler) CreateService(c *gin.Context) {
+	var service models.CreateServiceRequest
+	if err := c.ShouldBindJSON(&service); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	if err := oh.offeringService.CreateOffering(&offering); err != nil {
+	if err := sh.serviceService.CreateService(&service); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -44,7 +44,7 @@ func (oh *OfferingHandler) CreateOffering(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-func (oh *OfferingHandler) ListOfferings(c *gin.Context) {
+func (sh *ServiceHandler) ListServices(c *gin.Context) {
 	id := c.Param("userID")
 
 	userID, err := uuid.Parse(id)
@@ -68,7 +68,7 @@ func (oh *OfferingHandler) ListOfferings(c *gin.Context) {
 		return
 	}
 
-	offerings, err := oh.offeringService.ListOfferings(userID, authUserID)
+	services, err := sh.serviceService.ListServices(userID, authUserID)
 	if err != nil {
 		log.Error(err)
 
@@ -82,10 +82,10 @@ func (oh *OfferingHandler) ListOfferings(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, offerings)
+	c.JSON(http.StatusOK, services)
 }
 
-func (oh *OfferingHandler) UpdateOffering(c *gin.Context) {
+func (sh *ServiceHandler) UpdateService(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
 		log.Error(err)
@@ -100,14 +100,14 @@ func (oh *OfferingHandler) UpdateOffering(c *gin.Context) {
 		return
 	}
 
-	var offering models.UpdateOfferingRequest
-	if err := c.ShouldBindJSON(&offering); err != nil {
+	var service models.UpdateServiceRequest
+	if err := c.ShouldBindJSON(&service); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	if err := oh.offeringService.UpdateOffering(&offering, authUserID); err != nil {
+	if err := sh.serviceService.UpdateService(&service, authUserID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -123,16 +123,16 @@ func (oh *OfferingHandler) UpdateOffering(c *gin.Context) {
 	c.JSON(http.StatusNoContent, nil)
 }
 
-func (oh *OfferingHandler) DeleteOffering(c *gin.Context) {
-	id := c.Param("offeringID")
+func (sh *ServiceHandler) DeleteService(c *gin.Context) {
+	id := c.Param("serviceID")
 
 	parsedID, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid offering ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid service ID"})
 		return
 	}
-	offeringID := uint(parsedID)
+	serviceID := uint(parsedID)
 
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
@@ -148,7 +148,7 @@ func (oh *OfferingHandler) DeleteOffering(c *gin.Context) {
 		return
 	}
 
-	if err := oh.offeringService.DeleteOffering(offeringID, authUserID); err != nil {
+	if err := sh.serviceService.DeleteService(serviceID, authUserID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

@@ -55,15 +55,15 @@ func main() {
 		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
 	}
 
-	offeringRepository := repositories.NewOfferingRepository(db)
-	offeringService := services.NewOfferingService(offeringRepository)
-	offeringHandler := handlers.NewOfferingHandler(offeringService)
-	offeringGroup := r.Group("/offerings")
+	serviceRepository := repositories.NewServiceRepository(db)
+	serviceService := services.NewServiceService(serviceRepository)
+	serviceHandler := handlers.NewServiceHandler(serviceService)
+	serviceGroup := r.Group("/services")
 	{
-		offeringGroup.POST("/", middlewares.RequireAuth, offeringHandler.CreateOffering)
-		offeringGroup.GET("/:userID", middlewares.RequireAuth, offeringHandler.ListOfferings)
-		offeringGroup.PUT("/", middlewares.RequireAuth, offeringHandler.UpdateOffering)
-		offeringGroup.DELETE("/:offeringID", middlewares.RequireAuth, offeringHandler.DeleteOffering)
+		serviceGroup.POST("/", middlewares.RequireAuth, serviceHandler.CreateService)
+		serviceGroup.GET("/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
+		serviceGroup.PUT("/", middlewares.RequireAuth, serviceHandler.UpdateService)
+		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
 	}
 
 	r.Run()

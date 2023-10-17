@@ -1,6 +1,8 @@
 package middlewares_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -23,18 +25,18 @@ func init() {
 	}
 }
 
-func TestListOfferings(t *testing.T) {
+func TestUpdateService(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	offeringRepository := repositories.NewOfferingRepository(test_db)
-	offeringService := services.NewOfferingService(offeringRepository)
-	offeringHandler := handlers.NewOfferingHandler(offeringService)
+	serviceRepository := repositories.NewServiceRepository(test_db)
+	serviceService := services.NewServiceService(serviceRepository)
+	serviceHandler := handlers.NewServiceHandler(serviceService)
 
-	// create user that will list the offerings
+	// create user that will update the service
 	userID, _ := utils.GenerateUUID()
 	user := &models.User{
 		ID:       userID,
@@ -47,17 +49,37 @@ func TestListOfferings(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	r.GET("/offerings/:userID", offeringHandler.ListOfferings)
+	// create service that will updated
+	service := &models.Service{
+		Name:        "Service",
+		Description: "Service description",
+		Duration:    1,
+		Price:       50,
+		UserID:      userID,
+	}
+	serviceRepository.Create(service)
 
-	t.Run("List offerings", func(t *testing.T) {
-		requestEndPoint := "/offerings/" + userID.String()
-		request, _ := http.NewRequest(http.MethodGet, requestEndPoint, nil)
+	// service model to update request
+	updateService := &models.UpdateServiceRequest{
+		ID:          1,
+		Name:        "New Service",
+		Description: "New service description",
+		Duration:    2,
+		Price:       100,
+		UserID:      userID,
+	}
+
+	r.PUT("/services", serviceHandler.UpdateService)
+
+	t.Run("Update service", func(t *testing.T) {
+		requestBody, _ := json.Marshal(updateService)
+		request, _ := http.NewRequest(http.MethodPut, "/services", bytes.NewBuffer(requestBody))
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusOK
+		expectedStatus := http.StatusNoContent
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)
