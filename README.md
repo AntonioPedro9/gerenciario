@@ -20,4 +20,4 @@ $ go run ./cmd/main.go
 
 ## Diagrama do banco de dados
 
-![Database diagram.](./diagram.png)
+![Database diagram.](./diagram.jpg)
