@@ -66,5 +66,15 @@ func main() {
 		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
 	}
 
+	budgetRepository := repositories.NewBudgetRepository(db)
+	budgetService := services.NewBudgetService(budgetRepository)
+	budgetHandler := handlers.NewBudgetHandler(budgetService)
+	budgetGroup := r.Group("/budgets")
+	{
+		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
+		budgetGroup.GET("/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
+		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
+	}
+
 	r.Run()
 }

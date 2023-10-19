@@ -16,7 +16,13 @@ type Budget struct {
 }
 
 type CreateBudgetRequest struct {
-	Price    float32   `json:"price"`
-	UserID   uuid.UUID `json:"userID"`
-	ClientID uint      `json:"clientID"`
+	Price      float32   `json:"price"`
+	UserID     uuid.UUID `json:"userID"`
+	ClientID   uint      `json:"clientID"`
+	ServiceIDs []uint   `json:"serviceIDs"`
+}
+
+type BudgetService struct {
+	BudgetID  uint
+	ServiceID uint
 }
