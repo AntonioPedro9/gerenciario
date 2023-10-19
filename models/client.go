@@ -5,10 +5,10 @@ import "github.com/google/uuid"
 type Client struct {
 	ID     uint `gorm:"primaryKey;autoIncrement"`
 	CPF    string
-	Name   string
-	Email  string
-	Phone  string
-	UserID uuid.UUID
+	Name   string    `gorm:"not null"`
+	Email  string    `gorm:"unique"`
+	Phone  string    `gorm:"not null"`
+	UserID uuid.UUID `gorm:"not null"`
 }
 
 type CreateClientRequest struct {

@@ -4,9 +4,9 @@ import "github.com/google/uuid"
 
 type User struct {
 	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name     string
-	Email    string `gorm:"unique"`
-	Password string
+	Name     string    `gorm:"not null"`
+	Email    string    `gorm:"unique"`
+	Password string    `gorm:"not null"`
 	Clients  []Client
 	Services []Service
 	Budgets  []Budget

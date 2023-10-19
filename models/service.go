@@ -3,12 +3,12 @@ package models
 import "github.com/google/uuid"
 
 type Service struct {
-	ID          uint `gorm:"primaryKey;autoIncrement"`
-	Name        string
+	ID          uint   `gorm:"primaryKey;autoIncrement"`
+	Name        string `gorm:"not null"`
 	Description string
 	Duration    uint
 	Price       float32
-	UserID      uuid.UUID
+	UserID      uuid.UUID `gorm:"not null"`
 }
 
 type CreateServiceRequest struct {

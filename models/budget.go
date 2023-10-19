@@ -9,17 +9,17 @@ import (
 type Budget struct {
 	ID             uint `gorm:"primaryKey;autoIncrement"`
 	Price          float32
-	Date           time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	UserID         uuid.UUID
-	ClientID       uint
-	BudgetServices []BudgetService
+	Date           time.Time       `gorm:"default:CURRENT_TIMESTAMP"`
+	UserID         uuid.UUID       `gorm:"not null"`
+	ClientID       uint            `gorm:"not null"`
+	BudgetServices []BudgetService `gorm:"not null"`
 }
 
 type CreateBudgetRequest struct {
 	Price      float32   `json:"price"`
 	UserID     uuid.UUID `json:"userID"`
 	ClientID   uint      `json:"clientID"`
-	ServiceIDs []uint   `json:"serviceIDs"`
+	ServiceIDs []uint    `json:"serviceIDs"`
 }
 
 type BudgetService struct {

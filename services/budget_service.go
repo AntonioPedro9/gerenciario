@@ -33,7 +33,7 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error 
 			BudgetID:  validBudget.ID,
 			ServiceID: serviceID,
 		}
-		
+
 		err = bs.budgetRepository.CreateBudgetService(&budgetService)
 		if err != nil {
 			return err
