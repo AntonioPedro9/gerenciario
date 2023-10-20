@@ -19,10 +19,10 @@ func (sr *ServiceRepository) Create(service *models.Service) error {
 	return sr.db.Create(service).Error
 }
 
-func (sr *ServiceRepository) List(tokenID uuid.UUID) ([]models.Service, error) {
+func (sr *ServiceRepository) List(userID uuid.UUID) ([]models.Service, error) {
 	var services []models.Service
 
-	if err := sr.db.Where("user_id = ?", tokenID).Find(&services).Error; err != nil {
+	if err := sr.db.Where("user_id = ?", userID).Find(&services).Error; err != nil {
 		return nil, err
 	}
 

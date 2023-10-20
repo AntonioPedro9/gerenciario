@@ -32,7 +32,6 @@ func TestCreateBudget(t *testing.T) {
 	// setup layers
 	test_db := database.ConnectToDatabase()
 	userRepository := repositories.NewUserRepository(test_db)
-	serviceRepository := repositories.NewServiceRepository(test_db)
 	budgetRepository := repositories.NewBudgetRepository(test_db)
 	budgetService := services.NewBudgetService(budgetRepository)
 	budgetHandler := handlers.NewBudgetHandler(budgetService)
@@ -49,16 +48,6 @@ func TestCreateBudget(t *testing.T) {
 
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
-
-	// create service that will be part of the budget
-	service := &models.Service{
-		Name:        "Service",
-		Description: "Service description",
-		Duration:    1,
-		Price:       50,
-		UserID:      userID,
-	}
-	serviceRepository.Create(service)
 
 	// budget model to create request
 	budget := &models.CreateBudgetRequest{

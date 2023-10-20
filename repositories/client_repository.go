@@ -19,10 +19,10 @@ func (cr *ClientRepository) Create(client *models.Client) error {
 	return cr.db.Create(client).Error
 }
 
-func (cr *ClientRepository) List(tokenID uuid.UUID) ([]models.Client, error) {
+func (cr *ClientRepository) List(userID uuid.UUID) ([]models.Client, error) {
 	var clients []models.Client
 
-	if err := cr.db.Where("user_id = ?", tokenID).Find(&clients).Error; err != nil {
+	if err := cr.db.Where("user_id = ?", userID).Find(&clients).Error; err != nil {
 		return nil, err
 	}
 
