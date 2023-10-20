@@ -13,6 +13,7 @@ func CreateDatabaseTables(db *gorm.DB) {
 	db.AutoMigrate(&models.Service{})
 	db.AutoMigrate(&models.Budget{})
 	db.AutoMigrate(&models.BudgetService{})
+	db.AutoMigrate(&models.Appointment{})
 
 	log.Info("Database tables created")
 }

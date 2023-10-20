@@ -76,5 +76,16 @@ func main() {
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}
 
+	appointmentRepository := repositories.NewAppointmentRepository(db)
+	appointmentService := services.NewAppointmentService(appointmentRepository)
+	appointmentHandler := handlers.NewAppointmentHandler(appointmentService)
+	appointmentGroup := r.Group("/appointments")
+	{
+		appointmentGroup.POST("/", middlewares.RequireAuth, appointmentHandler.CreateAppointment)
+		appointmentGroup.GET("/:userID", middlewares.RequireAuth, appointmentHandler.ListAppointments)
+		appointmentGroup.PUT("/:userID", middlewares.RequireAuth, appointmentHandler.UpdateAppointment)
+		appointmentGroup.DELETE("/:budgetID", middlewares.RequireAuth, appointmentHandler.DeleteAppointment)
+	}
+
 	r.Run()
 }
