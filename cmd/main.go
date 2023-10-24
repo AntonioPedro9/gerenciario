@@ -7,6 +7,7 @@ import (
 	"server/repositories"
 	"server/services"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	log "github.com/sirupsen/logrus"
@@ -29,6 +30,14 @@ func init() {
 
 func main() {
 	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:5174"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	config.AllowHeaders = []string{"Authorization", "Content-Type"}
+	config.AllowCredentials = true
+	r.Use(cors.New(config))
+
 	db := database.ConnectToDatabase()
 	database.CreateDatabaseTables(db)
 
