@@ -14,8 +14,6 @@ func ConnectToDatabase() *gorm.DB {
 		log.Fatal("Failed to connect to database")
 	}
 
-	log.Info("Database connection successfully established")
-
 	return db
 }
 
@@ -24,8 +22,6 @@ func ConnectToTestDatabase() *gorm.DB {
 	if err != nil {
 		log.Fatal("Failed to connect to database")
 	}
-
-	log.Info("Test database connection successfully established")
 
 	return test_db
 }
