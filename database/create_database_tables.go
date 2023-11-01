@@ -3,7 +3,6 @@ package database
 import (
 	"server/models"
 
-	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -14,6 +13,4 @@ func CreateDatabaseTables(db *gorm.DB) {
 	db.AutoMigrate(&models.Budget{})
 	db.AutoMigrate(&models.BudgetService{})
 	db.AutoMigrate(&models.Appointment{})
-
-	log.Info("Database tables created")
 }
