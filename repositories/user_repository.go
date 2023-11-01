@@ -31,11 +31,15 @@ func (ur *UserRepository) List() ([]models.User, error) {
 
 func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
+	var count int64
 
-	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
+	ur.db.Model(&user).Where("email = ?", email).Count(&count)
+	if count == 0 {
+		return nil, nil
+	}
+
+	err := ur.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
 		return nil, err
 	}
 
@@ -44,6 +48,12 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
 	var user models.User
+	var count int64
+
+	ur.db.Model(&user).Where("id = ?", id).Count(&count)
+	if count == 0 {
+		return nil, nil
+	}
 
 	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
