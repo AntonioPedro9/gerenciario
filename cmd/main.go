@@ -30,9 +30,11 @@ func init() {
 
 func main() {
 	r := gin.Default()
+	r.ForwardedByClientIP = true
+	r.SetTrustedProxies([]string{"localhost"})
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5174"}
+	config.AllowOrigins = []string{"http://localhost:5173"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	config.AllowCredentials = true
@@ -60,6 +62,7 @@ func main() {
 	{
 		clientGroup.POST("/", middlewares.RequireAuth, clientHandler.CreateClient)
 		clientGroup.GET("/:userID", middlewares.RequireAuth, clientHandler.ListClients)
+		clientGroup.GET("/:userID/:clientID", middlewares.RequireAuth, clientHandler.GetClient)
 		clientGroup.PUT("/", middlewares.RequireAuth, clientHandler.UpdateClient)
 		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
 	}
