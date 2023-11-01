@@ -3,10 +3,10 @@ package models
 import "github.com/google/uuid"
 
 type Client struct {
-	ID     uint      `gorm:"primaryKey;autoIncrement"`
-	CPF    string    `gorm:"unique"`
-	Name   string    `gorm:"not null"`
-	Email  string    `gorm:"unique"`
+	ID     uint   `gorm:"primaryKey;autoIncrement"`
+	CPF    string `gorm:"unique"`
+	Name   string `gorm:"not null"`
+	Email  string
 	Phone  string    `gorm:"not null"`
 	UserID uuid.UUID `gorm:"not null"`
 }
