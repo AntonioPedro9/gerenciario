@@ -100,9 +100,9 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 }
 
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
-	id := c.Param("id")
+	paramUserID := c.Param("id")
 
-	userID, err := uuid.Parse(id)
+	userID, err := uuid.Parse(paramUserID)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse user ID"})

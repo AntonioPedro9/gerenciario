@@ -47,13 +47,13 @@ func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.Budget, error) 
 	return bs.budgetRepository.List(userID)
 }
 
-func (bs *BudgetService) DeleteBudget(budgetID uint, authUserID uuid.UUID) error {
+func (bs *BudgetService) DeleteBudget(budgetID uint, tokenID uuid.UUID) error {
 	existingBudget, err := bs.budgetRepository.GetBudgetById(budgetID)
 	if err != nil {
 		return err
 	}
 
-	if existingBudget.UserID != authUserID {
+	if existingBudget.UserID != tokenID {
 		return utils.UnauthorizedActionError
 	}
 

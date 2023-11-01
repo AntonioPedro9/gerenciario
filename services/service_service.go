@@ -73,13 +73,13 @@ func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, to
 	return ss.serviceRepository.Update(validService)
 }
 
-func (ss *ServiceService) DeleteService(serviceID uint, authUserID uuid.UUID) error {
+func (ss *ServiceService) DeleteService(serviceID uint, tokenID uuid.UUID) error {
 	existingService, err := ss.serviceRepository.GetServiceById(serviceID)
 	if err != nil {
 		return err
 	}
 
-	if existingService.UserID != authUserID {
+	if existingService.UserID != tokenID {
 		return utils.UnauthorizedActionError
 	}
 

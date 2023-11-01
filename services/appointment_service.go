@@ -56,13 +56,13 @@ func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppoin
 	return as.appointmentRepository.UpdateAppointment(validAppointment)
 }
 
-func (as *AppointmentService) DeleteAppointment(appointmentID uint, authUserID uuid.UUID) error {
+func (as *AppointmentService) DeleteAppointment(appointmentID uint, tokenID uuid.UUID) error {
 	existingAppointment, err := as.appointmentRepository.GetAppointmentById(appointmentID)
 	if err != nil {
 		return err
 	}
 
-	if existingAppointment.UserID != authUserID {
+	if existingAppointment.UserID != tokenID {
 		return utils.UnauthorizedActionError
 	}
 

@@ -21,8 +21,10 @@ func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error 
 		return utils.InvalidNameError
 	}
 
-	if !utils.IsValidEmail(client.Email) {
-		return utils.InvalidEmailError
+	if client.Email != "" {
+		if !utils.IsValidEmail(client.Email) {
+			return utils.InvalidEmailError
+		}
 	}
 
 	formattedCPF, err := utils.FormatCPF(client.CPF)
@@ -52,6 +54,14 @@ func (cs *ClientService) ListClients(userID, tokenID uuid.UUID) ([]models.Client
 	}
 
 	return cs.clientRepository.List(userID)
+}
+
+func (cs *ClientService) GetClient(userID, tokenID uuid.UUID, clientID uint) (*models.Client, error) {
+	if userID != tokenID {
+		return &models.Client{}, utils.UnauthorizedActionError
+	}
+
+	return cs.clientRepository.GetClientById(clientID)
 }
 
 func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) error {
@@ -97,13 +107,13 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 	return cs.clientRepository.UpdateClient(validClient)
 }
 
-func (cs *ClientService) DeleteClient(clientID uint, authUserID uuid.UUID) error {
+func (cs *ClientService) DeleteClient(clientID uint, tokenID uuid.UUID) error {
 	existingClient, err := cs.clientRepository.GetClientById(clientID)
 	if err != nil {
 		return err
 	}
 
-	if existingClient.UserID != authUserID {
+	if existingClient.UserID != tokenID {
 		return utils.UnauthorizedActionError
 	}
 

@@ -45,9 +45,9 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
-	id := c.Param("userID")
+	paramUserID := c.Param("userID")
 
-	userID, err := uuid.Parse(id)
+	userID, err := uuid.Parse(paramUserID)
 	if err != nil {
 		log.Error(err)
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -72,9 +72,9 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
-	id := c.Param("budgetID")
+	paramBudgetID := c.Param("budgetID")
 
-	parsedID, err := strconv.ParseUint(id, 10, 64)
+	parsedID, err := strconv.ParseUint(paramBudgetID, 10, 64)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid budget ID"})
@@ -89,14 +89,14 @@ func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := bh.budgetService.DeleteBudget(budgetID, authUserID); err != nil {
+	if err := bh.budgetService.DeleteBudget(budgetID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

@@ -45,9 +45,9 @@ func (ah *AppointmentHandler) CreateAppointment(c *gin.Context) {
 }
 
 func (ah *AppointmentHandler) ListAppointments(c *gin.Context) {
-	id := c.Param("userID")
+	paramUserID := c.Param("userID")
 
-	userID, err := uuid.Parse(id)
+	userID, err := uuid.Parse(paramUserID)
 	if err != nil {
 		log.Error(err)
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -61,14 +61,14 @@ func (ah *AppointmentHandler) ListAppointments(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	appointments, err := ah.appointmentService.ListAppointments(userID, authUserID)
+	appointments, err := ah.appointmentService.ListAppointments(userID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -93,7 +93,7 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -107,7 +107,7 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	if err := ah.appointmentService.UpdateAppointment(&appointment, authUserID); err != nil {
+	if err := ah.appointmentService.UpdateAppointment(&appointment, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -124,9 +124,9 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 }
 
 func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {
-	id := c.Param("appointmentID")
+	paramAppointmentID := c.Param("appointmentID")
 
-	parsedID, err := strconv.ParseUint(id, 10, 64)
+	parsedID, err := strconv.ParseUint(paramAppointmentID, 10, 64)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid appointment ID"})
@@ -141,14 +141,14 @@ func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := ah.appointmentService.DeleteAppointment(appointmentID, authUserID); err != nil {
+	if err := ah.appointmentService.DeleteAppointment(appointmentID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

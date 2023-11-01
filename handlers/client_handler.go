@@ -45,9 +45,9 @@ func (ch *ClientHandler) CreateClient(c *gin.Context) {
 }
 
 func (ch *ClientHandler) ListClients(c *gin.Context) {
-	id := c.Param("userID")
+	paramUserID := c.Param("userID")
 
-	userID, err := uuid.Parse(id)
+	userID, err := uuid.Parse(paramUserID)
 	if err != nil {
 		log.Error(err)
 		c.AbortWithStatus(http.StatusUnauthorized)
@@ -61,14 +61,64 @@ func (ch *ClientHandler) ListClients(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	users, err := ch.clientService.ListClients(userID, authUserID)
+	users, err := ch.clientService.ListClients(userID, tokenID)
+	if err != nil {
+		log.Error(err)
+
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
+
+func (ch *ClientHandler) GetClient(c *gin.Context) {
+	paramUserID := c.Param("userID")
+	paramClientID := c.Param("clientID")
+
+	userID, err := uuid.Parse(paramUserID)
+	if err != nil {
+		log.Error(err)
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	parsedClientID, err := strconv.ParseUint(paramClientID, 10, 64)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid client ID"})
+		return
+	}
+	clientID := uint(parsedClientID)
+
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
+
+	tokenID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	users, err := ch.clientService.GetClient(userID, tokenID, clientID)
 	if err != nil {
 		log.Error(err)
 
@@ -93,7 +143,7 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -107,7 +157,7 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	if err := ch.clientService.UpdateClient(&client, authUserID); err != nil {
+	if err := ch.clientService.UpdateClient(&client, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -124,9 +174,9 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 }
 
 func (ch *ClientHandler) DeleteClient(c *gin.Context) {
-	id := c.Param("clientID")
+	paramClientID := c.Param("clientID")
 
-	parsedID, err := strconv.ParseUint(id, 10, 64)
+	parsedID, err := strconv.ParseUint(paramClientID, 10, 64)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid client ID"})
@@ -141,14 +191,14 @@ func (ch *ClientHandler) DeleteClient(c *gin.Context) {
 		return
 	}
 
-	authUserID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := ch.clientService.DeleteClient(clientID, authUserID); err != nil {
+	if err := ch.clientService.DeleteClient(clientID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
