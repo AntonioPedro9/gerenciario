@@ -86,15 +86,7 @@ func (ch *ClientHandler) ListClients(c *gin.Context) {
 }
 
 func (ch *ClientHandler) GetClient(c *gin.Context) {
-	paramUserID := c.Param("userID")
 	paramClientID := c.Param("clientID")
-
-	userID, err := uuid.Parse(paramUserID)
-	if err != nil {
-		log.Error(err)
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
 
 	parsedClientID, err := strconv.ParseUint(paramClientID, 10, 64)
 	if err != nil {
@@ -118,7 +110,7 @@ func (ch *ClientHandler) GetClient(c *gin.Context) {
 		return
 	}
 
-	users, err := ch.clientService.GetClient(userID, tokenID, clientID)
+	users, err := ch.clientService.GetClient(clientID, tokenID)
 	if err != nil {
 		log.Error(err)
 

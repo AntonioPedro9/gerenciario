@@ -56,12 +56,17 @@ func (cs *ClientService) ListClients(userID, tokenID uuid.UUID) ([]models.Client
 	return cs.clientRepository.List(userID)
 }
 
-func (cs *ClientService) GetClient(userID, tokenID uuid.UUID, clientID uint) (*models.Client, error) {
-	if userID != tokenID {
-		return &models.Client{}, utils.UnauthorizedActionError
+func (cs *ClientService) GetClient(clientID uint, tokenID uuid.UUID) (*models.Client, error) {
+	client, err := cs.clientRepository.GetClientById(clientID)
+	if err != nil {
+		return nil, err
 	}
 
-	return cs.clientRepository.GetClientById(clientID)
+	if client.UserID != tokenID {
+		return nil, utils.UnauthorizedActionError
+	}
+
+	return client, nil
 }
 
 func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) error {
