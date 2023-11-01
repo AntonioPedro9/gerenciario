@@ -47,10 +47,10 @@ func TestListBudgets(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	r.GET("/budgets/:userID", budgetHandler.ListBudgets)
+	r.GET("/budgets/list/:userID", budgetHandler.ListBudgets)
 
 	t.Run("List budgets", func(t *testing.T) {
-		requestEndPoint := "/budgets/" + userID.String()
+		requestEndPoint := "/budgets/list/" + userID.String()
 		request, _ := http.NewRequest(http.MethodGet, requestEndPoint, nil)
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 

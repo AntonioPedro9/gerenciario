@@ -47,10 +47,10 @@ func TestListAppointments(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	r.GET("/appointments/:userID", appointmentHandler.ListAppointments)
+	r.GET("/appointments/list/:userID", appointmentHandler.ListAppointments)
 
 	t.Run("List appointments", func(t *testing.T) {
-		requestEndPoint := "/appointments/" + userID.String()
+		requestEndPoint := "/appointments/list/" + userID.String()
 		request, _ := http.NewRequest(http.MethodGet, requestEndPoint, nil)
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 

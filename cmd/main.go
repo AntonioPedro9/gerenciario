@@ -41,6 +41,7 @@ func main() {
 	r.Use(cors.New(config))
 
 	db := database.ConnectToDatabase()
+	// database.ClearTestDatabase(db)
 	database.CreateDatabaseTables(db)
 
 	userRepository := repositories.NewUserRepository(db)
@@ -61,8 +62,8 @@ func main() {
 	clientGroup := r.Group("/clients")
 	{
 		clientGroup.POST("/", middlewares.RequireAuth, clientHandler.CreateClient)
-		clientGroup.GET("/:userID", middlewares.RequireAuth, clientHandler.ListClients)
-		clientGroup.GET("/:userID/:clientID", middlewares.RequireAuth, clientHandler.GetClient)
+		clientGroup.GET("/list/:userID", middlewares.RequireAuth, clientHandler.ListClients)
+		clientGroup.GET("/:clientID", middlewares.RequireAuth, clientHandler.GetClient)
 		clientGroup.PUT("/", middlewares.RequireAuth, clientHandler.UpdateClient)
 		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
 	}
@@ -73,7 +74,7 @@ func main() {
 	serviceGroup := r.Group("/services")
 	{
 		serviceGroup.POST("/", middlewares.RequireAuth, serviceHandler.CreateService)
-		serviceGroup.GET("/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
+		serviceGroup.GET("/list/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
 		serviceGroup.PUT("/", middlewares.RequireAuth, serviceHandler.UpdateService)
 		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
 	}
@@ -84,7 +85,7 @@ func main() {
 	budgetGroup := r.Group("/budgets")
 	{
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
-		budgetGroup.GET("/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
+		budgetGroup.GET("/list/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}
 
@@ -94,7 +95,7 @@ func main() {
 	appointmentGroup := r.Group("/appointments")
 	{
 		appointmentGroup.POST("/", middlewares.RequireAuth, appointmentHandler.CreateAppointment)
-		appointmentGroup.GET("/:userID", middlewares.RequireAuth, appointmentHandler.ListAppointments)
+		appointmentGroup.GET("/list/:userID", middlewares.RequireAuth, appointmentHandler.ListAppointments)
 		appointmentGroup.PUT("/:userID", middlewares.RequireAuth, appointmentHandler.UpdateAppointment)
 		appointmentGroup.DELETE("/:budgetID", middlewares.RequireAuth, appointmentHandler.DeleteAppointment)
 	}

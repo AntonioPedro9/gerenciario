@@ -47,10 +47,10 @@ func TestListClients(t *testing.T) {
 	// generate jwt token to authorize action
 	tokenString, _ := utils.GenerateToken(userID)
 
-	r.GET("/clients/:userID", clientHandler.ListClients)
+	r.GET("/clients/list/:userID", clientHandler.ListClients)
 
 	t.Run("Create client", func(t *testing.T) {
-		requestEndPoint := "/clients/" + userID.String()
+		requestEndPoint := "/clients/list/" + userID.String()
 		request, _ := http.NewRequest(http.MethodGet, requestEndPoint, nil)
 		request.AddCookie(&http.Cookie{Name: "Authorization", Value: tokenString})
 
