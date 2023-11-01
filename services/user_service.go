@@ -26,6 +26,10 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 		return utils.InvalidEmailError
 	}
 
+	if len(user.Password) < 8 {
+		return utils.WeakPasswordError
+	}
+
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
