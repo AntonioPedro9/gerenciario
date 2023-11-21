@@ -149,7 +149,8 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	if err := ch.clientService.UpdateClient(&client, tokenID); err != nil {
+	updatedClient, err := ch.clientService.UpdateClient(&client, tokenID)
+	if err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -162,7 +163,7 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusOK, updatedClient)
 }
 
 func (ch *ClientHandler) DeleteClient(c *gin.Context) {

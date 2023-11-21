@@ -60,12 +60,17 @@ func TestUpdateClient(t *testing.T) {
 	clientRepository.Create(client)
 
 	// client model to update request
+	cpf := "12345678910"
+	name := "Jonh Doe"
+	email := "jonhdoe@email.com"
+	phone := "(11) 9 2233-4455"
+
 	updateClient := &models.UpdateClientRequest{
 		ID:     1,
-		CPF:    "12345678910",
-		Name:   "Jonh Doe",
-		Email:  "jonhdoe@email.com",
-		Phone:  "(11) 9 2233-4455",
+		CPF:    &cpf,
+		Name:   &name,
+		Email:  &email,
+		Phone:  &phone,
 		UserID: userID,
 	}
 
@@ -79,7 +84,7 @@ func TestUpdateClient(t *testing.T) {
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusNoContent
+		expectedStatus := http.StatusOK
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

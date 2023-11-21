@@ -20,10 +20,10 @@ type CreateClientRequest struct {
 }
 
 type UpdateClientRequest struct {
-	ID     uint      `json:"id"`
-	CPF    string    `json:"cpf"`
-	Name   string    `json:"name"`
-	Email  string    `json:"email"`
-	Phone  string    `json:"phone"`
-	UserID uuid.UUID `json:"userID"`
+	ID     uint       `json:"id"`
+	CPF    *string    `json:"cpf,omitempty"`
+	Name   *string    `json:"name,omitempty"`
+	Email  *string    `json:"email,omitempty"`
+	Phone  *string    `json:"phone,omitempty"`
+	UserID uuid.UUID  `json:"userID"`
 }

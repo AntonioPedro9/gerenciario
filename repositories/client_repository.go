@@ -42,16 +42,41 @@ func (cr *ClientRepository) GetClientById(id uint) (*models.Client, error) {
 	return &client, nil
 }
 
-func (cr *ClientRepository) UpdateClient(client *models.UpdateClientRequest) error {
-	return cr.db.Model(&models.Client{}).
+func (cr *ClientRepository) UpdateClient(client *models.UpdateClientRequest) (*models.Client, error) {
+	updateData := make(map[string]interface{})
+
+	if client.CPF != nil {
+		updateData["cpf"] = *client.CPF
+	}
+
+	if client.Name != nil {
+		updateData["name"] = *client.Name
+	}
+
+	if client.Email != nil {
+		updateData["email"] = *client.Email
+	}
+
+	if client.Phone != nil {
+		updateData["phone"] = *client.Phone
+	}
+
+	err := cr.db.Model(&models.Client{}).
 		Where("id = ?", client.ID).
-		Updates(
-			models.Client{
-				Name:  client.Name,
-				Email: client.Email,
-				Phone: client.Phone,
-			},
-		).Error
+		Updates(updateData).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	updatedClient := &models.Client{}
+	err = cr.db.Where("id = ?", client.ID).First(updatedClient).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedClient, nil
 }
 
 func (cr *ClientRepository) DeleteClient(clientID uint) error {

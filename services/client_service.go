@@ -69,47 +69,54 @@ func (cs *ClientService) GetClient(clientID uint, tokenID uuid.UUID) (*models.Cl
 	return client, nil
 }
 
-func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) error {
+func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) (*models.Client, error) {
 	if client.UserID != tokenID {
-		return utils.UnauthorizedActionError
+		return nil, utils.UnauthorizedActionError
 	}
 
-	if !utils.IsValidName(client.Name) {
-		return utils.InvalidNameError
+	if client.Name != nil && !utils.IsValidName(*client.Name) {
+		return nil, utils.InvalidNameError
 	}
 
-	if !utils.IsValidEmail(client.Email) {
-		return utils.InvalidEmailError
+	if client.Email != nil && !utils.IsValidEmail(*client.Email) {
+		return nil, utils.InvalidEmailError
 	}
 
 	existingClient, err := cs.clientRepository.GetClientById(client.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if existingClient == nil {
-		return utils.NotFoundError
+		return nil, utils.NotFoundError
 	}
 
-	formattedCPF, err := utils.FormatCPF(client.CPF)
+	if client.CPF != nil {
+		formattedCPF, err := utils.FormatCPF(*client.CPF)
+		if err != nil {
+			return nil, utils.InvalidCpfError
+		}
+		client.CPF = &formattedCPF
+	}
+
+	if client.Phone != nil {
+		formattedPhone, err := utils.FormatPhone(*client.Phone)
+		if err != nil {
+			return nil, utils.InvalidPhoneError
+		}
+		client.Phone = &formattedPhone
+	}
+
+	if client.Name != nil {
+		capitalizedName := utils.CapitalizeName(*client.Name)
+		client.Name = &capitalizedName
+	}
+
+	updatedClient, err := cs.clientRepository.UpdateClient(client)
 	if err != nil {
-		return utils.InvalidCpfError
+		return nil, err
 	}
 
-	formattedPhone, err := utils.FormatPhone(client.Phone)
-	if err != nil {
-		return utils.InvalidPhoneError
-	}
-
-	validClient := &models.UpdateClientRequest{
-		ID:     client.ID,
-		CPF:    formattedCPF,
-		Name:   utils.CapitalizeName(client.Name),
-		Email:  client.Email,
-		Phone:  formattedPhone,
-		UserID: client.UserID,
-	}
-
-	return cs.clientRepository.UpdateClient(validClient)
+	return updatedClient, nil
 }
 
 func (cs *ClientService) DeleteClient(clientID uint, tokenID uuid.UUID) error {
