@@ -56,4 +56,8 @@ var (
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid duration",
 	}
+	InvalidDateError = &CustomError{
+		StatusCode: http.StatusBadRequest,
+		Message: "Invalid date",
+	}
 )

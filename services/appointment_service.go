@@ -4,6 +4,7 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -39,6 +40,11 @@ func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppoin
 		return nil, utils.UnauthorizedActionError
 	}
 
+	currentTime := time.Now()
+	if appointment.Date.Before(currentTime) {
+		return nil, utils.InvalidDateError
+	}
+
 	existingAppointment, err := as.appointmentRepository.GetAppointmentById(appointment.ID)
 	if err != nil {
 		return nil, err
@@ -47,13 +53,7 @@ func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppoin
 		return nil, utils.NotFoundError
 	}
 
-	validAppointment := &models.UpdateAppointmentRequest{
-		ID:     appointment.ID,
-		Date:   appointment.Date,
-		UserID: appointment.UserID,
-	}
-
-	updatedAppointment, err := as.appointmentRepository.Update(validAppointment)
+	updatedAppointment, err := as.appointmentRepository.Update(appointment)
 	if err != nil {
 		return nil, err
 	}
