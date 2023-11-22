@@ -53,9 +53,8 @@ func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, to
 		return nil, utils.UnauthorizedActionError
 	}
 
-	if service.Name != nil {
-		capitalizedName := utils.CapitalizeName(*service.Name)
-		service.Name = &capitalizedName
+	if service.Name != nil && !utils.IsValidName(*service.Name) {
+		return nil, utils.InvalidNameError
 	}
 
 	if service.Duration != nil && *service.Duration <= 0 {
@@ -72,6 +71,11 @@ func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, to
 	}
 	if existingService == nil {
 		return nil, utils.NotFoundError
+	}
+
+	if service.Name != nil {
+		capitalizedName := utils.CapitalizeName(*service.Name)
+		service.Name = &capitalizedName
 	}
 
 	updatedService, err := ss.serviceRepository.Update(service)

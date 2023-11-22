@@ -98,17 +98,17 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 		client.CPF = &formattedCPF
 	}
 
+	if client.Name != nil {
+		capitalizedName := utils.CapitalizeName(*client.Name)
+		client.Name = &capitalizedName
+	}
+
 	if client.Phone != nil {
 		formattedPhone, err := utils.FormatPhone(*client.Phone)
 		if err != nil {
 			return nil, utils.InvalidPhoneError
 		}
 		client.Phone = &formattedPhone
-	}
-
-	if client.Name != nil {
-		capitalizedName := utils.CapitalizeName(*client.Name)
-		client.Name = &capitalizedName
 	}
 
 	updatedClient, err := cs.clientRepository.Update(client)

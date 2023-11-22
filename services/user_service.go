@@ -67,9 +67,8 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		return nil, utils.UnauthorizedActionError
 	}
 
-	if user.Name != nil {
-		capitalizedName := utils.CapitalizeName(*user.Name)
-		user.Name = &capitalizedName
+	if user.Name != nil && !utils.IsValidName(*user.Name) {
+		return nil, utils.InvalidNameError
 	}
 
 	if user.Password != nil && len(*user.Password) < 8 {
@@ -82,6 +81,11 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 	}
 	if existingUser == nil {
 		return nil, utils.NotFoundError
+	}
+
+	if user.Name != nil {
+		capitalizedName := utils.CapitalizeName(*user.Name)
+		user.Name = &capitalizedName
 	}
 
 	updatedUser, err := us.userRepository.Update(user)
