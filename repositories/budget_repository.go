@@ -46,7 +46,7 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.Budget, error) {
 	return &budget, nil
 }
 
-func (br *BudgetRepository) DeleteBudget(budgetID uint) error {
+func (br *BudgetRepository) Delete(budgetID uint) error {
 	budget := models.Budget{ID: budgetID}
 	return br.db.Delete(&budget).Error
 }

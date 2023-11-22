@@ -42,7 +42,7 @@ func (cr *ClientRepository) GetClientById(id uint) (*models.Client, error) {
 	return &client, nil
 }
 
-func (cr *ClientRepository) UpdateClient(client *models.UpdateClientRequest) (*models.Client, error) {
+func (cr *ClientRepository) Update(client *models.UpdateClientRequest) (*models.Client, error) {
 	updateData := make(map[string]interface{})
 
 	if client.CPF != nil {
@@ -79,7 +79,7 @@ func (cr *ClientRepository) UpdateClient(client *models.UpdateClientRequest) (*m
 	return updatedClient, nil
 }
 
-func (cr *ClientRepository) DeleteClient(clientID uint) error {
+func (cr *ClientRepository) Delete(clientID uint) error {
 	client := models.Client{ID: clientID}
 	return cr.db.Delete(&client).Error
 }

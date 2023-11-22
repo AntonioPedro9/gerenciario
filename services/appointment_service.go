@@ -53,7 +53,7 @@ func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppoin
 		UserID: appointment.UserID,
 	}
 
-	return as.appointmentRepository.UpdateAppointment(validAppointment)
+	return as.appointmentRepository.Update(validAppointment)
 }
 
 func (as *AppointmentService) DeleteAppointment(appointmentID uint, tokenID uuid.UUID) error {
@@ -66,5 +66,5 @@ func (as *AppointmentService) DeleteAppointment(appointmentID uint, tokenID uuid
 		return utils.UnauthorizedActionError
 	}
 
-	return as.appointmentRepository.DeleteAppointment(appointmentID)
+	return as.appointmentRepository.Delete(appointmentID)
 }

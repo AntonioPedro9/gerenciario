@@ -111,7 +111,7 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 		client.Name = &capitalizedName
 	}
 
-	updatedClient, err := cs.clientRepository.UpdateClient(client)
+	updatedClient, err := cs.clientRepository.Update(client)
 	if err != nil {
 		return nil, err
 	}
@@ -129,5 +129,5 @@ func (cs *ClientService) DeleteClient(clientID uint, tokenID uuid.UUID) error {
 		return utils.UnauthorizedActionError
 	}
 
-	return cs.clientRepository.DeleteClient(clientID)
+	return cs.clientRepository.Delete(clientID)
 }

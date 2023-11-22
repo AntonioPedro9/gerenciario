@@ -57,5 +57,5 @@ func (bs *BudgetService) DeleteBudget(budgetID uint, tokenID uuid.UUID) error {
 		return utils.UnauthorizedActionError
 	}
 
-	return bs.budgetRepository.DeleteBudget(budgetID)
+	return bs.budgetRepository.Delete(budgetID)
 }

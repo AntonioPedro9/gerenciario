@@ -84,7 +84,7 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		return nil, utils.NotFoundError
 	}
 
-	updatedUser, err := us.userRepository.UpdateUser(user)
+	updatedUser, err := us.userRepository.Update(user)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,7 @@ func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 		return utils.NotFoundError
 	}
 
-	return us.userRepository.DeleteUser(id)
+	return us.userRepository.Delete(id)
 }
 
 func (us *UserService) LoginUser(loginUserRequest *models.LoginUserResquest) (string, error) {

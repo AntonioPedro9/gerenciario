@@ -65,7 +65,7 @@ func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
 	return &user, nil
 }
 
-func (ur *UserRepository) UpdateUser(user *models.UpdateUserRequest) (*models.User, error) {
+func (ur *UserRepository) Update(user *models.UpdateUserRequest) (*models.User, error) {
 	updateData := make(map[string]interface{})
 
 	if user.Name != nil {
@@ -94,7 +94,7 @@ func (ur *UserRepository) UpdateUser(user *models.UpdateUserRequest) (*models.Us
 	return updatedUser, nil
 }
 
-func (ur *UserRepository) DeleteUser(id uuid.UUID) error {
+func (ur *UserRepository) Delete(id uuid.UUID) error {
 	user := models.User{ID: id}
 	return ur.db.Delete(&user).Error
 }
