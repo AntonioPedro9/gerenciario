@@ -49,10 +49,13 @@ func TestUpdateUser(t *testing.T) {
 	tokenString, _ := utils.GenerateToken(userID)
 
 	// user model to update request
+	name := "John Doe"
+	password := "password"
+
 	updateUser := &models.UpdateUserRequest{
-		ID:       userID,
-		Name:     "New Jonh Doe",
-		Password: "newpassword",
+		ID:     userID,
+		Name:   &name,
+		Password: &password,
 	}
 
 	r.PUT("/users", userHandler.UpdateUser)
@@ -65,7 +68,7 @@ func TestUpdateUser(t *testing.T) {
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusNoContent
+		expectedStatus := http.StatusOK
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

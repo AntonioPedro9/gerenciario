@@ -62,35 +62,39 @@ func (us *UserService) ListUsers() ([]models.User, error) {
 	return us.userRepository.List()
 }
 
-func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) error {
+func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) (*models.User, error) {
 	if user.ID != tokenID {
-		return utils.UnauthorizedActionError
+		return nil, utils.UnauthorizedActionError
 	}
 
-	if !utils.IsValidName(user.Name) {
-		return utils.InvalidNameError
+	if user.Name != nil {
+		capitalizedName := utils.CapitalizeName(*user.Name)
+		user.Name = &capitalizedName
+	}
+
+	if user.Password != nil && len(*user.Password) < 8 {
+		return nil, utils.WeakPasswordError
 	}
 
 	existingUser, err := us.userRepository.GetUserById(user.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if existingUser == nil {
-		return utils.NotFoundError
+		return nil, utils.NotFoundError
 	}
 
-	hashedPassword, err := utils.HashPassword(user.Password)
+	if user.Name != nil {
+		capitalizedName := utils.CapitalizeName(*user.Name)
+		user.Name = &capitalizedName
+	}
+
+	updatedUser, err := us.userRepository.UpdateUser(user)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	validUser := &models.UpdateUserRequest{
-		ID:       user.ID,
-		Name:     utils.CapitalizeName(user.Name),
-		Password: hashedPassword,
-	}
-
-	return us.userRepository.UpdateUser(validUser)
+	return updatedUser, nil
 }
 
 func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {

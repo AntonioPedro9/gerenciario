@@ -83,7 +83,8 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if err := uh.userService.UpdateUser(&user, tokenID); err != nil {
+	updatedUser, err := uh.userService.UpdateUser(&user, tokenID)
+	if err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -96,7 +97,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusOK, updatedUser)
 }
 
 func (uh *UserHandler) DeleteUser(c *gin.Context) {

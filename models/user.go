@@ -20,8 +20,8 @@ type CreateUserRequest struct {
 
 type UpdateUserRequest struct {
 	ID       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
-	Password string    `json:"password"`
+	Name     *string    `json:"name,omitempty"`
+	Password *string    `json:"password,omitempty"`
 }
 
 type LoginUserResquest struct {
