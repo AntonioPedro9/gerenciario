@@ -42,14 +42,29 @@ func (ar *AppointmentRepository) GetAppointmentById(id uint) (*models.Appointmen
 	return &appointment, nil
 }
 
-func (ar *AppointmentRepository) Update(appointment *models.UpdateAppointmentRequest) error {
-	return ar.db.Model(&models.Appointment{}).
+func (ar *AppointmentRepository) Update(appointment *models.UpdateAppointmentRequest) (*models.Appointment, error) {
+	updateData := make(map[string]interface{})
+
+	if appointment.Date != nil {
+		updateData["date"] = *appointment.Date
+	}
+
+	err := ar.db.Model(&models.Appointment{}).
 		Where("id = ?", appointment.ID).
-		Updates(
-			models.Appointment{
-				Date: appointment.Date,
-			},
-		).Error
+		Updates(updateData).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	updatedAppointment := &models.Appointment{}
+	err = ar.db.Where("id = ?", appointment.ID).First(updatedAppointment).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedAppointment, nil
 }
 
 func (ar *AppointmentRepository) Delete(appointmentID uint) error {

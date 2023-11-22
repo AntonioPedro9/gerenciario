@@ -107,7 +107,8 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	if err := ah.appointmentService.UpdateAppointment(&appointment, tokenID); err != nil {
+	updatedAppointment, err := ah.appointmentService.UpdateAppointment(&appointment, tokenID)
+	if err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -120,7 +121,7 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusOK, updatedAppointment)
 }
 
 func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {

@@ -59,9 +59,11 @@ func TestUpdateAppointment(t *testing.T) {
 	appointmentRepository.Create(appointment)
 
 	// appointment model to update request
+	date := time.Now()
+
 	updateAppointment := &models.UpdateAppointmentRequest{
 		ID:     1,
-		Date:   time.Now(),
+		Date: &date,
 		UserID: userID,
 	}
 
@@ -75,7 +77,7 @@ func TestUpdateAppointment(t *testing.T) {
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusNoContent
+		expectedStatus := http.StatusOK
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

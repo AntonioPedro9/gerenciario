@@ -34,17 +34,17 @@ func (as *AppointmentService) ListAppointments(userID, tokenID uuid.UUID) ([]mod
 	return as.appointmentRepository.List(userID)
 }
 
-func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppointmentRequest, tokenID uuid.UUID) error {
+func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppointmentRequest, tokenID uuid.UUID) (*models.Appointment, error) {
 	if appointment.UserID != tokenID {
-		return utils.UnauthorizedActionError
+		return nil, utils.UnauthorizedActionError
 	}
 
 	existingAppointment, err := as.appointmentRepository.GetAppointmentById(appointment.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if existingAppointment == nil {
-		return utils.NotFoundError
+		return nil, utils.NotFoundError
 	}
 
 	validAppointment := &models.UpdateAppointmentRequest{
@@ -53,7 +53,12 @@ func (as *AppointmentService) UpdateAppointment(appointment *models.UpdateAppoin
 		UserID: appointment.UserID,
 	}
 
-	return as.appointmentRepository.Update(validAppointment)
+	updatedAppointment, err := as.appointmentRepository.Update(validAppointment)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedAppointment, nil
 }
 
 func (as *AppointmentService) DeleteAppointment(appointmentID uint, tokenID uuid.UUID) error {

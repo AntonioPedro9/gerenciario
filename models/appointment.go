@@ -21,6 +21,6 @@ type CreateAppointmentRequest struct {
 
 type UpdateAppointmentRequest struct {
 	ID     uint      `json:"id"`
-	Date   time.Time `json:"date"`
+	Date   *time.Time `json:"date,omitempty"`
 	UserID uuid.UUID `json:"userID"`
 }
