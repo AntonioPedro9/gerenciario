@@ -107,7 +107,8 @@ func (sh *ServiceHandler) UpdateService(c *gin.Context) {
 		return
 	}
 
-	if err := sh.serviceService.UpdateService(&service, tokenID); err != nil {
+	updatedService, err := sh.serviceService.UpdateService(&service, tokenID)
+	if err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -120,7 +121,7 @@ func (sh *ServiceHandler) UpdateService(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, nil)
+	c.JSON(http.StatusOK, updatedService)
 }
 
 func (sh *ServiceHandler) DeleteService(c *gin.Context) {

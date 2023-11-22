@@ -52,4 +52,8 @@ var (
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid price",
 	}
+	InvalidDurationError = &CustomError{
+		StatusCode: http.StatusBadRequest,
+		Message:    "Invalid duration",
+	}
 )

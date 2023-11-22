@@ -21,7 +21,11 @@ func (ss *ServiceService) CreateService(service *models.CreateServiceRequest) er
 		return utils.InvalidNameError
 	}
 
-	if service.Price < 0 {
+	if service.Duration <= 0 {
+		return utils.InvalidDurationError
+	}
+
+	if service.Price <= 0 {
 		return utils.InvalidPriceError
 	}
 
@@ -44,33 +48,38 @@ func (ss *ServiceService) ListServices(userID, tokenID uuid.UUID) ([]models.Serv
 	return ss.serviceRepository.List(userID)
 }
 
-func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, tokenID uuid.UUID) error {
+func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, tokenID uuid.UUID) (*models.Service, error) {
 	if service.UserID != tokenID {
-		return utils.UnauthorizedActionError
+		return nil, utils.UnauthorizedActionError
 	}
 
-	if !utils.IsValidName(service.Name) {
-		return utils.InvalidNameError
+	if service.Name != nil {
+		capitalizedName := utils.CapitalizeName(*service.Name)
+		service.Name = &capitalizedName
+	}
+
+	if service.Duration != nil && *service.Duration <= 0 {
+		return nil, utils.InvalidDurationError
+	}
+
+	if service.Price != nil && *service.Price <= 0 {
+		return nil, utils.InvalidPriceError
 	}
 
 	existingService, err := ss.serviceRepository.GetServiceById(service.ID)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if existingService == nil {
-		return utils.NotFoundError
+		return nil, utils.NotFoundError
 	}
 
-	validService := &models.Service{
-		ID:          service.ID,
-		Name:        utils.CapitalizeName(service.Name),
-		Description: service.Description,
-		Duration:    service.Duration,
-		Price:       service.Price,
-		UserID:      service.UserID,
+	updatedService, err := ss.serviceRepository.Update(service)
+	if err != nil {
+		return nil, err
 	}
 
-	return ss.serviceRepository.Update(validService)
+	return updatedService, nil
 }
 
 func (ss *ServiceService) DeleteService(serviceID uint, tokenID uuid.UUID) error {

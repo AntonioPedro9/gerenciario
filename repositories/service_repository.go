@@ -42,17 +42,41 @@ func (sr *ServiceRepository) GetServiceById(id uint) (*models.Service, error) {
 	return &service, nil
 }
 
-func (sr *ServiceRepository) Update(service *models.Service) error {
-	return sr.db.Model(&models.Service{}).
+func (sr *ServiceRepository) Update(service *models.UpdateServiceRequest) (*models.Service, error) {
+	updateData := make(map[string]interface{})
+
+	if service.Name != nil {
+		updateData["name"] = *service.Name
+	}
+
+	if service.Description != nil {
+		updateData["description"] = *service.Description
+	}
+
+	if service.Duration != nil {
+		updateData["duration"] = *service.Duration
+	}
+
+	if service.Price != nil {
+		updateData["price"] = *service.Price
+	}
+
+	err := sr.db.Model(&models.Service{}).
 		Where("id = ?", service.ID).
-		Updates(
-			models.Service{
-				Name:        service.Name,
-				Description: service.Description,
-				Duration:    service.Duration,
-				Price:       service.Price,
-			},
-		).Error
+		Updates(updateData).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	updatedService := &models.Service{}
+	err = sr.db.Where("id = ?", service.ID).First(updatedService).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedService, nil
 }
 
 func (sr *ServiceRepository) Delete(serviceID uint) error {

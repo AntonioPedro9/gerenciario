@@ -51,7 +51,7 @@ func TestUpdateService(t *testing.T) {
 
 	// create service that will updated
 	service := &models.Service{
-		Name:        "Service",
+		Name:        "Service name",
 		Description: "Service description",
 		Duration:    1,
 		Price:       50,
@@ -60,13 +60,18 @@ func TestUpdateService(t *testing.T) {
 	serviceRepository.Create(service)
 
 	// service model to update request
+	name := "New service name"
+	description := "New service description"
+	duration := uint(2)
+	price := float32(100)
+
 	updateService := &models.UpdateServiceRequest{
-		ID:          1,
-		Name:        "New Service",
-		Description: "New service description",
-		Duration:    2,
-		Price:       100,
-		UserID:      userID,
+		ID:     1,
+		Name: &name,
+		Description: &description,
+		Duration: &duration,
+		Price: &price,
+		UserID: userID,
 	}
 
 	r.PUT("/services", serviceHandler.UpdateService)
@@ -79,7 +84,7 @@ func TestUpdateService(t *testing.T) {
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, request)
 
-		expectedStatus := http.StatusNoContent
+		expectedStatus := http.StatusOK
 
 		if w.Code != expectedStatus {
 			t.Errorf("Expected status %d but got %d", expectedStatus, w.Code)

@@ -84,11 +84,6 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		return nil, utils.NotFoundError
 	}
 
-	if user.Name != nil {
-		capitalizedName := utils.CapitalizeName(*user.Name)
-		user.Name = &capitalizedName
-	}
-
 	updatedUser, err := us.userRepository.UpdateUser(user)
 	if err != nil {
 		return nil, err

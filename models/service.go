@@ -21,9 +21,9 @@ type CreateServiceRequest struct {
 
 type UpdateServiceRequest struct {
 	ID          uint      `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Duration    uint      `json:"duration"`
-	Price       float32   `json:"price"`
+	Name        *string    `json:"name,omitempty"`
+	Description *string    `json:"description,omitempty"`
+	Duration    *uint      `json:"duration,omitempty"`
+	Price       *float32   `json:"price,omitempty"`
 	UserID      uuid.UUID `json:"userID"`
 }
