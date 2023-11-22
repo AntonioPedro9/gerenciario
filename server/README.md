@@ -21,6 +21,7 @@ SECRET=sua_chave
 
 ```
 $ go test .\tests\user\
+$ go test .\tests\client\
 $ go test .\tests\service\
 $ go test .\tests\budget\
 $ go test .\tests\appointment\
