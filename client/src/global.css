@@ -1,0 +1,12 @@
+body {
+  background-color: #f1f1f1;
+  font-family: "Roboto Serif", serif;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
+}
+
+.text-red {
+  color: red;
+}
