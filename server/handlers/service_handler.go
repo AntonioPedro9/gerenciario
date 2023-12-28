@@ -85,6 +85,48 @@ func (sh *ServiceHandler) ListServices(c *gin.Context) {
 	c.JSON(http.StatusOK, services)
 }
 
+func (sh *ServiceHandler) GetService(c *gin.Context) {
+	paramServiceID := c.Param("serviceID")
+
+	parsedServiceID, err := strconv.ParseUint(paramServiceID, 10, 64)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid service ID"})
+		return
+	}
+	serviceID := uint(parsedServiceID)
+
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
+
+	tokenID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	services, err := sh.serviceService.GetService(serviceID, tokenID)
+	if err != nil {
+		log.Error(err)
+
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
+
+	c.JSON(http.StatusOK, services)
+}
+
 func (sh *ServiceHandler) UpdateService(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {

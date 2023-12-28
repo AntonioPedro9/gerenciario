@@ -3,7 +3,7 @@ import { Form, InputGroup } from "react-bootstrap";
 interface ICustomInput {
   label: string;
   id: string;
-  value: string | undefined;
+  value: string | number | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
 }

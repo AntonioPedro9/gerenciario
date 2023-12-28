@@ -6,7 +6,7 @@ import api from "../../service/api";
 
 import { IClient } from "../../types/Client";
 
-function ClientDetail() {
+export default function ClientDetails() {
   const clientID = useParams().clientID;
   const [client, setClient] = useState<IClient | null>(null);
   const [editableFields, setEditableFields] = useState<Partial<IClient>>({});
@@ -146,5 +146,3 @@ function ClientDetail() {
     </Card>
   );
 }
-
-export default ClientDetail;

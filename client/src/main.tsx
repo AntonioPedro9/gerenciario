@@ -14,6 +14,9 @@ import ErrorPage from "./pages/ErrorPage.tsx";
 import CreateClient from "./pages/Clients/CreateClient.tsx";
 import ListClients from "./pages/Clients/ListClients.tsx";
 import ClientDetails from "./pages/Clients/ClientDetails.tsx";
+import CreateService from "./pages/Services/CreateService.tsx";
+import ListServices from "./pages/Services/ListServices.tsx";
+import ServiceDetails from "./pages/Services/ServiceDetails.tsx";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +69,30 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ClientDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/services/create",
+        element: (
+          <PrivateRoute>
+            <CreateService />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/services/list",
+        element: (
+          <PrivateRoute>
+            <ListServices />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/services/:serviceID",
+        element: (
+          <PrivateRoute>
+            <ServiceDetails />
           </PrivateRoute>
         ),
       },

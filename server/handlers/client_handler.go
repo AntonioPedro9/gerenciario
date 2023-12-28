@@ -110,7 +110,7 @@ func (ch *ClientHandler) GetClient(c *gin.Context) {
 		return
 	}
 
-	users, err := ch.clientService.GetClient(clientID, tokenID)
+	clients, err := ch.clientService.GetClient(clientID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -124,7 +124,7 @@ func (ch *ClientHandler) GetClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, users)
+	c.JSON(http.StatusOK, clients)
 }
 
 func (ch *ClientHandler) UpdateClient(c *gin.Context) {

@@ -21,11 +21,11 @@ func (ss *ServiceService) CreateService(service *models.CreateServiceRequest) er
 		return utils.InvalidNameError
 	}
 
-	if service.Duration <= 0 {
+	if service.Duration < 0 {
 		return utils.InvalidDurationError
 	}
 
-	if service.Price <= 0 {
+	if service.Price < 0 {
 		return utils.InvalidPriceError
 	}
 
@@ -46,6 +46,19 @@ func (ss *ServiceService) ListServices(userID, tokenID uuid.UUID) ([]models.Serv
 	}
 
 	return ss.serviceRepository.List(userID)
+}
+
+func (ss *ServiceService) GetService(serviceID uint, tokenID uuid.UUID) (*models.Service, error) {
+	service, err := ss.serviceRepository.GetServiceById(serviceID)
+	if err != nil {
+		return nil, err
+	}
+
+	if service.UserID != tokenID {
+		return nil, utils.UnauthorizedActionError
+	}
+
+	return service, nil
 }
 
 func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, tokenID uuid.UUID) (*models.Service, error) {

@@ -75,6 +75,7 @@ func main() {
 	{
 		serviceGroup.POST("/", middlewares.RequireAuth, serviceHandler.CreateService)
 		serviceGroup.GET("/list/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
+		serviceGroup.GET("/:serviceID", middlewares.RequireAuth, serviceHandler.GetService)
 		serviceGroup.PUT("/", middlewares.RequireAuth, serviceHandler.UpdateService)
 		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
 	}
