@@ -30,8 +30,8 @@ func (ss *ServiceService) CreateService(service *models.CreateServiceRequest) er
 	}
 
 	validService := &models.Service{
-		Name:        utils.CapitalizeName(service.Name),
-		Description: service.Description,
+		Name:        utils.CapitalizeText(service.Name),
+		Description: utils.CapitalizeText(service.Description),
 		Duration:    service.Duration,
 		Price:       service.Price,
 		UserID:      service.UserID,
@@ -87,7 +87,7 @@ func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, to
 	}
 
 	if service.Name != nil {
-		capitalizedName := utils.CapitalizeName(*service.Name)
+		capitalizedName := utils.CapitalizeText(*service.Name)
 		service.Name = &capitalizedName
 	}
 

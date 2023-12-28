@@ -50,7 +50,7 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 
 	validUser := &models.User{
 		ID:       userID,
-		Name:     utils.CapitalizeName(user.Name),
+		Name:     utils.CapitalizeText(user.Name),
 		Email:    user.Email,
 		Password: hashedPassword,
 	}
@@ -84,7 +84,7 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 	}
 
 	if user.Name != nil {
-		capitalizedName := utils.CapitalizeName(*user.Name)
+		capitalizedName := utils.CapitalizeText(*user.Name)
 		user.Name = &capitalizedName
 	}
 

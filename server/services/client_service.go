@@ -39,7 +39,7 @@ func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error 
 
 	validClient := &models.Client{
 		CPF:    formattedCPF,
-		Name:   utils.CapitalizeName(client.Name),
+		Name:   utils.CapitalizeText(client.Name),
 		Email:  client.Email,
 		Phone:  formattedPhone,
 		UserID: client.UserID,
@@ -99,7 +99,7 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 	}
 
 	if client.Name != nil {
-		capitalizedName := utils.CapitalizeName(*client.Name)
+		capitalizedName := utils.CapitalizeText(*client.Name)
 		client.Name = &capitalizedName
 	}
 

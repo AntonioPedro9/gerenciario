@@ -2,8 +2,8 @@ package utils
 
 import "strings"
 
-func CapitalizeName(name string) string {
-	words := strings.Fields(name)
+func CapitalizeText(text string) string {
+	words := strings.Fields(text)
 	capitalizedWords := make([]string, len(words))
 
 	for i, word := range words {
