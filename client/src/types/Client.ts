@@ -14,3 +14,11 @@ export type ICreateClientRequest = {
   phone: string;
   userID: string;
 };
+
+export type IUpdateClientRequest = {
+  cpf: string;
+  name: string;
+  email?: string;
+  phone: string;
+  userID: string;
+};

@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, Form, Button } from "react-bootstrap";
+import { TextInput } from "../../components/CustomInputs";
 
 import api from "../../service/api";
 
-import { IService } from "../../types/Service";
+import { IUpdateServiceRequest } from "../../types/Service";
 
 export default function ServiceDetails() {
   const serviceID = useParams().serviceID;
-  const [service, setService] = useState<IService | null>(null);
-  const [editableFields, setEditableFields] = useState<Partial<IService>>({});
+  const [service, setService] = useState<IUpdateServiceRequest | null>(null);
+  const [editableFields, setEditableFields] = useState<Partial<IUpdateServiceRequest>>({});
 
-  console.log(serviceID);
+  const navigate = useNavigate();
+  const goBack = () => navigate("/services/list");
 
   const fetchServiceData = async () => {
     try {
       const response = await api.get(`/services/${serviceID}`, { withCredentials: true });
       setService(response.data);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      console.error(error.response.data.error);
     }
   };
 
@@ -26,17 +28,20 @@ export default function ServiceDetails() {
     fetchServiceData();
   }, []);
 
-  const navigate = useNavigate();
-  const goBack = () => navigate("/services/list");
+  const handleInputChange = (fieldName: keyof IUpdateServiceRequest, event: React.ChangeEvent<HTMLInputElement>) => {
+    let value: string | number = event.target.value;
 
-  const handleInputChange = (fieldName: keyof IService, value: string) => {
+    if (fieldName === "duration" || fieldName === "price") {
+      value = Number(value);
+    }
+
     setEditableFields({
       ...editableFields,
       [fieldName]: value,
     });
   };
 
-  const handleUpdateService = () => {
+  const handleUpdateService = async () => {
     if (service && editableFields) {
       const updatedServiceData = {
         id: Number(serviceID),
@@ -44,24 +49,32 @@ export default function ServiceDetails() {
         ...editableFields,
       };
 
-      api
-        .put("/services/", updatedServiceData, { withCredentials: true })
-        .then((response) => {
-          setService(response.data);
-          setEditableFields({});
+      try {
+        const response = await api.put("/services/", updatedServiceData, { withCredentials: true });
+
+        setService(response.data);
+        setEditableFields({});
+
+        if (response.status === 200) {
           alert("Serviço atualizado com sucesso");
-        })
-        .catch((error) => console.error(error));
+          goBack();
+        }
+      } catch (error: any) {
+        console.error(error.response.data.error);
+      }
     }
   };
 
-  const handleDeleteService = () => {
-    if (service) {
-      if (confirm("Tem certeza de que deseja excluir este serviço?")) {
-        api
-          .delete(`/services/${service.id}`, { withCredentials: true })
-          .then(() => goBack())
-          .catch((error) => console.error(error));
+  const handleDeleteService = async () => {
+    if (service && confirm("Tem certeza de que deseja excluir este serviço?")) {
+      try {
+        const response = await api.delete(`/services/${serviceID}`, { withCredentials: true });
+
+        if (response.status === 204) {
+          goBack();
+        }
+      } catch (error: any) {
+        console.error(error.response.data.error);
       }
     }
   };
@@ -81,53 +94,35 @@ export default function ServiceDetails() {
         {service ? (
           <>
             <Card.Title className="mb-3">Detalhes do serviço</Card.Title>
-
             <Form>
-              <Form.Group className="mb-3" controlId="cpf">
-                <Form.Label>
-                  Nome <span className="text-red">*</span>
-                </Form.Label>
-                <Form.Control
-                  type="text"
-                  name="Name"
-                  autoComplete="off"
-                  value={editableFields.name || service.name}
-                  onChange={(e) => handleInputChange("name", e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="name">
-                <Form.Label>Descrição</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="Description"
-                  autoComplete="off"
-                  value={editableFields.description || service.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="phone">
-                <Form.Label>Duração (horas)</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="Duration"
-                  autoComplete="off"
-                  value={editableFields.duration || service.duration}
-                  onChange={(e) => handleInputChange("duration", e.target.value)}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="phone">
-                <Form.Label>Preço</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="Price"
-                  autoComplete="off"
-                  value={editableFields.price || service.price}
-                  onChange={(e) => handleInputChange("price", e.target.value)}
-                />
-              </Form.Group>
+              <TextInput
+                label="Nome"
+                id="name"
+                value={editableFields.name !== undefined ? editableFields.name : service.name}
+                onChange={(event) => handleInputChange("name", event)}
+                required
+              />
+              <TextInput
+                label="Descrição"
+                id="description"
+                value={editableFields.description !== undefined ? editableFields.description : service.description}
+                onChange={(event) => handleInputChange("description", event)}
+                required
+              />
+              <TextInput
+                label="Duração (horas)"
+                id="duration"
+                value={editableFields.duration !== undefined ? editableFields.duration : service.duration}
+                onChange={(event) => handleInputChange("duration", event)}
+                required
+              />
+              <TextInput
+                label="Preço"
+                id="price"
+                value={editableFields.price !== undefined ? editableFields.price : service.price}
+                onChange={(event) => handleInputChange("price", event)}
+                required
+              />
 
               <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateService}>
                 Salvar alterações

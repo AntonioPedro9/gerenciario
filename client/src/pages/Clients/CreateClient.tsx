@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Form } from "react-bootstrap";
 
 import { TextInput, EmailInput, PhoneInput } from "../../components/CustomInputs";
@@ -20,7 +21,10 @@ export default function CreateClient() {
     userID: userID,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const navigate = useNavigate();
+  const goBack = () => navigate("/clients/list");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({
       ...form,
@@ -39,7 +43,12 @@ export default function CreateClient() {
     }
 
     try {
-      await api.post(`/clients/`, form, { withCredentials: true });
+      const response = await api.post(`/clients/`, form, { withCredentials: true });
+
+      if (response.status === 201) {
+        alert("Cliente criado com sucesso");
+        goBack();
+      }
 
       setForm({
         cpf: "",
@@ -59,10 +68,10 @@ export default function CreateClient() {
         <Card.Title className="mb-3">Cadastrar cliente</Card.Title>
 
         <Form onSubmit={handleSubmit}>
-          <TextInput label="CPF" id="cpf" value={form.cpf} onChange={handleChange} required />
-          <TextInput label="Nome" id="name" value={form.name} onChange={handleChange} required />
-          <EmailInput label="Email" id="email" value={form.email} onChange={handleChange} />
-          <PhoneInput label="Telefone" id="phone" value={form.phone} onChange={handleChange} required />
+          <TextInput label="CPF" id="cpf" value={form.cpf} onChange={handleInputChange} required />
+          <TextInput label="Nome" id="name" value={form.name} onChange={handleInputChange} required />
+          <EmailInput label="Email" id="email" value={form.email} onChange={handleInputChange} />
+          <PhoneInput label="Telefone" id="phone" value={form.phone} onChange={handleInputChange} required />
           <SubmitButton text="Cadastrar" />
         </Form>
       </Card.Body>

@@ -13,11 +13,17 @@ export default function ListServices() {
   const [services, setServices] = useState<IService[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchServices = async () => {
+    try {
+      const response = await api.get(`/services/list/${userID}`, { withCredentials: true });
+      setServices(response.data);
+    } catch (error: any) {
+      console.error(error.response.data.error);
+    }
+  };
+
   useEffect(() => {
-    api
-      .get(`/services/list/${userID}`, { withCredentials: true })
-      .then((response) => setServices(response.data))
-      .catch((error) => console.error(error));
+    fetchServices();
   }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

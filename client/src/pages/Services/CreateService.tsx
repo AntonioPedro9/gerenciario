@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Form } from "react-bootstrap";
 
 import { TextInput, NumberInput } from "../../components/CustomInputs";
@@ -20,7 +21,10 @@ export default function CreateService() {
     userID: userID,
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const navigate = useNavigate();
+  const goBack = () => navigate("/services/list");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({
       ...form,
@@ -38,10 +42,13 @@ export default function CreateService() {
       return;
     }
 
-    console.log(form);
-
     try {
-      await api.post(`/services/`, form, { withCredentials: true });
+      const response = await api.post(`/services/`, form, { withCredentials: true });
+
+      if (response.status === 201) {
+        alert("Serviço criado com sucesso");
+        goBack();
+      }
 
       setForm({
         name: "",
@@ -61,10 +68,10 @@ export default function CreateService() {
         <Card.Title className="mb-3">Cadastrar serviço</Card.Title>
 
         <Form onSubmit={handleSubmit}>
-          <TextInput label="Nome" id="name" value={form.name} onChange={handleChange} required />
-          <TextInput label="Description" id="description" value={form.description} onChange={handleChange} />
-          <NumberInput label="Duração (horas)" id="duration" value={form.duration} onChange={handleChange} />
-          <NumberInput label="Preço" id="price" value={form.price} onChange={handleChange} />
+          <TextInput label="Nome" id="name" value={form.name} onChange={handleInputChange} required />
+          <TextInput label="Description" id="description" value={form.description} onChange={handleInputChange} />
+          <NumberInput label="Duração (horas)" id="duration" value={form.duration} onChange={handleInputChange} />
+          <NumberInput label="Preço" id="price" value={form.price} onChange={handleInputChange} />
           <SubmitButton text="Cadastrar" />
         </Form>
       </Card.Body>

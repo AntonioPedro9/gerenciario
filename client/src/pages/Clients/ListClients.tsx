@@ -13,11 +13,17 @@ export default function ListClients() {
   const [clients, setClients] = useState<IClient[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchClients = async () => {
+    try {
+      const response = await api.get(`/clients/list/${userID}`, { withCredentials: true });
+      setClients(response.data);
+    } catch (error: any) {
+      console.error(error.response.data.error);
+    }
+  };
+
   useEffect(() => {
-    api
-      .get(`/clients/list/${userID}`, { withCredentials: true })
-      .then((response) => setClients(response.data))
-      .catch((error) => console.error(error));
+    fetchClients();
   }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
