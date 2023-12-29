@@ -14,7 +14,7 @@ function CustomNavbar() {
     try {
       await logout();
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error("Erro ao sair da conta:", error);
     }
   };
 
@@ -49,11 +49,11 @@ function CustomNavbar() {
                 </NavDropdown.Item>
               </NavDropdown>
 
-              <NavDropdown title="Agendamentos" menuVariant="dark">
-                <NavDropdown.Item as={Link} to="/appointments/create">
+              <NavDropdown title="Orçamentos" menuVariant="dark">
+                <NavDropdown.Item as={Link} to="/budgets/create">
                   Cadastrar
                 </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/appointments/list">
+                <NavDropdown.Item as={Link} to="/budgets/list">
                   Buscar
                 </NavDropdown.Item>
               </NavDropdown>

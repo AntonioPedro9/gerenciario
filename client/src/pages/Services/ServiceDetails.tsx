@@ -5,11 +5,11 @@ import { TextInput } from "../../components/CustomInputs";
 
 import api from "../../service/api";
 
-import { IUpdateServiceRequest } from "../../types/Service";
+import { IService, IUpdateServiceRequest } from "../../types/Service";
 
 export default function ServiceDetails() {
   const serviceID = useParams().serviceID;
-  const [service, setService] = useState<IUpdateServiceRequest | null>(null);
+  const [service, setService] = useState<IService | null>(null);
   const [editableFields, setEditableFields] = useState<Partial<IUpdateServiceRequest>>({});
 
   const navigate = useNavigate();
