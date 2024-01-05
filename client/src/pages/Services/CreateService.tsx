@@ -69,7 +69,7 @@ export default function CreateService() {
 
         <Form onSubmit={handleSubmit}>
           <TextInput label="Nome" id="name" value={form.name} onChange={handleInputChange} required />
-          <TextInput label="Description" id="description" value={form.description} onChange={handleInputChange} />
+          <TextInput label="Descrição" id="description" value={form.description} onChange={handleInputChange} />
           <NumberInput label="Duração (horas)" id="duration" value={form.duration} onChange={handleInputChange} />
           <NumberInput label="Preço" id="price" value={form.price} onChange={handleInputChange} />
           <SubmitButton text="Cadastrar" />
