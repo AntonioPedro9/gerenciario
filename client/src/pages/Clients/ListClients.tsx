@@ -40,7 +40,7 @@ export default function ListClients() {
   });
 
   return (
-    <Card className="mx-auto my-4" style={{ width: "32rem" }}>
+    <Card className="mx-auto my-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Buscar cliente</Card.Title>
 

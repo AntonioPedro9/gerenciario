@@ -74,7 +74,7 @@ export default function ClientDetails() {
   };
 
   return (
-    <Card className="mx-auto my-4" style={{ width: "32rem" }}>
+    <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
       <Card.Header className="d-flex justify-content-between align-items-center">
         <span className="material-symbols-outlined" role="button" onClick={goBack}>
           arrow_back

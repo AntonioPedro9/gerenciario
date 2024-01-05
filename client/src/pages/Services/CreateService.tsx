@@ -63,7 +63,7 @@ export default function CreateService() {
   };
 
   return (
-    <Card className="mx-auto mt-4" style={{ width: "32rem" }}>
+    <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Cadastrar serviço</Card.Title>
 
