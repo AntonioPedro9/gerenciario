@@ -34,14 +34,13 @@ func main() {
 	r.SetTrustedProxies([]string{"localhost"})
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:5173"}
-	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	config.AllowOrigins = []string{"*"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	config.AllowCredentials = true
 	r.Use(cors.New(config))
 
 	db := database.ConnectToDatabase()
-	// database.ClearTestDatabase(db)
 	database.CreateDatabaseTables(db)
 
 	userRepository := repositories.NewUserRepository(db)
@@ -50,7 +49,6 @@ func main() {
 	userGroup := r.Group("/users")
 	{
 		userGroup.POST("/", userHandler.CreateUser)
-		userGroup.GET("/", userHandler.ListUsers)
 		userGroup.PUT("/", middlewares.RequireAuth, userHandler.UpdateUser)
 		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
 		userGroup.POST("/login", userHandler.LoginUser)
