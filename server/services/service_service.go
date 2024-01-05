@@ -91,6 +91,11 @@ func (ss *ServiceService) UpdateService(service *models.UpdateServiceRequest, to
 		service.Name = &capitalizedName
 	}
 
+	if service.Description != nil {
+		capitalizedDescription := utils.CapitalizeText(*service.Description)
+		service.Description = &capitalizedDescription
+	}
+
 	updatedService, err := ss.serviceRepository.Update(service)
 	if err != nil {
 		return nil, err
