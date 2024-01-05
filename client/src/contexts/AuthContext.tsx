@@ -35,8 +35,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await api.post("/users/login", { email, password });
       Cookies.set("Authorization", response.data.token, { path: "/" });
       setLoginStatus(true);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      alert(error.response.data.error);
     }
   };
 
@@ -48,9 +48,5 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  return (
-    <AuthContext.Provider value={{ isLoggedIn, setLoginStatus, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ isLoggedIn, setLoginStatus, login, logout }}>{children}</AuthContext.Provider>;
 }
