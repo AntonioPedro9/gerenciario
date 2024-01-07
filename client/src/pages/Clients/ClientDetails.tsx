@@ -54,7 +54,7 @@ export default function ClientDetails() {
           goBack();
         }
       } catch (error: any) {
-        console.error(error.response.data.error);
+        alert(error.response.data.error);
       }
     }
   };
@@ -68,7 +68,7 @@ export default function ClientDetails() {
           goBack();
         }
       } catch (error: any) {
-        console.error(error.response.data.error);
+        alert(error.response.data.error);
       }
     }
   };

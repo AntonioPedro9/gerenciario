@@ -13,8 +13,9 @@ function CustomNavbar() {
 
     try {
       await logout();
-    } catch (error) {
-      console.error("Erro ao sair da conta:", error);
+    } catch (error: any) {
+      alert("Erro ao sair da conta");
+      console.error(error.message);
     }
   };
 
