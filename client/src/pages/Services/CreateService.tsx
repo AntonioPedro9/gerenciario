@@ -46,8 +46,9 @@ export default function CreateService() {
       const response = await api.post(`/services/`, form, { withCredentials: true });
 
       if (response.status === 201) {
-        alert("Serviço criado com sucesso");
         goBack();
+      } else {
+        alert("Falha ao cadastrar serviço");
       }
 
       setForm({

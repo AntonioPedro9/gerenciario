@@ -33,8 +33,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post("/users/login", { email, password });
-      Cookies.set("Authorization", response.data.token, { path: "/" });
-      setLoginStatus(true);
+
+      if (response.status === 200) {
+        Cookies.set("Authorization", response.data.token, { path: "/" });
+        setLoginStatus(true);
+      } else {
+        alert("Falha ao fazer login");
+      }
     } catch (error: any) {
       alert(error.response.data.error);
     }

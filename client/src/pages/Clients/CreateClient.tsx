@@ -46,8 +46,9 @@ export default function CreateClient() {
       const response = await api.post(`/clients/`, form, { withCredentials: true });
 
       if (response.status === 201) {
-        alert("Cliente criado com sucesso");
         goBack();
+      } else {
+        alert("Falha ao cadastrar cliente");
       }
 
       setForm({

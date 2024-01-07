@@ -36,7 +36,12 @@ export default function Register() {
 
     try {
       const response = await api.post("/users/", form);
-      if (response.status === 201) navigate("/login");
+
+      if (response.status === 201) {
+        navigate("/login");
+      } else {
+        alert("Falha ao criar cadastro");
+      }
     } catch (error: any) {
       alert(error.response.data.error);
     }

@@ -50,8 +50,9 @@ export default function ClientDetails() {
         setEditableFields({});
 
         if (response.status === 200) {
-          alert("Cliente atualizado com sucesso");
           goBack();
+        } else {
+          alert("Falha ao atualizar cliente");
         }
       } catch (error: any) {
         alert(error.response.data.error);

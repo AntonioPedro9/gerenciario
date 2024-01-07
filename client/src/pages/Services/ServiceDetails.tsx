@@ -56,8 +56,9 @@ export default function ServiceDetails() {
         setEditableFields({});
 
         if (response.status === 200) {
-          alert("Serviço atualizado com sucesso");
           goBack();
+        } else {
+          alert("Falha ao atualizar serviço");
         }
       } catch (error: any) {
         console.error(error.response.data.error);
