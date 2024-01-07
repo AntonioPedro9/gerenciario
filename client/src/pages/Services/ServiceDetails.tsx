@@ -107,21 +107,18 @@ export default function ServiceDetails() {
                 id="description"
                 value={editableFields.description !== undefined ? editableFields.description : service.description}
                 onChange={(event) => handleInputChange("description", event)}
-                required
               />
               <TextInput
                 label="Duração (horas)"
                 id="duration"
                 value={editableFields.duration !== undefined ? editableFields.duration : service.duration}
                 onChange={(event) => handleInputChange("duration", event)}
-                required
               />
               <TextInput
                 label="Preço"
                 id="price"
                 value={editableFields.price !== undefined ? editableFields.price : service.price}
                 onChange={(event) => handleInputChange("price", event)}
-                required
               />
 
               <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateService}>
