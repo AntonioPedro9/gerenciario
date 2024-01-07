@@ -41,6 +41,9 @@ func main() {
 	r.Use(cors.New(config))
 
 	db := database.ConnectToDatabase()
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
+
 	database.CreateDatabaseTables(db)
 
 	userRepository := repositories.NewUserRepository(db)
