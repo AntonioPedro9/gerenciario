@@ -65,7 +65,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/clients/:clientID",
+        path: "/clients/:userID",
         element: (
           <PrivateRoute>
             <ClientDetails />
@@ -89,7 +89,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/services/:serviceID",
+        path: "/services/:userID",
         element: (
           <PrivateRoute>
             <ServiceDetails />

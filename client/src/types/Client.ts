@@ -16,6 +16,7 @@ export type ICreateClientRequest = {
 };
 
 export type IUpdateClientRequest = {
+  id: number;
   cpf: string;
   name: string;
   email?: string;

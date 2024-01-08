@@ -16,6 +16,7 @@ export type ICreateServiceRequest = {
 };
 
 export type IUpdateServiceRequest = {
+  id: number;
   name: string;
   description?: string;
   duration?: number;

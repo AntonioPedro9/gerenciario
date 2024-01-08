@@ -8,17 +8,26 @@ import api from "../../service/api";
 import { IClient, IUpdateClientRequest } from "../../types/Client";
 
 export default function ClientDetails() {
-  const clientID = useParams().clientID;
+  const userID = useParams().userID;
   const [client, setClient] = useState<IClient | null>(null);
-  const [editableFields, setEditableFields] = useState<Partial<IUpdateClientRequest>>({});
+  const [cpf, setCpf] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
   const goBack = () => navigate("/clients/list");
 
   const fetchClientData = async () => {
     try {
-      const response = await api.get(`/clients/${clientID}`, { withCredentials: true });
-      setClient(response.data);
+      const response = await api.get(`/clients/${userID}`, { withCredentials: true });
+      const clientData = response.data;
+
+      setClient(clientData);
+      setCpf(clientData.cpf);
+      setName(clientData.name);
+      setEmail(clientData.email);
+      setPhone(clientData.phone);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
@@ -28,32 +37,25 @@ export default function ClientDetails() {
     fetchClientData();
   }, []);
 
-  const handleInputChange = (fieldName: keyof IUpdateClientRequest, event: React.ChangeEvent<HTMLInputElement>) => {
-    setEditableFields({
-      ...editableFields,
-      [fieldName]: event.target.value,
-    });
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setter(event.target.value);
   };
 
   const handleUpdateClient = async () => {
-    if (client && editableFields) {
-      const updatedClientData = {
-        id: Number(clientID),
+    if (client) {
+      const updatedClientData: IUpdateClientRequest = {
+        id: Number(userID),
+        cpf,
+        name,
+        email,
+        phone,
         userID: client.userID,
-        ...editableFields,
       };
 
       try {
         const response = await api.put("/clients/", updatedClientData, { withCredentials: true });
-
         setClient(response.data);
-        setEditableFields({});
-
-        if (response.status === 200) {
-          goBack();
-        } else {
-          alert("Falha ao atualizar cliente");
-        }
+        if (response.status === 200) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
       }
@@ -63,11 +65,8 @@ export default function ClientDetails() {
   const handleDeleteClient = async () => {
     if (client && confirm("Tem certeza de que deseja excluir este cliente?")) {
       try {
-        const response = await api.delete(`/clients/${clientID}`, { withCredentials: true });
-
-        if (response.status === 204) {
-          goBack();
-        }
+        const response = await api.delete(`/clients/${userID}`, { withCredentials: true });
+        if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
       }
@@ -90,33 +89,10 @@ export default function ClientDetails() {
           <>
             <Card.Title className="mb-3">Detalhes do cliente</Card.Title>
             <Form>
-              <TextInput
-                label="CPF"
-                id="cpf"
-                value={editableFields.cpf !== undefined ? editableFields.cpf : client.cpf}
-                onChange={(event) => handleInputChange("cpf", event)}
-                required
-              />
-              <TextInput
-                label="Nome"
-                id="name"
-                value={editableFields.name !== undefined ? editableFields.name : client.name}
-                onChange={(event) => handleInputChange("name", event)}
-                required
-              />
-              <EmailInput
-                label="Email"
-                id="email"
-                value={editableFields.email !== undefined ? editableFields.email : client.email}
-                onChange={(event) => handleInputChange("email", event)}
-              />
-              <PhoneInput
-                label="Telefone"
-                id="phone"
-                value={editableFields.phone !== undefined ? editableFields.phone : client.phone}
-                onChange={(event) => handleInputChange("phone", event)}
-                required
-              />
+              <TextInput label="CPF" id="cpf" value={cpf} onChange={handleInputChange(setCpf)} required />
+              <TextInput label="Nome" id="name" value={name} onChange={handleInputChange(setName)} required />
+              <EmailInput label="Email" id="email" value={email} onChange={handleInputChange(setEmail)} />
+              <PhoneInput label="Telefone" id="phone" value={phone} onChange={handleInputChange(setPhone)} required />
 
               <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateClient}>
                 Salvar alterações
@@ -124,7 +100,7 @@ export default function ClientDetails() {
             </Form>
           </>
         ) : (
-          <div>Carregando...</div>
+          <p>Carregando...</p>
         )}
       </Card.Body>
     </Card>
