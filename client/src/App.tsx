@@ -1,12 +1,14 @@
 import { Outlet } from "react-router-dom";
 
-import CustomNavbar from "./components/CustomNavbar";
+import TopNavbar from "./components/TopNavbar";
+import BottomNavbar from "./components/BottomNavbar";
 
 export default function App() {
   return (
     <>
-      <CustomNavbar />
+      <TopNavbar />
       <Outlet />
+      <BottomNavbar />
     </>
   );
 }
