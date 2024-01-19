@@ -17,6 +17,14 @@ func NewClientService(clientRepository *repositories.ClientRepository) *ClientSe
 }
 
 func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error {
+	var formattedCPF string
+	if client.CPF != "" {
+		formattedCPF, err = utils.FormatCPF(client.CPF)
+		if err != nil {
+			return err
+		}
+	}
+
 	if !utils.IsValidName(client.Name) {
 		return utils.InvalidNameError
 	}
@@ -33,7 +41,7 @@ func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error 
 	}
 
 	validClient := &models.Client{
-		CPF:    client.CPF,
+		CPF:    client.formattedCPF,
 		Name:   utils.CapitalizeText(client.Name),
 		Email:  client.Email,
 		Phone:  formattedPhone,
