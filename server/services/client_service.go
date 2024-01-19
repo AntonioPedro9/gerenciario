@@ -27,18 +27,13 @@ func (cs *ClientService) CreateClient(client *models.CreateClientRequest) error 
 		}
 	}
 
-	formattedCPF, err := utils.FormatCPF(client.CPF)
-	if err != nil {
-		return utils.InvalidCpfError
-	}
-
 	formattedPhone, err := utils.FormatPhone(client.Phone)
 	if err != nil {
 		return utils.InvalidPhoneError
 	}
 
 	validClient := &models.Client{
-		CPF:    formattedCPF,
+		CPF:    client.CPF,
 		Name:   utils.CapitalizeText(client.Name),
 		Email:  client.Email,
 		Phone:  formattedPhone,

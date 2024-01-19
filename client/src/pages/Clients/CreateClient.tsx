@@ -63,7 +63,7 @@ export default function CreateClient() {
         <Card.Title className="mb-3">Cadastrar cliente</Card.Title>
 
         <Form onSubmit={handleSubmit}>
-          <TextInput label="CPF" id="cpf" value={cpf} onChange={handleInputChange(setCpf)} required />
+          <TextInput label="CPF" id="cpf" value={cpf} onChange={handleInputChange(setCpf)} />
           <TextInput label="Nome" id="name" value={name} onChange={handleInputChange(setName)} required />
           <EmailInput label="Email" id="email" value={email} onChange={handleInputChange(setEmail)} />
           <PhoneInput label="Telefone" id="phone" value={phone} onChange={handleInputChange(setPhone)} required />

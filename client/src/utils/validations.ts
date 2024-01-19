@@ -1,10 +1,7 @@
 import * as yup from "yup";
 
 const clientSchema = yup.object().shape({
-  cpf: yup
-    .string()
-    .matches(/^\d{11}$/, "CPF deve ter 11 dígitos")
-    .required("Preencha todos os campos obrigatórios"),
+  cpf: yup.string(),
 
   name: yup.string().required("Preencha todos os campos obrigatórios"),
 
