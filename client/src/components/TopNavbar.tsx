@@ -30,40 +30,9 @@ export default function TopNavbar() {
         </Navbar.Brand>
 
         {isLoggedIn && (
-          <>
-            {/* <Nav className="me-auto">
-              <NavDropdown title="Clientes" menuVariant="dark">
-                <NavDropdown.Item as={Link} to="/clients/create">
-                  Cadastrar
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/clients/list">
-                  Buscar
-                </NavDropdown.Item>
-              </NavDropdown>
-
-              <NavDropdown title="Serviços" menuVariant="dark">
-                <NavDropdown.Item as={Link} to="/services/create">
-                  Cadastrar
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/services/list">
-                  Buscar
-                </NavDropdown.Item>
-              </NavDropdown>
-
-              <NavDropdown title="Orçamentos" menuVariant="dark">
-                <NavDropdown.Item as={Link} to="/budgets/create">
-                  Cadastrar
-                </NavDropdown.Item>
-                <NavDropdown.Item as={Link} to="/budgets/list">
-                  Buscar
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav> */}
-
-            <Button variant="outline-light" size="sm" onClick={handleLogout}>
-              Sair
-            </Button>
-          </>
+          <Button variant="outline-light" size="sm" onClick={handleLogout}>
+            Sair
+          </Button>
         )}
       </Container>
     </Navbar>
