@@ -11,12 +11,19 @@ import { PrivateRoute, PublicRoute } from "./components/RouteGuard.tsx";
 import Register from "./pages/Register.tsx";
 import Login from "./pages/Login.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
+
+// Client pages
 import CreateClient from "./pages/Clients/CreateClient.tsx";
 import ListClients from "./pages/Clients/ListClients.tsx";
 import ClientDetails from "./pages/Clients/ClientDetails.tsx";
+
+// Service pages
 import CreateService from "./pages/Services/CreateService.tsx";
 import ListServices from "./pages/Services/ListServices.tsx";
 import ServiceDetails from "./pages/Services/ServiceDetails.tsx";
+
+// Budget pages
+import CreateBudget from "./pages/Budgets/CreateBudget.tsx";
 
 const router = createBrowserRouter([
   {
@@ -93,6 +100,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ServiceDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/budgets/create",
+        element: (
+          <PrivateRoute>
+            <CreateBudget />
           </PrivateRoute>
         ),
       },
