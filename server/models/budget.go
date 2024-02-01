@@ -12,6 +12,7 @@ type Budget struct {
 	Date           time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UserID         uuid.UUID `gorm:"not null"`
 	ClientID       uint      `gorm:"not null"`
+	ClientName     string    `gorm:"not null"`
 	BudgetServices []BudgetService
 }
 
@@ -19,6 +20,7 @@ type CreateBudgetRequest struct {
 	Price      float32   `json:"price"`
 	UserID     uuid.UUID `json:"userID"`
 	ClientID   uint      `json:"clientID"`
+	ClientName string    `json:"clientName"`
 	ServiceIDs []uint    `json:"serviceIDs"`
 }
 

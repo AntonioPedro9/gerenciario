@@ -18,9 +18,10 @@ func NewBudgetService(budgetRepository *repositories.BudgetRepository) *BudgetSe
 
 func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error {
 	validBudget := &models.Budget{
-		Price:    budget.Price,
-		UserID:   budget.UserID,
-		ClientID: budget.ClientID,
+		Price:      budget.Price,
+		UserID:     budget.UserID,
+		ClientID:   budget.ClientID,
+		ClientName: utils.CapitalizeText(budget.ClientName),
 	}
 
 	err := bs.budgetRepository.Create(validBudget)

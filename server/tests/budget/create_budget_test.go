@@ -54,6 +54,7 @@ func TestCreateBudget(t *testing.T) {
 		Price:      100.0,
 		UserID:     userID,
 		ClientID:   1,
+		ClientName: "Client Name",
 		ServiceIDs: []uint{1},
 	}
 
