@@ -1,4 +1,5 @@
 import { Form, InputGroup } from "react-bootstrap";
+import { IClient } from "../types/Client";
 import { IService } from "../types/Service";
 
 interface ICustomInput {
@@ -12,9 +13,9 @@ interface ICustomInput {
 interface ISelectInput {
   label: string;
   id: string;
-  options: { id: number | string; name: string }[];
-  onSelect?: (value: IService) => void;
   required?: boolean;
+  options: (IClient | IService)[];
+  onSelect?: (value: any) => void;
 }
 
 export function TextInput({ label, id, value, onChange, required }: ICustomInput) {
@@ -86,7 +87,7 @@ export function SelectInput({ label, id, required, options, onSelect }: ISelectI
     const selectedOption = options.find((option) => option.id.toString() === selectedId);
 
     if (onSelect && selectedOption) {
-      onSelect(selectedOption as IService);
+      onSelect(selectedOption);
     }
   };
 
