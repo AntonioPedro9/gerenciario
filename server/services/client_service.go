@@ -74,17 +74,9 @@ func (cs *ClientService) GetClient(clientID uint, tokenID uuid.UUID) (*models.Cl
 	return client, nil
 }
 
-func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) (*models.Client, error) {
+func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenID uuid.UUID) (*models.Client, error) {	
 	if client.UserID != tokenID {
 		return nil, utils.UnauthorizedActionError
-	}
-
-	if client.Name != nil && !utils.IsValidName(*client.Name) {
-		return nil, utils.InvalidNameError
-	}
-
-	if client.Email != nil && !utils.IsValidEmail(*client.Email) {
-		return nil, utils.InvalidEmailError
 	}
 
 	existingClient, err := cs.clientRepository.GetClientById(client.ID)
@@ -104,8 +96,17 @@ func (cs *ClientService) UpdateClient(client *models.UpdateClientRequest, tokenI
 	}
 
 	if client.Name != nil {
+		if !utils.IsValidName(*client.Name) {
+			return nil, utils.InvalidNameError
+		}
 		capitalizedName := utils.CapitalizeText(*client.Name)
 		client.Name = &capitalizedName
+	}
+
+	if client.Email != nil {
+		if !utils.IsValidEmail(*client.Email) {
+			return nil, utils.InvalidEmailError
+		}
 	}
 
 	if client.Phone != nil {

@@ -45,10 +45,10 @@ export default function ClientDetails() {
     if (client) {
       const updatedClientData: IUpdateClientRequest = {
         id: Number(userID),
-        cpf,
-        name,
-        email,
-        phone,
+        cpf: cpf === "" ? null : cpf,
+        name: name === "" ? null : name,
+        email: email === "" ? null : email,
+        phone: phone === "" ? null : phone,
         userID: client.userID,
       };
 
