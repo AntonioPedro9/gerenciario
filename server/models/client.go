@@ -4,7 +4,7 @@ import "github.com/google/uuid"
 
 type Client struct {
 	ID     uint      `gorm:"primaryKey;autoIncrement" json:"id"`
-	CPF    string    `gorm:"unique" json:"cpf"`
+	CPF    string    `json:"cpf"`
 	Name   string    `gorm:"not null" json:"name"`
 	Email  string    `json:"email"`
 	Phone  string    `gorm:"not null" json:"phone"`
