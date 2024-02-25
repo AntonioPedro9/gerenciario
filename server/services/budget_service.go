@@ -18,10 +18,12 @@ func NewBudgetService(budgetRepository *repositories.BudgetRepository) *BudgetSe
 
 func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error {
 	validBudget := &models.Budget{
-		Price:      budget.Price,
-		UserID:     budget.UserID,
-		ClientID:   budget.ClientID,
-		ClientName: utils.CapitalizeText(budget.ClientName),
+		Price:        budget.Price,
+		Vehicle:      utils.CapitalizeText(budget.Vehicle),
+		LicensePlate: budget.LicensePlate,
+		UserID:       budget.UserID,
+		ClientID:     budget.ClientID,
+		ClientName:   utils.CapitalizeText(budget.ClientName),
 	}
 
 	err := bs.budgetRepository.Create(validBudget)
@@ -46,6 +48,10 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error 
 
 func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.Budget, error) {
 	return bs.budgetRepository.List(userID)
+}
+
+func (bs *BudgetService) GetBudgetServices(budgetID uint) ([]models.Service, error) {
+	return bs.budgetRepository.GetBudgetServices(budgetID)
 }
 
 func (bs *BudgetService) DeleteBudget(budgetID uint, tokenID uuid.UUID) error {

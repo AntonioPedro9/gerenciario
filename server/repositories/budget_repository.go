@@ -46,6 +46,33 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.Budget, error) {
 	return &budget, nil
 }
 
+func (br *BudgetRepository) GetBudgetServices(budgetID uint) ([]models.Service, error) {
+	var budgetServices []models.BudgetService
+	var services []models.Service
+
+	if err := br.db.Where("budget_id = ?", budgetID).Find(&budgetServices).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+
+	for _, budgetService := range budgetServices {
+		var service models.Service
+		
+		if err := br.db.Where("id = ?", budgetService.ServiceID).First(&service).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				continue
+			}
+			return nil, err
+		}
+		services = append(services, service)
+	}
+
+	return services, nil
+}
+
+
 func (br *BudgetRepository) Delete(budgetID uint) error {
 	budget := models.Budget{ID: budgetID}
 	return br.db.Delete(&budget).Error

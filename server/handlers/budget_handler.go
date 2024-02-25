@@ -71,6 +71,34 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 	c.JSON(http.StatusOK, budgets)
 }
 
+func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
+	paramBudgetID := c.Param("budgetID")
+
+	parsedBudgetID, err := strconv.ParseUint(paramBudgetID, 10, 64)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid budaget ID"})
+		return
+	}
+	budgetID := uint(parsedBudgetID)
+
+	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID)
+	if err != nil {
+		log.Error(err)
+
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
+
+	c.JSON(http.StatusOK, budgetServices)
+}
+
 func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 	paramBudgetID := c.Param("budgetID")
 
