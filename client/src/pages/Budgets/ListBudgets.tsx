@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
@@ -13,6 +13,8 @@ export default function ListBudgets() {
   const userID = getUserID() || "";
   const [budgets, setBudgets] = useState<IBudget[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   const fetchBudgets = async () => {
     try {
@@ -64,11 +66,9 @@ export default function ListBudgets() {
               </thead>
               <tbody>
                 {filteredBudgets.map((budget) => (
-                  <tr key={budget.id}>
+                  <tr key={budget.id} onClick={() => navigate(`/budgets/${budget.id}`)} style={{ cursor: "pointer" }}>
                     <td>{formatDate(budget.date)}</td>
-                    <td>
-                      <Link to={`/budgets/${budget.id}`}>{budget.clientName}</Link>
-                    </td>
+                    <td>{budget.clientName}</td>
                     <td>{formatCurrency(budget.price)}</td>
                   </tr>
                 ))}
