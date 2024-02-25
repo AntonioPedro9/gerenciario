@@ -52,6 +52,7 @@ func main() {
 	userGroup := r.Group("/users")
 	{
 		userGroup.POST("/", userHandler.CreateUser)
+		// userGroup.GET("/list", userHandler.ListUsers)
 		userGroup.PUT("/", middlewares.RequireAuth, userHandler.UpdateUser)
 		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
 		userGroup.POST("/login", userHandler.LoginUser)
@@ -88,6 +89,7 @@ func main() {
 	{
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
 		budgetGroup.GET("/list/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
+		budgetGroup.GET("/list/services/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetServices)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}
 

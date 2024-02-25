@@ -51,11 +51,13 @@ func TestCreateBudget(t *testing.T) {
 
 	// budget model to create request
 	budget := &models.CreateBudgetRequest{
-		Price:      100.0,
-		UserID:     userID,
-		ClientID:   1,
-		ClientName: "Client Name",
-		ServiceIDs: []uint{1},
+		Price:        100.0,
+		Vehicle:      "Citroen DS3",
+		LicensePlate: "AAA-1A11",
+		UserID:       userID,
+		ClientID:     1,
+		ClientName:   "Client Name",
+		ServiceIDs:   []uint{1},
 	}
 
 	r.POST("/budgets", budgetHandler.CreateBudget)
