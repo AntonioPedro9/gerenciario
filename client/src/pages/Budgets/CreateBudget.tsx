@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Form, Badge, Button } from "react-bootstrap";
 
-import { NumberInput, SelectInput } from "../../components/CustomInputs";
+import { NumberInput, SelectInput, TextInput } from "../../components/CustomInputs";
 import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
@@ -17,6 +17,8 @@ export default function CreateBudget() {
   const userID = getUserID() || "";
   const [price, setPrice] = useState<number>(0);
   const [client, setClient] = useState<IClient>();
+  const [vehicle, setVehicle] = useState("");
+  const [licensePlate, setLicensePlate] = useState("");
   const [selectedService, setSelectedService] = useState<IService>();
   const [servicesList, setServicesList] = useState<IService[]>([]);
   const [clients, setClients] = useState<IClient[]>([]);
@@ -48,6 +50,10 @@ export default function CreateBudget() {
     fetchServices();
   }, []);
 
+  const handleTextChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
+    setter(e.target.value);
+  };
+
   const handleClientChange = (selectedClient: IClient) => {
     setClient(selectedClient);
   };
@@ -70,6 +76,8 @@ export default function CreateBudget() {
 
     const newBudget: ICreateBudgetRequest = {
       price,
+      vehicle,
+      licensePlate,
       userID,
       clientID: client.id,
       clientName: client.name,
@@ -108,6 +116,8 @@ export default function CreateBudget() {
 
         <Form onSubmit={handleSubmit}>
           <SelectInput label="Cliente" id="client" options={clients} onSelect={handleClientChange} required />
+          <TextInput label="Veículo" id="vericle" value={vehicle} onChange={handleTextChange(setVehicle)} required />
+          <TextInput label="Placa" id="licensePlate" value={licensePlate} onChange={handleTextChange(setLicensePlate)} required />
           <SelectInput label="Serviços" id="service" options={services} onSelect={setSelectedService} required />
 
           <Button className="mb-3" variant="light" size="sm" onClick={handleAddService}>
