@@ -51,7 +51,7 @@ export default function Register() {
     <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Criar conta</Card.Title>
-        <Form onSubmit={handleSubmit}>
+        <Form className="mb-3" onSubmit={handleSubmit}>
           <TextInput label="Nome" id="name" value={form.name} onChange={handleInputChange} />
           <EmailInput label="Email" id="email" value={form.email} onChange={handleInputChange} />
           <PasswordInput label="Senha" id="password" value={form.password} onChange={handleInputChange} />
