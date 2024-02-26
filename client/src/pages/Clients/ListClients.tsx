@@ -66,7 +66,7 @@ export default function ListClients() {
                     <td>
                       <Link to={`/clients/${client.id}`}>{client.name}</Link>
                     </td>
-                    <td>{formatPhone(client.phone)}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>{formatPhone(client.phone)}</td>
                   </tr>
                 ))}
               </tbody>
