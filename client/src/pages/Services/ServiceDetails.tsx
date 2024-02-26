@@ -8,7 +8,7 @@ import api from "../../service/api";
 import { IService, IUpdateServiceRequest } from "../../types/Service";
 
 export default function ServiceDetails() {
-  const userID = useParams().userID;
+  const serviceID = useParams().serviceID;
   const [service, setService] = useState<IService | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,7 +20,7 @@ export default function ServiceDetails() {
 
   const fetchServiceData = async () => {
     try {
-      const response = await api.get(`/services/${userID}`, { withCredentials: true });
+      const response = await api.get(`/services/${serviceID}`, { withCredentials: true });
       const serviceData = response.data;
 
       setService(serviceData);
@@ -48,7 +48,7 @@ export default function ServiceDetails() {
   const handleUpdateService = async () => {
     if (service) {
       const updatedServiceData: IUpdateServiceRequest = {
-        id: Number(userID),
+        id: Number(serviceID),
         name,
         description,
         duration: Number(duration),
@@ -69,7 +69,7 @@ export default function ServiceDetails() {
   const handleDeleteService = async () => {
     if (service && confirm("Tem certeza de que deseja excluir este serviço?")) {
       try {
-        const response = await api.delete(`/services/${userID}`, { withCredentials: true });
+        const response = await api.delete(`/services/${serviceID}`, { withCredentials: true });
         if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);

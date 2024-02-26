@@ -8,7 +8,7 @@ import api from "../../service/api";
 import { IClient, IUpdateClientRequest } from "../../types/Client";
 
 export default function ClientDetails() {
-  const userID = useParams().userID;
+  const clientID = useParams().clientID;
   const [client, setClient] = useState<IClient | null>(null);
   const [cpf, setCpf] = useState("");
   const [name, setName] = useState("");
@@ -20,7 +20,7 @@ export default function ClientDetails() {
 
   const fetchClientData = async () => {
     try {
-      const response = await api.get(`/clients/${userID}`, { withCredentials: true });
+      const response = await api.get(`/clients/${clientID}`, { withCredentials: true });
       const clientData = response.data;
 
       setClient(clientData);
@@ -44,7 +44,7 @@ export default function ClientDetails() {
   const handleUpdateClient = async () => {
     if (client) {
       const updatedClientData: IUpdateClientRequest = {
-        id: Number(userID),
+        id: Number(clientID),
         cpf: cpf === "" ? null : cpf,
         name: name === "" ? null : name,
         email: email === "" ? null : email,
@@ -65,7 +65,7 @@ export default function ClientDetails() {
   const handleDeleteClient = async () => {
     if (client && confirm("Tem certeza de que deseja excluir este cliente?")) {
       try {
-        const response = await api.delete(`/clients/${userID}`, { withCredentials: true });
+        const response = await api.delete(`/clients/${clientID}`, { withCredentials: true });
         if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
