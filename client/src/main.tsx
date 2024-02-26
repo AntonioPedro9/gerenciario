@@ -25,6 +25,7 @@ import ServiceDetails from "./pages/Services/ServiceDetails.tsx";
 // Budget pages
 import CreateBudget from "./pages/Budgets/CreateBudget.tsx";
 import ListBudgets from "./pages/Budgets/ListBudgets.tsx";
+import BudgetDetails from "./pages/Budgets/BudgetDetails.tsx";
 
 const router = createBrowserRouter([
   {
@@ -117,6 +118,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <ListBudgets />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/budgets/:budgetID",
+        element: (
+          <PrivateRoute>
+            <BudgetDetails />
           </PrivateRoute>
         ),
       },
