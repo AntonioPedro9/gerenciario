@@ -2,22 +2,24 @@ import { IService } from "./Service";
 
 export type IBudget = {
   id: number;
-  price: number;
-  vehicle: string;
-  licensePlate: string;
-  date: string;
   userID: string;
   clientID: number;
   clientName: string;
+  clientPhone: string;
+  date: string;
   budgetServices: IService[];
+  vehicle: string;
+  licensePlate: string;
+  price: number;
 };
 
 export type ICreateBudgetRequest = {
-  price: number;
-  vehicle: string;
-  licensePlate: string;
   userID: string;
   clientID: number;
   clientName: string;
+  clientPhone: string;
   serviceIDs: number[];
+  vehicle: string;
+  licensePlate: string;
+  price: number;
 };

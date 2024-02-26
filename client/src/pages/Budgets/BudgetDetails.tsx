@@ -9,6 +9,7 @@ import { IBudget } from "../../types/Budget";
 import { IService } from "../../types/Service";
 import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { formatPhone } from "../../utils/formatPhone";
 
 export default function BudgetDetails() {
   const budgetID = useParams().budgetID;
@@ -65,6 +66,7 @@ export default function BudgetDetails() {
             <p>
               <strong>Data:</strong> {formatDate(budget.date)} <br />
               <strong>Cliente:</strong> {budget.clientName} <br />
+              <strong>Contato:</strong> {formatPhone(budget.clientPhone)} <br />
               <strong>Veículo:</strong> {budget.vehicle} <br />
               <strong>Placa:</strong> {budget.licensePlate} <br />
             </p>

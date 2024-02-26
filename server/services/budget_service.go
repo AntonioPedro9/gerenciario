@@ -17,16 +17,22 @@ func NewBudgetService(budgetRepository *repositories.BudgetRepository) *BudgetSe
 }
 
 func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error {
+	formattedPhone, err := utils.FormatPhone(budget.ClientPhone)
+	if err != nil {
+		return utils.InvalidPhoneError
+	}
+
 	validBudget := &models.Budget{
-		Price:        budget.Price,
-		Vehicle:      utils.CapitalizeText(budget.Vehicle),
-		LicensePlate: budget.LicensePlate,
 		UserID:       budget.UserID,
 		ClientID:     budget.ClientID,
 		ClientName:   utils.CapitalizeText(budget.ClientName),
+		ClientPhone:  formattedPhone,
+		Vehicle:      utils.CapitalizeText(budget.Vehicle),
+		LicensePlate: budget.LicensePlate,
+		Price:        budget.Price,
 	}
 
-	err := bs.budgetRepository.Create(validBudget)
+	err = bs.budgetRepository.Create(validBudget)
 	if err != nil {
 		return err
 	}

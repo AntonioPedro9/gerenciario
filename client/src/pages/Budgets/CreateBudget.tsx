@@ -75,13 +75,14 @@ export default function CreateBudget() {
     const serviceIDs = servicesList.map((service) => service.id);
 
     const newBudget: ICreateBudgetRequest = {
-      price,
-      vehicle,
-      licensePlate,
       userID,
       clientID: client.id,
       clientName: client.name,
+      clientPhone: client.phone,
       serviceIDs,
+      vehicle,
+      licensePlate,
+      price,
     };
 
     try {

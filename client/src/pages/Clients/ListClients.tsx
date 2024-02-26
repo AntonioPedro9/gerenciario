@@ -4,7 +4,7 @@ import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import formatPhone from "../../utils/formatPhone";
+import { formatPhone } from "../../utils/formatPhone";
 
 import { IClient } from "../../types/Client";
 
