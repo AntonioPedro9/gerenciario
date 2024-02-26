@@ -89,6 +89,7 @@ func main() {
 	{
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
 		budgetGroup.GET("/list/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
+		budgetGroup.GET("/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudget)
 		budgetGroup.GET("/list/services/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetServices)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}

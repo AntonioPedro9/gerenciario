@@ -50,6 +50,19 @@ func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.Budget, error) 
 	return bs.budgetRepository.List(userID)
 }
 
+func (bs *BudgetService) GetBudget(budgetID uint, tokenID uuid.UUID) (*models.Budget, error) {
+	budget, err := bs.budgetRepository.GetBudgetById(budgetID)
+	if err != nil {
+		return nil, err
+	}
+
+	if budget.UserID != tokenID {
+		return nil, utils.UnauthorizedActionError
+	}
+
+	return budget, nil
+}
+
 func (bs *BudgetService) GetBudgetServices(budgetID uint) ([]models.Service, error) {
 	return bs.budgetRepository.GetBudgetServices(budgetID)
 }
