@@ -110,7 +110,7 @@ func (sh *ServiceHandler) GetService(c *gin.Context) {
 		return
 	}
 
-	services, err := sh.serviceService.GetService(serviceID, tokenID)
+	service, err := sh.serviceService.GetService(serviceID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -124,7 +124,7 @@ func (sh *ServiceHandler) GetService(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, services)
+	c.JSON(http.StatusOK, service)
 }
 
 func (sh *ServiceHandler) UpdateService(c *gin.Context) {
