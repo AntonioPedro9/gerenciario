@@ -44,6 +44,7 @@ func main() {
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 
+	database.ClearTestDatabase(db)
 	database.CreateDatabaseTables(db)
 
 	userRepository := repositories.NewUserRepository(db)

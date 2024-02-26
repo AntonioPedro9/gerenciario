@@ -44,6 +44,17 @@ export default function BudgetDetails() {
     fetchBudgetServices();
   }, []);
 
+  const handleDeleteBudget = async () => {
+    if (budget && confirm("Tem certeza de que deseja excluir o orçamento?")) {
+      try {
+        const response = await api.delete(`/budgets/${budget.id}`, { withCredentials: true });
+        if (response.status === 204) goBack();
+      } catch (error: any) {
+        alert(error.response.data.error);
+      }
+    }
+  };
+
   return (
     <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
       <Card.Header className="d-flex justify-content-between align-items-center">
@@ -53,7 +64,7 @@ export default function BudgetDetails() {
         <span className="material-symbols-outlined" role="button">
           download
         </span>
-        <span className="material-symbols-outlined" role="button">
+        <span className="material-symbols-outlined" role="button" onClick={handleDeleteBudget}>
           delete
         </span>
       </Card.Header>

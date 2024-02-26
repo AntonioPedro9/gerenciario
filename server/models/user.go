@@ -7,9 +7,9 @@ type User struct {
 	Name     string    `gorm:"not null"`
 	Email    string    `gorm:"unique"`
 	Password string    `gorm:"not null"`
-	Clients  []Client
-	Services []Service
-	Budgets  []Budget
+	Clients  []Client  `gorm:"constraint:OnDelete:CASCADE;"`
+	Services []Service `gorm:"constraint:OnDelete:CASCADE;"`
+	Budgets  []Budget  `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 type CreateUserRequest struct {

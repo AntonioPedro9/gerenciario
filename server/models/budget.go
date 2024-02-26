@@ -13,7 +13,7 @@ type Budget struct {
 	ClientName     string          `gorm:"not null" json:"clientName"`
 	ClientPhone    string          `gorm:"not null" json:"clientPhone"`
 	Date           time.Time       `gorm:"default:CURRENT_TIMESTAMP" json:"date"`
-	BudgetServices []BudgetService `json:"budgetServices"`
+	BudgetServices []BudgetService `gorm:"constraint:OnDelete:CASCADE;" json:"budgetServices"`
 	Vehicle        string          `gorm:"not null" json:"vehicle"`
 	LicensePlate   string          `gorm:"not null" json:"licensePlate"`
 	Price          float32         `json:"price"`
