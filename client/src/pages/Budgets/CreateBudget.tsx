@@ -73,6 +73,7 @@ export default function CreateBudget() {
     }
 
     const serviceIDs = servicesList.map((service) => service.id);
+    const upperLicensePlate = licensePlate.toUpperCase();
 
     const newBudget: ICreateBudgetRequest = {
       userID,
@@ -81,7 +82,7 @@ export default function CreateBudget() {
       clientPhone: client.phone,
       serviceIDs,
       vehicle,
-      licensePlate,
+      licensePlate: upperLicensePlate,
       price,
     };
 

@@ -4,6 +4,7 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
+	"strings"
 
 	"github.com/google/uuid"
 )
@@ -28,7 +29,7 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error 
 		ClientName:   utils.CapitalizeText(budget.ClientName),
 		ClientPhone:  formattedPhone,
 		Vehicle:      utils.CapitalizeText(budget.Vehicle),
-		LicensePlate: budget.LicensePlate,
+		LicensePlate: strings.ToUpper(budget.LicensePlate),
 		Price:        budget.Price,
 	}
 
