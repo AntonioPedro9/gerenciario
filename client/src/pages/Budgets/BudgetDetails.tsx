@@ -82,7 +82,7 @@ export default function BudgetDetails() {
               <strong>Placa:</strong> {budget.licensePlate} <br />
             </p>
 
-            <Table className="mt-3" striped bordered hover>
+            <Table className="mt-3">
               <thead>
                 <tr>
                   <th>Serviço</th>
