@@ -1,6 +1,6 @@
 import { Form, InputGroup } from "react-bootstrap";
-import { IClient } from "../types/Client";
-import { IService } from "../types/Service";
+import { ICustomer } from "../types/Customer";
+import { IJob } from "../types/Job";
 
 interface ICustomInput {
   label: string;
@@ -14,7 +14,7 @@ interface ISelectInput {
   label: string;
   id: string;
   required?: boolean;
-  options: (IClient | IService)[];
+  options: (ICustomer | IJob)[];
   onSelect?: (value: any) => void;
 }
 

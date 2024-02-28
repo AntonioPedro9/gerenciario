@@ -5,13 +5,13 @@ import { Card, InputGroup, Form, Table } from "react-bootstrap";
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
 
-import { IBudget } from "../../types/Budget";
+import { IListBudgets } from "../../types/Budget";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 
 export default function ListBudgets() {
   const userID = getUserID() || "";
-  const [budgets, setBudgets] = useState<IBudget[]>([]);
+  const [budgets, setBudgets] = useState<IListBudgets[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function ListBudgets() {
   };
 
   const filteredBudgets = budgets.filter((budget) => {
-    const name = budget.clientName
+    const name = budget.customerName
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
@@ -67,8 +67,8 @@ export default function ListBudgets() {
               <tbody>
                 {filteredBudgets.map((budget) => (
                   <tr key={budget.id} onClick={() => navigate(`/budgets/${budget.id}`)} style={{ cursor: "pointer" }}>
-                    <td>{formatDate(budget.date)}</td>
-                    <td>{budget.clientName}</td>
+                    <td>{formatDate(budget.budgetDate)}</td>
+                    <td>{budget.customerName}</td>
                     <td>{formatCurrency(budget.price)}</td>
                   </tr>
                 ))}

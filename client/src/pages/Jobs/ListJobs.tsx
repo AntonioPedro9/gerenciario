@@ -4,34 +4,34 @@ import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import { formatPhone } from "../../utils/formatPhone";
 
-import { IClient } from "../../types/Client";
+import { IJob } from "../../types/Job";
+import { formatCurrency } from "../../utils/formatCurrency";
 
-export default function ListClients() {
+export default function ListJobs() {
   const userID = getUserID() || "";
-  const [clients, setClients] = useState<IClient[]>([]);
+  const [jobs, setJobs] = useState<IJob[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchClients = async () => {
+  const fetchJobs = async () => {
     try {
-      const response = await api.get(`/clients/list/${userID}`, { withCredentials: true });
-      setClients(response.data);
+      const response = await api.get(`/jobs/list/${userID}`, { withCredentials: true });
+      setJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    fetchClients();
+    fetchJobs();
   }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredClients = clients.filter((client) => {
-    const name = client.name
+  const filteredJobs = jobs.filter((job) => {
+    const name = job.name
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
@@ -42,31 +42,31 @@ export default function ListClients() {
   return (
     <Card className="mx-auto my-4" style={{ width: "24rem" }}>
       <Card.Body>
-        <Card.Title className="mb-3">Buscar cliente</Card.Title>
+        <Card.Title className="mb-3">Buscar serviço</Card.Title>
 
         <InputGroup className="mb-3">
-          <Form.Control placeholder="Nome do cliente" onChange={handleInputChange} />
+          <Form.Control placeholder="Nome do serviço" onChange={handleInputChange} />
           <InputGroup.Text>
             <span className="material-symbols-outlined">search</span>
           </InputGroup.Text>
         </InputGroup>
 
-        {filteredClients.length > 0 ? (
+        {filteredJobs.length > 0 ? (
           <>
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Telefone</th>
+                  <th>Preço</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredClients.map((client) => (
-                  <tr key={client.id}>
+                {filteredJobs.map((job) => (
+                  <tr key={job.id}>
                     <td>
-                      <Link to={`/clients/${client.id}`}>{client.name}</Link>
+                      <Link to={`/jobs/${job.id}`}>{job.name}</Link>
                     </td>
-                    <td style={{ whiteSpace: "nowrap" }}>{formatPhone(client.phone)}</td>
+                    <td>{formatCurrency(job.price)}</td>
                   </tr>
                 ))}
               </tbody>

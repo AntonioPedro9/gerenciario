@@ -1,13 +1,12 @@
-import { IService } from "./Service";
+import { IJob } from "./Job";
 
 export type IBudget = {
   id: number;
   userID: string;
-  clientID: number;
-  clientName: string;
-  clientPhone: string;
-  date: string;
-  budgetServices: IService[];
+  customerID: number;
+  budgetDate: string;
+  scheduledDate?: string;
+  budgetJobs: IJob[];
   vehicle: string;
   licensePlate: string;
   price: number;
@@ -15,10 +14,22 @@ export type IBudget = {
 
 export type ICreateBudgetRequest = {
   userID: string;
-  clientID: number;
-  clientName: string;
-  clientPhone: string;
-  serviceIDs: number[];
+  customerID: number;
+  jobIDs: number[];
+  vehicle: string;
+  licensePlate: string;
+  price: number;
+};
+
+export type IListBudgets = {
+  id: number;
+  userID: string;
+  customerID: number;
+  customerName: string;
+  customerPhone: string;
+  budgetDate: string;
+  scheduledDate?: string;
+  budgetJobs: IJob[];
   vehicle: string;
   licensePlate: string;
   price: number;

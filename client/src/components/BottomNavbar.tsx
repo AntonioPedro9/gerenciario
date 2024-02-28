@@ -13,19 +13,19 @@ export default function BottomNavbar() {
         <Container>
           <Nav className="mx-auto justify-content-between w-100">
             <NavDropdown drop="up" title="Clientes" menuVariant="dark">
-              <NavDropdown.Item as={Link} to="/clients/create">
+              <NavDropdown.Item as={Link} to="/customers/create">
                 Cadastrar
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/clients/list">
+              <NavDropdown.Item as={Link} to="/customers/list">
                 Buscar
               </NavDropdown.Item>
             </NavDropdown>
 
             <NavDropdown drop="up" title="Serviços" menuVariant="dark">
-              <NavDropdown.Item as={Link} to="/services/create">
+              <NavDropdown.Item as={Link} to="/jobs/create">
                 Cadastrar
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/services/list">
+              <NavDropdown.Item as={Link} to="/jobs/list">
                 Buscar
               </NavDropdown.Item>
             </NavDropdown>

@@ -1,4 +1,4 @@
-export type IService = {
+export type IJob = {
   id: number;
   name: string;
   description: string;
@@ -7,7 +7,7 @@ export type IService = {
   userID: string;
 };
 
-export type ICreateServiceRequest = {
+export type ICreateJobRequest = {
   name: string;
   description?: string;
   duration?: number;
@@ -15,7 +15,7 @@ export type ICreateServiceRequest = {
   userID: string;
 };
 
-export type IUpdateServiceRequest = {
+export type IUpdateJobRequest = {
   id: number;
   name: string;
   description?: string;

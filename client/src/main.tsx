@@ -12,15 +12,15 @@ import Register from "./pages/Register.tsx";
 import Login from "./pages/Login.tsx";
 import ErrorPage from "./pages/ErrorPage.tsx";
 
-// Client pages
-import CreateClient from "./pages/Clients/CreateClient.tsx";
-import ListClients from "./pages/Clients/ListClients.tsx";
-import ClientDetails from "./pages/Clients/ClientDetails.tsx";
+// Customer pages
+import CreateCustomer from "./pages/Customers/CreateCustomer.tsx";
+import ListCustomers from "./pages/Customers/ListCustomers.tsx";
+import CustomerDetails from "./pages/Customers/CustomerDetails.tsx";
 
-// Service pages
-import CreateService from "./pages/Services/CreateService.tsx";
-import ListServices from "./pages/Services/ListServices.tsx";
-import ServiceDetails from "./pages/Services/ServiceDetails.tsx";
+// Job pages
+import CreateJob from "./pages/Jobs/CreateJob.tsx";
+import ListJobs from "./pages/Jobs/ListJobs.tsx";
+import JobDetails from "./pages/Jobs/JobDetails.tsx";
 
 // Budget pages
 import CreateBudget from "./pages/Budgets/CreateBudget.tsx";
@@ -53,55 +53,55 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <PrivateRoute>
-            <ListClients />
+            <ListCustomers />
           </PrivateRoute>
         ),
       },
       {
-        path: "/clients/create",
+        path: "/customers/create",
         element: (
           <PrivateRoute>
-            <CreateClient />
+            <CreateCustomer />
           </PrivateRoute>
         ),
       },
       {
-        path: "/clients/list",
+        path: "/customers/list",
         element: (
           <PrivateRoute>
-            <ListClients />
+            <ListCustomers />
           </PrivateRoute>
         ),
       },
       {
-        path: "/clients/:clientID",
+        path: "/customers/:customerID",
         element: (
           <PrivateRoute>
-            <ClientDetails />
+            <CustomerDetails />
           </PrivateRoute>
         ),
       },
       {
-        path: "/services/create",
+        path: "/jobs/create",
         element: (
           <PrivateRoute>
-            <CreateService />
+            <CreateJob />
           </PrivateRoute>
         ),
       },
       {
-        path: "/services/list",
+        path: "/jobs/list",
         element: (
           <PrivateRoute>
-            <ListServices />
+            <ListJobs />
           </PrivateRoute>
         ),
       },
       {
-        path: "/services/:serviceID",
+        path: "/jobs/:jobID",
         element: (
           <PrivateRoute>
-            <ServiceDetails />
+            <JobDetails />
           </PrivateRoute>
         ),
       },

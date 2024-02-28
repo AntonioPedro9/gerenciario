@@ -9,78 +9,76 @@ import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
 import { budgetSchema } from "../../utils/validations";
 
-import { IClient } from "../../types/Client";
-import { IService } from "../../types/Service";
+import { ICustomer } from "../../types/Customer";
+import { IJob } from "../../types/Job";
 import { ICreateBudgetRequest } from "../../types/Budget";
 
 export default function CreateBudget() {
   const userID = getUserID() || "";
   const [price, setPrice] = useState<number>(0);
-  const [client, setClient] = useState<IClient>();
+  const [customer, setCustomer] = useState<ICustomer>();
   const [vehicle, setVehicle] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
-  const [selectedService, setSelectedService] = useState<IService>();
-  const [servicesList, setServicesList] = useState<IService[]>([]);
-  const [clients, setClients] = useState<IClient[]>([]);
-  const [services, setServices] = useState<IService[]>([]);
+  const [selectedJob, setSelectedJob] = useState<IJob>();
+  const [jobsList, setJobsList] = useState<IJob[]>([]);
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
+  const [jobs, setJobs] = useState<IJob[]>([]);
 
   const navigate = useNavigate();
   const goBack = () => navigate("/budgets/list");
 
-  const fetchClients = async () => {
+  const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/clients/list/${userID}`, { withCredentials: true });
-      setClients(response.data);
+      const response = await api.get(`/customers/list/${userID}`, { withCredentials: true });
+      setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
-  const fetchServices = async () => {
+  const fetchJobs = async () => {
     try {
-      const response = await api.get(`/services/list/${userID}`, { withCredentials: true });
-      setServices(response.data);
+      const response = await api.get(`/jobs/list/${userID}`, { withCredentials: true });
+      setJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    fetchClients();
-    fetchServices();
+    fetchCustomers();
+    fetchJobs();
   }, []);
 
   const handleTextChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);
   };
 
-  const handleClientChange = (selectedClient: IClient) => {
-    setClient(selectedClient);
+  const handleCustomerChange = (selectedCustomer: ICustomer) => {
+    setCustomer(selectedCustomer);
   };
 
-  const handleAddService = () => {
-    if (selectedService) {
-      setServicesList([...servicesList, selectedService]);
-      setPrice(price + selectedService.price);
+  const handleAddJob = () => {
+    if (selectedJob) {
+      setJobsList([...jobsList, selectedJob]);
+      setPrice(price + selectedJob.price);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!client) {
+    if (!customer) {
       return;
     }
 
-    const serviceIDs = servicesList.map((service) => service.id);
+    const jobIDs = jobsList.map((job) => job.id);
     const upperLicensePlate = licensePlate.toUpperCase();
 
     const newBudget: ICreateBudgetRequest = {
       userID,
-      clientID: client.id,
-      clientName: client.name,
-      clientPhone: client.phone,
-      serviceIDs,
+      customerID: customer.id,
+      jobIDs,
       vehicle,
       licensePlate: upperLicensePlate,
       price,
@@ -103,9 +101,9 @@ export default function CreateBudget() {
       }
 
       setPrice(0);
-      setClient(undefined);
-      setSelectedService(undefined);
-      setServicesList([]);
+      setCustomer(undefined);
+      setSelectedJob(undefined);
+      setJobsList([]);
     } catch (error: any) {
       alert(error.response.data.error);
     }
@@ -117,25 +115,22 @@ export default function CreateBudget() {
         <Card.Title className="mb-3">Cadastrar orçamento</Card.Title>
 
         <Form onSubmit={handleSubmit}>
-          <SelectInput label="Cliente" id="client" options={clients} onSelect={handleClientChange} required />
+          <SelectInput label="Cliente" id="customer" options={customers} onSelect={handleCustomerChange} required />{" "}
           <TextInput label="Veículo" id="vericle" value={vehicle} onChange={handleTextChange(setVehicle)} required />
           <TextInput label="Placa" id="licensePlate" value={licensePlate} onChange={handleTextChange(setLicensePlate)} required />
-          <SelectInput label="Serviços" id="service" options={services} onSelect={setSelectedService} required />
-
-          <Button className="mb-3" variant="light" size="sm" onClick={handleAddService}>
+          <SelectInput label="Serviços" id="job" options={jobs} onSelect={setSelectedJob} required />{" "}
+          <Button className="mb-3" variant="light" size="sm" onClick={handleAddJob}>
             Adicionar serviço ao orçamento +
           </Button>
-
-          {servicesList.length !== 0 ? (
+          {jobsList.length !== 0 ? (
             <div className="mb-3">
-              {servicesList.map((service, index) => (
+              {jobsList.map((job, index) => (
                 <Badge key={index} bg="secondary">
-                  {service.name}
+                  {job.name}
                 </Badge>
               ))}
             </div>
           ) : null}
-
           <NumberInput label="Preço total" id="price" value={price} onChange={(e) => setPrice(Number(e.target.value))} required />
           <SubmitButton text="Cadastrar" />
         </Form>

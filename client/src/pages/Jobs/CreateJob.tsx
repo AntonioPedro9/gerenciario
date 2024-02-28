@@ -7,11 +7,11 @@ import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import { serviceSchema } from "../../utils/validations";
+import { jobSchema } from "../../utils/validations";
 
-import { ICreateServiceRequest } from "../../types/Service";
+import { ICreateJobRequest } from "../../types/Job";
 
-export default function CreateService() {
+export default function CreateJob() {
   const userID = getUserID() || "";
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -19,7 +19,7 @@ export default function CreateService() {
   const [price, setPrice] = useState<number | "">(0);
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/services/list");
+  const goBack = () => navigate("/jobs/list");
 
   const handleTextChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);
@@ -32,7 +32,7 @@ export default function CreateService() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newService: ICreateServiceRequest = {
+    const newJob: ICreateJobRequest = {
       name,
       description,
       duration: duration === "" ? 0 : duration,
@@ -41,14 +41,14 @@ export default function CreateService() {
     };
 
     try {
-      await serviceSchema.validate(newService);
+      await jobSchema.validate(newJob);
     } catch (error: any) {
       alert(error.message);
       return;
     }
 
     try {
-      const response = await api.post(`/services/`, newService, { withCredentials: true });
+      const response = await api.post(`/jobs/`, newJob, { withCredentials: true });
 
       if (response.status === 201) {
         goBack();

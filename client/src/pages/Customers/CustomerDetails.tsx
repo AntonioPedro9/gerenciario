@@ -5,56 +5,56 @@ import { TextInput, EmailInput, PhoneInput } from "../../components/CustomInputs
 
 import api from "../../service/api";
 
-import { IClient, IUpdateClientRequest } from "../../types/Client";
+import { ICustomer, IUpdateCustomerRequest } from "../../types/Customer";
 
-export default function ClientDetails() {
-  const clientID = useParams().clientID;
-  const [client, setClient] = useState<IClient | null>(null);
+export default function CustomerDetails() {
+  const customerID = useParams().customerID;
+  const [customer, setCustomer] = useState<ICustomer | null>(null);
   const [cpf, setCpf] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/clients/list");
+  const goBack = () => navigate("/customers/list");
 
-  const fetchClientData = async () => {
+  const fetchCustomerData = async () => {
     try {
-      const response = await api.get(`/clients/${clientID}`, { withCredentials: true });
-      const clientData = response.data;
+      const response = await api.get(`/customers/${customerID}`, { withCredentials: true });
+      const customerData = response.data;
 
-      setClient(clientData);
-      setCpf(clientData.cpf);
-      setName(clientData.name);
-      setEmail(clientData.email);
-      setPhone(clientData.phone);
+      setCustomer(customerData);
+      setCpf(customerData.cpf);
+      setName(customerData.name);
+      setEmail(customerData.email);
+      setPhone(customerData.phone);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    fetchClientData();
+    fetchCustomerData();
   }, []);
 
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setter(event.target.value);
   };
 
-  const handleUpdateClient = async () => {
-    if (client) {
-      const updatedClientData: IUpdateClientRequest = {
-        id: Number(clientID),
+  const handleUpdateCustomer = async () => {
+    if (customer) {
+      const updatedCustomerData: IUpdateCustomerRequest = {
+        id: Number(customerID),
         cpf: cpf === "" ? null : cpf,
         name: name === "" ? null : name,
         email: email === "" ? null : email,
         phone: phone === "" ? null : phone,
-        userID: client.userID,
+        userID: customer.userID,
       };
 
       try {
-        const response = await api.put("/clients/", updatedClientData, { withCredentials: true });
-        setClient(response.data);
+        const response = await api.put("/customers/", updatedCustomerData, { withCredentials: true });
+        setCustomer(response.data);
         if (response.status === 200) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
@@ -62,10 +62,10 @@ export default function ClientDetails() {
     }
   };
 
-  const handleDeleteClient = async () => {
-    if (client && confirm("Tem certeza de que deseja excluir este cliente?")) {
+  const handleDeleteCustomer = async () => {
+    if (customer && confirm("Tem certeza de que deseja excluir este cliente?")) {
       try {
-        const response = await api.delete(`/clients/${clientID}`, { withCredentials: true });
+        const response = await api.delete(`/customers/${customerID}`, { withCredentials: true });
         if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
@@ -79,13 +79,13 @@ export default function ClientDetails() {
         <span className="material-symbols-outlined" role="button" onClick={goBack}>
           arrow_back
         </span>
-        <span className="material-symbols-outlined" role="button" onClick={handleDeleteClient}>
+        <span className="material-symbols-outlined" role="button" onClick={handleDeleteCustomer}>
           delete
         </span>
       </Card.Header>
 
       <Card.Body>
-        {client ? (
+        {customer ? (
           <>
             <Card.Title className="mb-3">Detalhes do cliente</Card.Title>
             <Form>
@@ -94,7 +94,7 @@ export default function ClientDetails() {
               <EmailInput label="Email" id="email" value={email} onChange={handleInputChange(setEmail)} />
               <PhoneInput label="Telefone" id="phone" value={phone} onChange={handleInputChange(setPhone)} required />
 
-              <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateClient}>
+              <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateCustomer}>
                 Salvar alterações
               </Button>
             </Form>

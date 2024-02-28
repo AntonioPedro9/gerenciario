@@ -7,11 +7,11 @@ import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import { clientSchema } from "../../utils/validations";
+import { customerSchema } from "../../utils/validations";
 
-import { ICreateClientRequest } from "../../types/Client";
+import { ICreateCustomerRequest } from "../../types/Customer";
 
-export default function CreateClient() {
+export default function CreateCustomer() {
   const userID = getUserID() || "";
   const [cpf, setCpf] = useState("");
   const [name, setName] = useState("");
@@ -19,7 +19,7 @@ export default function CreateClient() {
   const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/clients/list");
+  const goBack = () => navigate("/customers/list");
 
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);
@@ -28,7 +28,7 @@ export default function CreateClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newClient: ICreateClientRequest = {
+    const newCustomer: ICreateCustomerRequest = {
       cpf,
       name,
       email,
@@ -37,14 +37,14 @@ export default function CreateClient() {
     };
 
     try {
-      await clientSchema.validate(newClient);
+      await customerSchema.validate(newCustomer);
     } catch (error: any) {
       alert(error.message);
       return;
     }
 
     try {
-      const response = await api.post(`/clients/`, newClient, { withCredentials: true });
+      const response = await api.post(`/customers/`, newCustomer, { withCredentials: true });
 
       if (response.status === 201) goBack();
 

@@ -4,34 +4,34 @@ import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
+import { formatPhone } from "../../utils/formatPhone";
 
-import { IService } from "../../types/Service";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { ICustomer } from "../../types/Customer";
 
-export default function ListServices() {
+export default function ListCustomers() {
   const userID = getUserID() || "";
-  const [services, setServices] = useState<IService[]>([]);
+  const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchServices = async () => {
+  const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/services/list/${userID}`, { withCredentials: true });
-      setServices(response.data);
+      const response = await api.get(`/customers/list/${userID}`, { withCredentials: true });
+      setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    fetchServices();
+    fetchCustomers();
   }, []);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredServices = services.filter((service) => {
-    const name = service.name
+  const filteredCustomers = customers.filter((customer) => {
+    const name = customer.name
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "");
@@ -42,31 +42,31 @@ export default function ListServices() {
   return (
     <Card className="mx-auto my-4" style={{ width: "24rem" }}>
       <Card.Body>
-        <Card.Title className="mb-3">Buscar serviço</Card.Title>
+        <Card.Title className="mb-3">Buscar cliente</Card.Title>
 
         <InputGroup className="mb-3">
-          <Form.Control placeholder="Nome do serviço" onChange={handleInputChange} />
+          <Form.Control placeholder="Nome do cliente" onChange={handleInputChange} />
           <InputGroup.Text>
             <span className="material-symbols-outlined">search</span>
           </InputGroup.Text>
         </InputGroup>
 
-        {filteredServices.length > 0 ? (
+        {filteredCustomers.length > 0 ? (
           <>
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Preço</th>
+                  <th>Telefone</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredServices.map((service) => (
-                  <tr key={service.id}>
+                {filteredCustomers.map((customer) => (
+                  <tr key={customer.id}>
                     <td>
-                      <Link to={`/services/${service.id}`}>{service.name}</Link>
+                      <Link to={`/customers/${customer.id}`}>{customer.name}</Link>
                     </td>
-                    <td>{formatCurrency(service.price)}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>{formatPhone(customer.phone)}</td>
                   </tr>
                 ))}
               </tbody>

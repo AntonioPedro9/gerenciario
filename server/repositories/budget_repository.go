@@ -23,27 +23,67 @@ func (br *BudgetRepository) CreateBudgetJob(budgetJob *models.BudgetJob) error {
 	return br.db.Create(budgetJob).Error
 }
 
-func (br *BudgetRepository) List(userID uuid.UUID) ([]models.Budget, error) {
+func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse, error) {
 	var budgets []models.Budget
+	var response []models.ListBudgetsResponse
 
 	if err := br.db.Where("user_id = ?", userID).Find(&budgets).Error; err != nil {
 		return nil, err
 	}
 
-	return budgets, nil
+	for _, budget := range budgets {
+		var customer models.Customer
+		if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
+			return nil, err
+		}
+
+		response = append(response, models.ListBudgetsResponse{
+			UserID:        budget.UserID,
+			ID:            budget.ID,
+			CustomerID:    customer.ID,
+			CustomerName:  customer.Name,
+			CustomerPhone: customer.Phone,
+			BudgetJobs:    budget.BudgetJobs,
+			BudgetDate:    budget.BudgetDate,
+			ScheduledDate: budget.ScheduledDate,
+			Vehicle:       budget.Vehicle,
+			LicensePlate:  budget.LicensePlate,
+			Price:         budget.Price,
+		})
+	}
+
+	return response, nil
 }
 
-func (br *BudgetRepository) GetBudgetById(id uint) (*models.Budget, error) {
+
+func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse, error) {
 	var budget models.Budget
+	var response models.ListBudgetsResponse
 
 	if err := br.db.Where("id = ?", id).First(&budget).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
 		return nil, err
 	}
 
-	return &budget, nil
+	var customer models.Customer
+	if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
+		return nil, err
+	}
+
+	response = models.ListBudgetsResponse{
+		UserID:        budget.UserID,
+		ID:            budget.ID,
+		CustomerID:    customer.ID,
+		CustomerName:  customer.Name,
+		CustomerPhone: customer.Phone,
+		BudgetJobs:    budget.BudgetJobs,
+		BudgetDate:    budget.BudgetDate,
+		ScheduledDate: budget.ScheduledDate,
+		Vehicle:       budget.Vehicle,
+		LicensePlate:  budget.LicensePlate,
+		Price:         budget.Price,
+	}
+
+	return &response, nil
 }
 
 func (br *BudgetRepository) GetBudgetJobs(budgetID uint) ([]models.Job, error) {

@@ -27,6 +27,20 @@ type CreateBudgetRequest struct {
 	Price        float32   `json:"price"`
 }
 
+type ListBudgetsResponse struct {
+	UserID        uuid.UUID   `json:"userID"`
+	ID            uint        `json:"id"`
+	CustomerID    uint        `json:"customerID"`
+	CustomerName  string      `json:"customerName"`
+	CustomerPhone string      `json:"customerPhone"`
+	BudgetJobs    []BudgetJob `json:"budgetJobs"`
+	BudgetDate    time.Time   `json:"budgetDate"`
+	ScheduledDate time.Time   `json:"schedeledDate"`
+	Vehicle       string      `json:"vehicle"`
+	LicensePlate  string      `json:"licensePlate"`
+	Price         float32     `json:"price"`
+}
+
 type BudgetJob struct {
 	BudgetID uint
 	JobID    uint

@@ -1,4 +1,4 @@
-export type IClient = {
+export type ICustomer = {
   id: number;
   cpf: string;
   name: string;
@@ -7,7 +7,7 @@ export type IClient = {
   userID: string;
 };
 
-export type ICreateClientRequest = {
+export type ICreateCustomerRequest = {
   cpf: string;
   name: string;
   email?: string;
@@ -15,7 +15,7 @@ export type ICreateClientRequest = {
   userID: string;
 };
 
-export type IUpdateClientRequest = {
+export type IUpdateCustomerRequest = {
   id: number;
   cpf?: string | null;
   name?: string | null;

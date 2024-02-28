@@ -47,11 +47,11 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error 
 }
 
 
-func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.Budget, error) {
+func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.ListBudgetsResponse, error) {
 	return bs.budgetRepository.List(userID)
 }
 
-func (bs *BudgetService) GetBudget(budgetID uint, tokenID uuid.UUID) (*models.Budget, error) {
+func (bs *BudgetService) GetBudget(budgetID uint, tokenID uuid.UUID) (*models.ListBudgetsResponse, error) {
 	budget, err := bs.budgetRepository.GetBudgetById(budgetID)
 	if err != nil {
 		return nil, err

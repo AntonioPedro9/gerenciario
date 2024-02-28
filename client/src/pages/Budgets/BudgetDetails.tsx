@@ -5,43 +5,41 @@ import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
 
-import { IBudget } from "../../types/Budget";
-import { IService } from "../../types/Service";
+import { IListBudgets } from "../../types/Budget";
+import { IJob } from "../../types/Job";
 import { formatDate } from "../../utils/formatDate";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatPhone } from "../../utils/formatPhone";
 
 export default function BudgetDetails() {
   const budgetID = useParams().budgetID;
-  const [budget, setBudget] = useState<IBudget | null>(null);
-  const [budgetServices, setBudgetServices] = useState<IService[]>([]);
+  const [budget, setBudget] = useState<IListBudgets | null>(null);
+  const [budgetJobs, setBudgetJobs] = useState<IJob[]>([]);
 
   const navigate = useNavigate();
   const goBack = () => navigate("/budgets/list");
 
-  const fetchBudgetData = async () => {
+  const fetchBudget = async () => {
     try {
       const response = await api.get(`/budgets/${budgetID}`, { withCredentials: true });
-      const budgetData = response.data;
-      setBudget(budgetData);
+      setBudget(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
-  const fetchBudgetServices = async () => {
+  const fetchBudgetJobs = async () => {
     try {
-      const response = await api.get(`/budgets/list/services/${budgetID}`, { withCredentials: true });
-      const budgetServicesData = response.data;
-      setBudgetServices(budgetServicesData);
+      const response = await api.get(`/budgets/list/jobs/${budgetID}`, { withCredentials: true });
+      setBudgetJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
     }
   };
 
   useEffect(() => {
-    fetchBudgetData();
-    fetchBudgetServices();
+    fetchBudget();
+    fetchBudgetJobs();
   }, []);
 
   const handleDeleteBudget = async () => {
@@ -75,9 +73,9 @@ export default function BudgetDetails() {
             <Card.Title className="mb-3">Orçamento de serviço</Card.Title>
 
             <p>
-              <strong>Data:</strong> {formatDate(budget.date)} <br />
-              <strong>Cliente:</strong> {budget.clientName} <br />
-              <strong>Contato:</strong> {formatPhone(budget.clientPhone)} <br />
+              <strong>Data:</strong> {formatDate(budget.budgetDate)} <br />
+              <strong>Cliente:</strong> {budget.customerName} <br />
+              <strong>Contato:</strong> {formatPhone(budget.customerPhone)} <br />
               <strong>Veículo:</strong> {budget.vehicle} <br />
               <strong>Placa:</strong> {budget.licensePlate} <br />
             </p>
@@ -90,10 +88,10 @@ export default function BudgetDetails() {
                 </tr>
               </thead>
               <tbody>
-                {budgetServices.map((service, index) => (
+                {budgetJobs.map((job, index) => (
                   <tr key={index}>
-                    <td>{service.name}</td>
-                    <td>{formatCurrency(service.price)}</td>
+                    <td>{job.name}</td>
+                    <td>{formatCurrency(job.price)}</td>
                   </tr>
                 ))}
               </tbody>
