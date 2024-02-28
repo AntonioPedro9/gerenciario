@@ -1,0 +1,67 @@
+type UserValidator struct {
+	Name     func(string) error
+	Email    func(string) error
+	Password func(string) error
+}
+
+func NewUserValidator() *UserValidator {
+	return &UserValidator{
+		Name:     utils.IsValidName,
+		Email:    utils.IsValidEmail,
+		Password: utils.IsValidPassword,
+	}
+}
+
+func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
+	validator := NewUserValidator()
+
+	if err := validator.Name(user.Name); err != nil {
+		return err
+	}
+
+	if err := validator.Email(user.Email); err != nil {
+		return err
+	}
+
+	if err := validator.Password(user.Password); err != nil {
+		return err
+	}
+
+	if err := us.checkIfEmailExists(user.Email); err != nil {
+		return err
+	}
+
+	return us.createUserInRepository(user)
+}
+
+func (us *UserService) checkIfEmailExists(email string) error {
+	existingUser, err := us.userRepository.GetUserByEmail(email)
+	if err != nil {
+		return err
+	}
+	if existingUser != nil {
+		return utils.EmailInUseError
+	}
+	return nil
+}
+
+func (us *UserService) createUserInRepository(user *models.CreateUserRequest) error {
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
+	userID, err := utils.GenerateUUID()
+	if err != nil {
+		return err
+	}
+
+	validUser := &models.User{
+		ID:       userID,
+		Name:     utils.CapitalizeText(user.Name),
+		Email:    user.Email,
+		Password: hashedPassword,
+	}
+
+	return us.userRepository.Create(validUser)
+}

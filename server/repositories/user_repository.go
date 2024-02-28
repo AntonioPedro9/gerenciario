@@ -76,11 +76,7 @@ func (ur *UserRepository) Update(user *models.UpdateUserRequest) (*models.User, 
 		updateData["password"] = *user.Password
 	}
 
-	err := ur.db.Model(&models.User{}).
-		Where("id = ?", user.ID).
-		Updates(updateData).
-		Error
-
+	err := ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(updateData).Error
 	if err != nil {
 		return nil, err
 	}

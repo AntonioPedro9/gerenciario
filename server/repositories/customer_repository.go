@@ -61,11 +61,7 @@ func (cr *CustomerRepository) Update(customer *models.UpdateCustomerRequest) (*m
 		updateData["phone"] = *customer.Phone
 	}
 
-	err := cr.db.Model(&models.Customer{}).
-		Where("id = ?", customer.ID).
-		Updates(updateData).
-		Error
-
+	err := cr.db.Model(&models.Customer{}).Where("id = ?", customer.ID).Updates(updateData).Error
 	if err != nil {
 		return nil, err
 	}

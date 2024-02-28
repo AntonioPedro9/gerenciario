@@ -61,11 +61,7 @@ func (jr *JobRepository) Update(job *models.UpdateJobRequest) (*models.Job, erro
 		updateData["price"] = *job.Price
 	}
 
-	err := jr.db.Model(&models.Job{}).
-		Where("id = ?", job.ID).
-		Updates(updateData).
-		Error
-
+	err := jr.db.Model(&models.Job{}).Where("id = ?", job.ID).Updates(updateData).Error
 	if err != nil {
 		return nil, err
 	}
