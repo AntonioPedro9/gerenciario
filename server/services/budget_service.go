@@ -18,33 +18,26 @@ func NewBudgetService(budgetRepository *repositories.BudgetRepository) *BudgetSe
 }
 
 func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error {
-	formattedPhone, err := utils.FormatPhone(budget.ClientPhone)
-	if err != nil {
-		return utils.InvalidPhoneError
-	}
-
 	validBudget := &models.Budget{
 		UserID:       budget.UserID,
-		ClientID:     budget.ClientID,
-		ClientName:   utils.CapitalizeText(budget.ClientName),
-		ClientPhone:  formattedPhone,
+		CustomerID:   budget.CustomerID,
 		Vehicle:      utils.CapitalizeText(budget.Vehicle),
 		LicensePlate: strings.ToUpper(budget.LicensePlate),
 		Price:        budget.Price,
 	}
 
-	err = bs.budgetRepository.Create(validBudget)
+	err := bs.budgetRepository.Create(validBudget)
 	if err != nil {
 		return err
 	}
 
-	for _, serviceID := range budget.ServiceIDs {
-		budgetService := models.BudgetService{
-			BudgetID:  validBudget.ID,
-			ServiceID: serviceID,
+	for _, jobID := range budget.JobIDs {
+		budgetJob := models.BudgetJob{
+			BudgetID: validBudget.ID,
+			JobID:    jobID,
 		}
 
-		err = bs.budgetRepository.CreateBudgetService(&budgetService)
+		err = bs.budgetRepository.CreateBudgetJob(&budgetJob)
 		if err != nil {
 			return err
 		}
@@ -52,6 +45,7 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error 
 
 	return nil
 }
+
 
 func (bs *BudgetService) ListBudgets(userID uuid.UUID) ([]models.Budget, error) {
 	return bs.budgetRepository.List(userID)
@@ -70,9 +64,19 @@ func (bs *BudgetService) GetBudget(budgetID uint, tokenID uuid.UUID) (*models.Bu
 	return budget, nil
 }
 
-func (bs *BudgetService) GetBudgetServices(budgetID uint) ([]models.Service, error) {
-	return bs.budgetRepository.GetBudgetServices(budgetID)
+func (bs *BudgetService) GetBudgetServices(budgetID uint, tokenID uuid.UUID) ([]models.Job, error) {
+	budget, err := bs.budgetRepository.GetBudgetById(budgetID)
+	if err != nil {
+		return nil, err
+	}
+
+	if budget.UserID != tokenID {
+		return nil, utils.UnauthorizedActionError
+	}
+
+	return bs.budgetRepository.GetBudgetJobs(budgetID)
 }
+
 
 func (bs *BudgetService) DeleteBudget(budgetID uint, tokenID uuid.UUID) error {
 	existingBudget, err := bs.budgetRepository.GetBudgetById(budgetID)

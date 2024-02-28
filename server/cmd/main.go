@@ -44,6 +44,7 @@ func main() {
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
 
+	// database.ClearTestDatabase(db)
 	database.CreateDatabaseTables(db)
 
 	userRepository := repositories.NewUserRepository(db)
@@ -58,28 +59,29 @@ func main() {
 		userGroup.POST("/login", userHandler.LoginUser)
 	}
 
-	clientRepository := repositories.NewClientRepository(db)
-	clientService := services.NewClientService(clientRepository)
-	clientHandler := handlers.NewClientHandler(clientService)
-	clientGroup := r.Group("/clients")
+	customerRepository := repositories.NewCustomerRepository(db)
+	customerService := services.NewCustomerService(customerRepository)
+	customerHandler := handlers.NewCustomerHandler(customerService)
+	customerGroup := r.Group("/customers")
 	{
-		clientGroup.POST("/", middlewares.RequireAuth, clientHandler.CreateClient)
-		clientGroup.GET("/list/:userID", middlewares.RequireAuth, clientHandler.ListClients)
-		clientGroup.GET("/:clientID", middlewares.RequireAuth, clientHandler.GetClient)
-		clientGroup.PUT("/", middlewares.RequireAuth, clientHandler.UpdateClient)
-		clientGroup.DELETE("/:clientID", middlewares.RequireAuth, clientHandler.DeleteClient)
+		customerGroup.POST("/", middlewares.RequireAuth, customerHandler.CreateCustomer)
+		customerGroup.GET("/list/:userID", middlewares.RequireAuth, customerHandler.ListCustomers)
+		customerGroup.GET("/:customerID", middlewares.RequireAuth, customerHandler.GetCustomer)
+		customerGroup.PUT("/", middlewares.RequireAuth, customerHandler.UpdateCustomer)
+		customerGroup.DELETE("/:customerID", middlewares.RequireAuth, customerHandler.DeleteCustomer)
 	}
 
-	serviceRepository := repositories.NewServiceRepository(db)
-	serviceService := services.NewServiceService(serviceRepository)
-	serviceHandler := handlers.NewServiceHandler(serviceService)
-	serviceGroup := r.Group("/services")
+
+	jobRepository := repositories.NewJobRepository(db)
+	jobService := services.NewJobService(jobRepository)
+	jobHandler := handlers.NewJobHandler(jobService)
+	jobGroup := r.Group("/jobs")
 	{
-		serviceGroup.POST("/", middlewares.RequireAuth, serviceHandler.CreateService)
-		serviceGroup.GET("/list/:userID", middlewares.RequireAuth, serviceHandler.ListServices)
-		serviceGroup.GET("/:serviceID", middlewares.RequireAuth, serviceHandler.GetService)
-		serviceGroup.PUT("/", middlewares.RequireAuth, serviceHandler.UpdateService)
-		serviceGroup.DELETE("/:serviceID", middlewares.RequireAuth, serviceHandler.DeleteService)
+		jobGroup.POST("/", middlewares.RequireAuth, jobHandler.CreateJob)
+		jobGroup.GET("/list/:userID", middlewares.RequireAuth, jobHandler.ListJobs)
+		jobGroup.GET("/:jobID", middlewares.RequireAuth, jobHandler.GetJob)
+		jobGroup.PUT("/", middlewares.RequireAuth, jobHandler.UpdateJob)
+		jobGroup.DELETE("/:jobID", middlewares.RequireAuth, jobHandler.DeleteJob)
 	}
 
 	budgetRepository := repositories.NewBudgetRepository(db)
@@ -90,19 +92,8 @@ func main() {
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
 		budgetGroup.GET("/list/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
 		budgetGroup.GET("/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudget)
-		budgetGroup.GET("/list/services/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetServices)
+		budgetGroup.GET("/list/jobs/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetServices)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
-	}
-
-	appointmentRepository := repositories.NewAppointmentRepository(db)
-	appointmentService := services.NewAppointmentService(appointmentRepository)
-	appointmentHandler := handlers.NewAppointmentHandler(appointmentService)
-	appointmentGroup := r.Group("/appointments")
-	{
-		appointmentGroup.POST("/", middlewares.RequireAuth, appointmentHandler.CreateAppointment)
-		appointmentGroup.GET("/list/:userID", middlewares.RequireAuth, appointmentHandler.ListAppointments)
-		appointmentGroup.PUT("/:userID", middlewares.RequireAuth, appointmentHandler.UpdateAppointment)
-		appointmentGroup.DELETE("/:budgetID", middlewares.RequireAuth, appointmentHandler.DeleteAppointment)
 	}
 
 	r.Run()

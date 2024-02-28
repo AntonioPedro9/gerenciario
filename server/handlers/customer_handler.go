@@ -12,23 +12,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type ClientHandler struct {
-	clientService *services.ClientService
+type CustomerHandler struct {
+	customerService *services.CustomerService
 }
 
-func NewClientHandler(clientService *services.ClientService) *ClientHandler {
-	return &ClientHandler{clientService}
+func NewCustomerHandler(customerService *services.CustomerService) *CustomerHandler {
+	return &CustomerHandler{customerService}
 }
 
-func (ch *ClientHandler) CreateClient(c *gin.Context) {
-	var client models.CreateClientRequest
-	if err := c.ShouldBindJSON(&client); err != nil {
+func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
+	var customer models.CreateCustomerRequest
+	if err := c.ShouldBindJSON(&customer); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	if err := ch.clientService.CreateClient(&client); err != nil {
+	if err := ch.customerService.CreateCustomer(&customer); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -44,7 +44,7 @@ func (ch *ClientHandler) CreateClient(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-func (ch *ClientHandler) ListClients(c *gin.Context) {
+func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
 	paramUserID := c.Param("userID")
 
 	userID, err := uuid.Parse(paramUserID)
@@ -68,7 +68,7 @@ func (ch *ClientHandler) ListClients(c *gin.Context) {
 		return
 	}
 
-	users, err := ch.clientService.ListClients(userID, tokenID)
+	users, err := ch.customerService.ListCustomers(userID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -85,16 +85,16 @@ func (ch *ClientHandler) ListClients(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func (ch *ClientHandler) GetClient(c *gin.Context) {
-	paramClientID := c.Param("clientID")
+func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
+	paramCustomerID := c.Param("customerID")
 
-	parsedClientID, err := strconv.ParseUint(paramClientID, 10, 64)
+	parsedCustomerID, err := strconv.ParseUint(paramCustomerID, 10, 64)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid client ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
 		return
 	}
-	clientID := uint(parsedClientID)
+	customerID := uint(parsedCustomerID)
 
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
@@ -110,7 +110,7 @@ func (ch *ClientHandler) GetClient(c *gin.Context) {
 		return
 	}
 
-	client, err := ch.clientService.GetClient(clientID, tokenID)
+	customer, err := ch.customerService.GetCustomer(customerID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -124,10 +124,10 @@ func (ch *ClientHandler) GetClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, client)
+	c.JSON(http.StatusOK, customer)
 }
 
-func (ch *ClientHandler) UpdateClient(c *gin.Context) {
+func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
 		log.Error(err)
@@ -142,14 +142,14 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	var client models.UpdateClientRequest
-	if err := c.ShouldBindJSON(&client); err != nil {
+	var customer models.UpdateCustomerRequest
+	if err := c.ShouldBindJSON(&customer); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	updatedClient, err := ch.clientService.UpdateClient(&client, tokenID)
+	updatedCustomer, err := ch.customerService.UpdateCustomer(&customer, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -163,19 +163,19 @@ func (ch *ClientHandler) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedClient)
+	c.JSON(http.StatusOK, updatedCustomer)
 }
 
-func (ch *ClientHandler) DeleteClient(c *gin.Context) {
-	paramClientID := c.Param("clientID")
+func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
+	paramCustomerID := c.Param("customerID")
 
-	parsedID, err := strconv.ParseUint(paramClientID, 10, 64)
+	parsedID, err := strconv.ParseUint(paramCustomerID, 10, 64)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid client ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
 		return
 	}
-	clientID := uint(parsedID)
+	customerID := uint(parsedID)
 
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
@@ -191,7 +191,7 @@ func (ch *ClientHandler) DeleteClient(c *gin.Context) {
 		return
 	}
 
-	if err := ch.clientService.DeleteClient(clientID, tokenID); err != nil {
+	if err := ch.customerService.DeleteCustomer(customerID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

@@ -3,13 +3,13 @@ package models
 import "github.com/google/uuid"
 
 type User struct {
-	ID       uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name     string    `gorm:"not null"`
-	Email    string    `gorm:"unique"`
-	Password string    `gorm:"not null"`
-	Clients  []Client  `gorm:"constraint:OnDelete:CASCADE;"`
-	Services []Service `gorm:"constraint:OnDelete:CASCADE;"`
-	Budgets  []Budget  `gorm:"constraint:OnDelete:CASCADE;"`
+	ID        uuid.UUID  `gorm:"type:uuid;primaryKey" json:"id"`
+	Name      string     `gorm:"not null" json:"name"`
+	Email     string     `gorm:"unique" json:"email"`
+	Password  string     `gorm:"not null" json:"password"`
+	Customers []Customer `gorm:"constraint:OnDelete:CASCADE;" json:"customers"`
+	Jobs      []Job      `gorm:"constraint:OnDelete:CASCADE;" json:"jobs"`
+	Budgets   []Budget   `gorm:"constraint:OnDelete:CASCADE;" json:"budget"`
 }
 
 type CreateUserRequest struct {
@@ -20,8 +20,8 @@ type CreateUserRequest struct {
 
 type UpdateUserRequest struct {
 	ID       uuid.UUID `json:"id"`
-	Name     *string    `json:"name,omitempty"`
-	Password *string    `json:"password,omitempty"`
+	Name     *string   `json:"name,omitempty"`
+	Password *string   `json:"password,omitempty"`
 }
 
 type LoginUserResquest struct {

@@ -12,23 +12,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type AppointmentHandler struct {
-	appointmentService *services.AppointmentService
+type JobHandler struct {
+	jobService *services.JobService
 }
 
-func NewAppointmentHandler(appointmentService *services.AppointmentService) *AppointmentHandler {
-	return &AppointmentHandler{appointmentService}
+func NewJobHandler(jobService *services.JobService) *JobHandler {
+	return &JobHandler{jobService}
 }
 
-func (ah *AppointmentHandler) CreateAppointment(c *gin.Context) {
-	var appointment models.CreateAppointmentRequest
-	if err := c.ShouldBindJSON(&appointment); err != nil {
+func (jh *JobHandler) CreateJob(c *gin.Context) {
+	var job models.CreateJobRequest
+	if err := c.ShouldBindJSON(&job); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	if err := ah.appointmentService.CreateAppointment(&appointment); err != nil {
+	if err := jh.jobService.CreateJob(&job); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -44,7 +44,7 @@ func (ah *AppointmentHandler) CreateAppointment(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
-func (ah *AppointmentHandler) ListAppointments(c *gin.Context) {
+func (jh *JobHandler) ListJobs(c *gin.Context) {
 	paramUserID := c.Param("userID")
 
 	userID, err := uuid.Parse(paramUserID)
@@ -68,7 +68,7 @@ func (ah *AppointmentHandler) ListAppointments(c *gin.Context) {
 		return
 	}
 
-	appointments, err := ah.appointmentService.ListAppointments(userID, tokenID)
+	jobs, err := jh.jobService.ListJobs(userID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -82,10 +82,20 @@ func (ah *AppointmentHandler) ListAppointments(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, appointments)
+	c.JSON(http.StatusOK, jobs)
 }
 
-func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
+func (jh *JobHandler) GetJob(c *gin.Context) {
+	paramJobID := c.Param("jobID")
+
+	parsedJobID, err := strconv.ParseUint(paramJobID, 10, 64)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		return
+	}
+	jobID := uint(parsedJobID)
+
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
 		log.Error(err)
@@ -100,14 +110,46 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	var appointment models.UpdateAppointmentRequest
-	if err := c.ShouldBindJSON(&appointment); err != nil {
+	job, err := jh.jobService.GetJob(jobID, tokenID)
+	if err != nil {
+		log.Error(err)
+
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
+
+	c.JSON(http.StatusOK, job)
+}
+
+func (jh *JobHandler) UpdateJob(c *gin.Context) {
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
+
+	tokenID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	var job models.UpdateJobRequest
+	if err := c.ShouldBindJSON(&job); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
 		return
 	}
 
-	updatedAppointment, err := ah.appointmentService.UpdateAppointment(&appointment, tokenID)
+	updatedJob, err := jh.jobService.UpdateJob(&job, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -121,19 +163,19 @@ func (ah *AppointmentHandler) UpdateAppointment(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedAppointment)
+	c.JSON(http.StatusOK, updatedJob)
 }
 
-func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {
-	paramAppointmentID := c.Param("appointmentID")
+func (jh *JobHandler) DeleteJob(c *gin.Context) {
+	paramJobID := c.Param("jobID")
 
-	parsedID, err := strconv.ParseUint(paramAppointmentID, 10, 64)
+	parsedID, err := strconv.ParseUint(paramJobID, 10, 64)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid appointment ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
 		return
 	}
-	appointmentID := uint(parsedID)
+	jobID := uint(parsedID)
 
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
@@ -149,7 +191,7 @@ func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {
 		return
 	}
 
-	if err := ah.appointmentService.DeleteAppointment(appointmentID, tokenID); err != nil {
+	if err := jh.jobService.DeleteJob(jobID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -164,3 +206,4 @@ func (ah *AppointmentHandler) DeleteAppointment(c *gin.Context) {
 
 	c.JSON(http.StatusNoContent, nil)
 }
+

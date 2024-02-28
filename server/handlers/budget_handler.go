@@ -124,7 +124,21 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 	}
 	budgetID := uint(parsedBudgetID)
 
-	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID)
+	tokenString, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
+
+	tokenID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID, tokenID)
 	if err != nil {
 		log.Error(err)
 

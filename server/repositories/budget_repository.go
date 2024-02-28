@@ -19,14 +19,14 @@ func (br *BudgetRepository) Create(budget *models.Budget) error {
 	return br.db.Create(budget).Error
 }
 
-func (br *BudgetRepository) CreateBudgetService(budgetService *models.BudgetService) error {
-	return br.db.Create(budgetService).Error
+func (br *BudgetRepository) CreateBudgetJob(budgetJob *models.BudgetJob) error {
+	return br.db.Create(budgetJob).Error
 }
 
 func (br *BudgetRepository) List(userID uuid.UUID) ([]models.Budget, error) {
 	var budgets []models.Budget
 
-	if err := br.db.Where("user_id = ?", userID).Preload("BudgetServices").Find(&budgets).Error; err != nil {
+	if err := br.db.Where("user_id = ?", userID).Find(&budgets).Error; err != nil {
 		return nil, err
 	}
 
@@ -46,32 +46,31 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.Budget, error) {
 	return &budget, nil
 }
 
-func (br *BudgetRepository) GetBudgetServices(budgetID uint) ([]models.Service, error) {
-	var budgetServices []models.BudgetService
-	var services []models.Service
+func (br *BudgetRepository) GetBudgetJobs(budgetID uint) ([]models.Job, error) {
+	var budgetJobs []models.BudgetJob
+	var jobs []models.Job
 
-	if err := br.db.Where("budget_id = ?", budgetID).Find(&budgetServices).Error; err != nil {
+	if err := br.db.Where("budget_id = ?", budgetID).Find(&budgetJobs).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
 		return nil, err
 	}
 
-	for _, budgetService := range budgetServices {
-		var service models.Service
+	for _, budgetJob := range budgetJobs {
+		var job models.Job
 		
-		if err := br.db.Where("id = ?", budgetService.ServiceID).First(&service).Error; err != nil {
+		if err := br.db.Where("id = ?", budgetJob.JobID).First(&job).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				continue
 			}
 			return nil, err
 		}
-		services = append(services, service)
+		jobs = append(jobs, job)
 	}
 
-	return services, nil
+	return jobs, nil
 }
-
 
 func (br *BudgetRepository) Delete(budgetID uint) error {
 	budget := models.Budget{ID: budgetID}
