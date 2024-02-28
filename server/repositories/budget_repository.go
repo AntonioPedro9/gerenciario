@@ -55,7 +55,6 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 	return response, nil
 }
 
-
 func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse, error) {
 	var budget models.Budget
 	var response models.ListBudgetsResponse
