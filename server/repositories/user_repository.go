@@ -48,17 +48,8 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 
 func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
 	var user models.User
-	var count int64
-
-	ur.db.Model(&user).Where("id = ?", id).Count(&count)
-	if count == 0 {
-		return nil, nil
-	}
 
 	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		}
 		return nil, err
 	}
 
@@ -82,6 +73,7 @@ func (ur *UserRepository) Update(user *models.UpdateUserRequest) (*models.User, 
 	}
 
 	updatedUser := &models.User{}
+	
 	err = ur.db.Where("id = ?", user.ID).First(updatedUser).Error
 	if err != nil {
 		return nil, err
