@@ -3,13 +3,13 @@ package models
 import "github.com/google/uuid"
 
 type Customer struct {
-	UserID  uuid.UUID        `gorm:"not null" json:"userID"`
-	ID      uint             `gorm:"primaryKey;autoIncrement" json:"id"`
-	CPF     string           `json:"cpf"`
-	Name    string           `gorm:"not null" json:"name"`
-	Email   string           `json:"email"`
-	Phone   string           `gorm:"not null" json:"phone"`
-	Budgets []CustomerBudget `json:"budgets"`
+	UserID  uuid.UUID `gorm:"not null" json:"userID"`
+	ID      uint      `gorm:"primaryKey;autoIncrement" json:"id"`
+	CPF     string    `json:"cpf"`
+	Name    string    `gorm:"not null" json:"name"`
+	Email   string    `json:"email"`
+	Phone   string    `gorm:"not null" json:"phone"`
+	Budgets []Budget  `gorm:"foreignKey:CustomerID;constraint:OnDelete:CASCADE;" json:"budgets"`
 }
 
 type CreateCustomerRequest struct {
@@ -27,9 +27,4 @@ type UpdateCustomerRequest struct {
 	Name   *string    `json:"name,omitempty"`
 	Email  *string    `json:"email,omitempty"`
 	Phone  *string    `json:"phone,omitempty"`
-}
-
-type CustomerBudget struct {
-	CustomerID uint
-	BudgetID   uint
 }

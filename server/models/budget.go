@@ -8,11 +8,11 @@ import (
 
 type Budget struct {
 	UserID        uuid.UUID   `gorm:"not null" json:"userID"`
-	CustomerID    uint        `gorm:"not null;constraint:OnDelete:CASCADE;" json:"customerID"`
+	CustomerID    uint        `gorm:"not null" json:"customerID"`
 	ID            uint        `gorm:"primaryKey;autoIncrement" json:"id"`
-	BudgetJobs    []BudgetJob `gorm:"constraint:OnDelete:CASCADE;" json:"budgetJobs"`
+	BudgetJobs    []BudgetJob `gorm:"foreignKey:BudgetID;constraint:OnDelete:CASCADE;" json:"budgetJobs"`
 	BudgetDate    time.Time   `gorm:"default:CURRENT_TIMESTAMP" json:"budgetDate"`
-	ScheduledDate time.Time   `json:"schedeledDate"`
+	ScheduledDate time.Time   `json:"scheduledDate"`
 	Vehicle       string      `gorm:"not null" json:"vehicle"`
 	LicensePlate  string      `gorm:"not null" json:"licensePlate"`
 	Price         float32     `json:"price"`
