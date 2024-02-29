@@ -68,8 +68,6 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 		return
 	}
 
-	log.Info(budgets)
-
 	c.JSON(http.StatusOK, budgets)
 }
 
