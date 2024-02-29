@@ -9,7 +9,7 @@ type Customer struct {
 	Name    string           `gorm:"not null" json:"name"`
 	Email   string           `json:"email"`
 	Phone   string           `gorm:"not null" json:"phone"`
-	Budgets []CustomerBudget `gorm:"constraint:OnDelete:CASCADE;" json:"budgets"`
+	Budgets []CustomerBudget `json:"budgets"`
 }
 
 type CreateCustomerRequest struct {
