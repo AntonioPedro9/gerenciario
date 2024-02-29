@@ -18,6 +18,13 @@ func NewJobHandler(jobService *services.JobService) *JobHandler {
 	return &JobHandler{jobService}
 }
 
+/** 
+ * Creates a new job.
+ * It accepts a JSON body with the job details.
+ * Returns 201 if the job is created successfully.
+ * Returns 400 if the request fails to bind to JSON.
+ * Returns 500 for internal server errors.
+**/
 func (jh *JobHandler) CreateJob(c *gin.Context) {
 	var job models.CreateJobRequest
 	if err := c.ShouldBindJSON(&job); err != nil {
@@ -42,11 +49,18 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
+/** 
+ * Lists all jobs for a user.
+ * It extracts userID from JWT token.
+ * Returns 200 along with a list of jobs.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (jh *JobHandler) ListJobs(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -67,6 +81,14 @@ func (jh *JobHandler) ListJobs(c *gin.Context) {
 	c.JSON(http.StatusOK, jobs)
 }
 
+/** 
+ * Gets a job by ID.
+ * It requires jobID as a path parameter and extracts userID from JWT token.
+ * Returns 200 along with the job details.
+ * Returns 400 if the job ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (jh *JobHandler) GetJob(c *gin.Context) {
 	jobID, err := utils.GetParamID("jobID", c)
 	if err != nil {
@@ -78,7 +100,7 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -99,11 +121,19 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 	c.JSON(http.StatusOK, job)
 }
 
+/** 
+ * Updates a job.
+ * It accepts a JSON body with the job details and extracts userID from JWT token.
+ * Returns 200 if the job is updated successfully.
+ * Returns 400 if the request fails to bind to JSON.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (jh *JobHandler) UpdateJob(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -131,6 +161,14 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedJob)
 }
 
+/** 
+ * Deletes a job.
+ * It requires jobID as a path parameter and extracts userID from JWT token.
+ * Returns 204 if the job is deleted successfully.
+ * Returns 400 if the job ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (jh *JobHandler) DeleteJob(c *gin.Context) {
 	jobID, err := utils.GetParamID("jobID", c)
 	if err != nil {
@@ -142,7 +180,7 @@ func (jh *JobHandler) DeleteJob(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -161,4 +199,3 @@ func (jh *JobHandler) DeleteJob(c *gin.Context) {
 
 	c.JSON(http.StatusNoContent, nil)
 }
-

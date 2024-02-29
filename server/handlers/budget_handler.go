@@ -18,6 +18,13 @@ func NewBudgetHandler(budgetService *services.BudgetService) *BudgetHandler {
 	return &BudgetHandler{budgetService}
 }
 
+/** 
+ * Creates a new budget.
+ * It accepts a JSON body with the budget details.
+ * Returns 201 if the budget is created successfully.
+ * Returns 400 if the request fails to bind to JSON.
+ * Returns 500 for internal server errors.
+**/
 func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 	var budget models.CreateBudgetRequest
 	if err := c.ShouldBindJSON(&budget); err != nil {
@@ -42,11 +49,18 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
+/** 
+ * Lists all budget for a user.
+ * It extracts userID from JWT token.
+ * Returns 200 along with a list of budget.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -67,6 +81,14 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 	c.JSON(http.StatusOK, budgets)
 }
 
+/** 
+ * Gets a budget by ID.
+ * It requires budgetID as a path parameter and extracts userID from JWT token.
+ * Returns 200 along with the budget details.
+ * Returns 400 if the budget ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
@@ -78,7 +100,7 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -99,7 +121,15 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 	c.JSON(http.StatusOK, budget)
 }
 
-func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
+/** 
+ * Gets all jobs of a budget.
+ * It requires budgetID as a path parameter and extracts userID from JWT token.
+ * Returns 200 along with the budget jobs.
+ * Returns 400 if the budget ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
+func (bh *BudgetHandler) GetBudgetJobs(c *gin.Context) {
 	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
 		log.Error(err)
@@ -110,11 +140,11 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID, userID)
+	budgetServices, err := bh.budgetService.GetBudgetJobs(budgetID, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -131,6 +161,14 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 	c.JSON(http.StatusOK, budgetServices)
 }
 
+/** 
+ * Deletes a budget.
+ * It requires budgetID as a path parameter and extracts userID from JWT token.
+ * Returns 204 if the budget is deleted successfully.
+ * Returns 400 if the budget ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
@@ -142,7 +180,7 @@ func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 

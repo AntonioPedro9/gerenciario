@@ -65,7 +65,7 @@ func main() {
 	customerGroup := r.Group("/customers")
 	{
 		customerGroup.POST("/", middlewares.RequireAuth, customerHandler.CreateCustomer)
-		customerGroup.GET("/list/:userID", middlewares.RequireAuth, customerHandler.ListCustomers)
+		customerGroup.GET("/list/", middlewares.RequireAuth, customerHandler.ListCustomers)
 		customerGroup.GET("/:customerID", middlewares.RequireAuth, customerHandler.GetCustomer)
 		customerGroup.PUT("/", middlewares.RequireAuth, customerHandler.UpdateCustomer)
 		customerGroup.DELETE("/:customerID", middlewares.RequireAuth, customerHandler.DeleteCustomer)
@@ -78,7 +78,7 @@ func main() {
 	jobGroup := r.Group("/jobs")
 	{
 		jobGroup.POST("/", middlewares.RequireAuth, jobHandler.CreateJob)
-		jobGroup.GET("/list/:userID", middlewares.RequireAuth, jobHandler.ListJobs)
+		jobGroup.GET("/list/", middlewares.RequireAuth, jobHandler.ListJobs)
 		jobGroup.GET("/:jobID", middlewares.RequireAuth, jobHandler.GetJob)
 		jobGroup.PUT("/", middlewares.RequireAuth, jobHandler.UpdateJob)
 		jobGroup.DELETE("/:jobID", middlewares.RequireAuth, jobHandler.DeleteJob)
@@ -90,9 +90,9 @@ func main() {
 	budgetGroup := r.Group("/budgets")
 	{
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
-		budgetGroup.GET("/list/:userID", middlewares.RequireAuth, budgetHandler.ListBudgets)
+		budgetGroup.GET("/list/", middlewares.RequireAuth, budgetHandler.ListBudgets)
 		budgetGroup.GET("/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudget)
-		budgetGroup.GET("/list/jobs/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetServices)
+		budgetGroup.GET("/list/jobs/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetJobs)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}
 

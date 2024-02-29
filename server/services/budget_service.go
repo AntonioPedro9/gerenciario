@@ -64,7 +64,7 @@ func (bs *BudgetService) GetBudget(budgetID uint, tokenID uuid.UUID) (*models.Li
 	return budget, nil
 }
 
-func (bs *BudgetService) GetBudgetServices(budgetID uint, tokenID uuid.UUID) ([]models.Job, error) {
+func (bs *BudgetService) GetBudgetJobs(budgetID uint, tokenID uuid.UUID) ([]models.Job, error) {
 	budget, err := bs.budgetRepository.GetBudgetById(budgetID)
 	if err != nil {
 		return nil, err

@@ -20,7 +20,7 @@ func NewUserHandler(userService *services.UserService) *UserHandler {
 }
 
 /**
- * CreateUser creates a new user.
+ * Creates a new user.
  * It accepts a JSON body with the user details.
  * Returns 201 if the user is created successfully.
  * Returns 400 if the request fails to bind to JSON.
@@ -51,7 +51,7 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 }
 
 /**
- * ListUsers lists all users.
+ * Lists all users.
  * Returns 200 along with a list of users.
  * Returns 500 for internal server errors.
 **/
@@ -74,18 +74,18 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 }
 
 /**
- * UpdateUser updates a user.
+ * Updates a user.
  * It accepts a JSON body with the user details.
  * Returns 200 if the user is updated successfully.
- * Returns 400 if the request fails to bind to JSON or no token is provided.
+ * Returns 400 if the request fails to bind to JSON.
  * Returns 401 if the token is unauthorized.
- *Returns 500 for internal server errors.
+ * Returns 500 for internal server errors.
 **/
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -114,13 +114,13 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 }
 
 /**
- * DeleteUser deletes a user.
- * It requires a user ID as a path parameter.
+ * Deletes a user.
+ * It requires ID as a path parameter.
  * Returns 204 if the user is deleted successfully.
- * Returns 400 if the user ID fails to parse or no token is provided.
+ * Returns 400 if the user ID fails to parse.
  * Returns 401 if the token is unauthorized.
  * Returns 500 for internal server errors.
-*/
+**/
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	paramUserID := c.Param("id")
 
@@ -134,7 +134,7 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -155,12 +155,12 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 }
 
 /**
- * LoginUser logs in a user.
+ * Logs in a user.
  * It accepts a JSON body with the user login details.
  * Returns 200 along with a token if the user is logged in successfully.
  * Returns 400 if the request fails to bind to JSON.
  * Returns 500 for internal server errors.
-*/
+**/
 func (uh *UserHandler) LoginUser(c *gin.Context) {
 	var loginUserRequest models.LoginUserResquest
 	if err := c.ShouldBindJSON(&loginUserRequest); err != nil {

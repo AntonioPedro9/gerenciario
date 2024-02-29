@@ -18,6 +18,13 @@ func NewCustomerHandler(customerService *services.CustomerService) *CustomerHand
 	return &CustomerHandler{customerService}
 }
 
+/** 
+ * Creates a new customer.
+ * It accepts a JSON body with the customer details.
+ * Returns 201 if the customer is created successfully.
+ * Returns 400 if the request fails to bind to JSON.
+ * Returns 500 for internal server errors.
+**/
 func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 	var customer models.CreateCustomerRequest
 	if err := c.ShouldBindJSON(&customer); err != nil {
@@ -42,11 +49,18 @@ func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 	c.JSON(http.StatusCreated, nil)
 }
 
+/** 
+ * Lists all customers for a user.
+ * It extracts userID from JWT token.
+ * Returns 200 along with a list of customers.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -67,6 +81,14 @@ func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+/** 
+ * Gets a customer by ID.
+ * It requires customerID as a path parameter and extracts userID from JWT token.
+ * Returns 200 along with the customer details.
+ * Returns 400 if the customer ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 	customerID, err := utils.GetParamID("customerID", c)
 	if err != nil {
@@ -78,7 +100,7 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -99,11 +121,19 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, customer)
 }
 
+/** 
+ * Updates a customer.
+ * It accepts a JSON body with the customer details and extracts userID from JWT token.
+ * Returns 200 if the customer is updated successfully.
+ * Returns 400 if the request fails to bind to JSON.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -131,6 +161,14 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	c.JSON(http.StatusOK, updatedCustomer)
 }
 
+/** 
+ * Deletes a customer.
+ * It requires customerID as a path parameter and extracts userID from JWT token.
+ * Returns 204 if the customer is deleted successfully.
+ * Returns 400 if the customer ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
 func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	customerID, err := utils.GetParamID("customerID", c)
 	if err != nil {
@@ -142,7 +180,7 @@ func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
