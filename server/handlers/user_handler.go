@@ -85,7 +85,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -127,14 +127,14 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 	userID, err := uuid.Parse(paramUserID)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to parse user ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
 
 	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 

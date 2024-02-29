@@ -14,7 +14,7 @@ func FormatPhone(phone string) (string, error) {
 	}
 
 	if len(digits) != 11 {
-		return "", errors.New("Invalid phone number lenght")
+		return "", errors.New("invalid phone number lenght")
 	}
 
 	return digits, nil

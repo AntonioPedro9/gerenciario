@@ -17,7 +17,7 @@ func GenerateToken(sub uuid.UUID) (string, error) {
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
 	if err != nil {
-		return "", errors.New("Failed to generate JWT token")
+		return "", errors.New("failed to generate JWT token")
 	}
 
 	return tokenString, nil

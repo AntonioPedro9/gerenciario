@@ -5,7 +5,6 @@ import (
 	"server/models"
 	"server/services"
 	"server/utils"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -47,7 +46,7 @@ func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -69,20 +68,17 @@ func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
-	paramCustomerID := c.Param("customerID")
-
-	parsedCustomerID, err := strconv.ParseUint(paramCustomerID, 10, 64)
+	customerID, err := utils.GetParamID("customerID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	customerID := uint(parsedCustomerID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -107,7 +103,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -136,20 +132,17 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
-	paramCustomerID := c.Param("customerID")
-
-	parsedID, err := strconv.ParseUint(paramCustomerID, 10, 64)
+	customerID, err := utils.GetParamID("customerID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid customer ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	customerID := uint(parsedID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 

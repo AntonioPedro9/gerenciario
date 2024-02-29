@@ -5,7 +5,6 @@ import (
 	"server/models"
 	"server/services"
 	"server/utils"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -47,7 +46,7 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -69,20 +68,17 @@ func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) GetBudget(c *gin.Context) {
-	paramBudgetID := c.Param("budgetID")
-
-	parsedBudgetID, err := strconv.ParseUint(paramBudgetID, 10, 64)
+	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid budget ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	budgetID := uint(parsedBudgetID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -104,20 +100,17 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
-	paramBudgetID := c.Param("budgetID")
-
-	parsedBudgetID, err := strconv.ParseUint(paramBudgetID, 10, 64)
+	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid budaget ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	budgetID := uint(parsedBudgetID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -139,20 +132,17 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
-	paramBudgetID := c.Param("budgetID")
-
-	parsedID, err := strconv.ParseUint(paramBudgetID, 10, 64)
+	budgetID, err := utils.GetParamID("budgetID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid budget ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	budgetID := uint(parsedID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 

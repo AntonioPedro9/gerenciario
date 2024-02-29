@@ -5,7 +5,6 @@ import (
 	"server/models"
 	"server/services"
 	"server/utils"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -47,7 +46,7 @@ func (jh *JobHandler) ListJobs(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -69,20 +68,17 @@ func (jh *JobHandler) ListJobs(c *gin.Context) {
 }
 
 func (jh *JobHandler) GetJob(c *gin.Context) {
-	paramJobID := c.Param("jobID")
-
-	parsedJobID, err := strconv.ParseUint(paramJobID, 10, 64)
+	jobID, err := utils.GetParamID("jobID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	jobID := uint(parsedJobID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -107,7 +103,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
@@ -136,20 +132,17 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) DeleteJob(c *gin.Context) {
-	paramJobID := c.Param("jobID")
-
-	parsedID, err := strconv.ParseUint(paramJobID, 10, 64)
+	jobID, err := utils.GetParamID("jobID", c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid job ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
 		return
 	}
-	jobID := uint(parsedID)
 
 	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Unauthorized action"})
 		return
 	}
 

@@ -10,7 +10,7 @@ func FormatCPF(cpf string) (string, error) {
 	digits := re.ReplaceAllString(cpf, "")
 
 	if len(digits) != 11 {
-		return "", errors.New("Invalid CPF")
+		return "", errors.New("invalid CPF")
 	}
 
 	return digits, nil
