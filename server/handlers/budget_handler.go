@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -45,12 +44,17 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
-	paramUserID := c.Param("userID")
-
-	userID, err := uuid.Parse(paramUserID)
+	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
 		log.Error(err)
-		c.AbortWithStatus(http.StatusUnauthorized)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
+		return
+	}
+
+	userID, err := utils.GetIDFromToken(tokenString)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 

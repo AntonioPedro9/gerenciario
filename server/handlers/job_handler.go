@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -45,15 +44,6 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) ListJobs(c *gin.Context) {
-	paramUserID := c.Param("userID")
-
-	userID, err := uuid.Parse(paramUserID)
-	if err != nil {
-		log.Error(err)
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
 	tokenString, err := c.Cookie("Authorization")
 	if err != nil {
 		log.Error(err)
@@ -61,14 +51,14 @@ func (jh *JobHandler) ListJobs(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	jobs, err := jh.jobService.ListJobs(userID, tokenID)
+	jobs, err := jh.jobService.ListJobs(userID)
 	if err != nil {
 		log.Error(err)
 

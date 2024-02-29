@@ -34,7 +34,11 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 	for _, budget := range budgets {
 		var customer models.Customer
 		if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
-			return nil, err
+			if err == gorm.ErrRecordNotFound {
+				continue
+			} else {
+				return nil, err
+			}
 		}
 
 		response = append(response, models.ListBudgetsResponse{
@@ -65,7 +69,11 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse,
 
 	var customer models.Customer
 	if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
-		return nil, err
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		} else {
+			return nil, err
+		}
 	}
 
 	response = models.ListBudgetsResponse{
@@ -84,6 +92,7 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse,
 
 	return &response, nil
 }
+
 
 func (br *BudgetRepository) GetBudgetJobs(budgetID uint) ([]models.Job, error) {
 	var budgetJobs []models.BudgetJob

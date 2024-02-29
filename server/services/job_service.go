@@ -40,11 +40,7 @@ func (js *JobService) CreateJob(job *models.CreateJobRequest) error {
 	return js.jobRepository.Create(validJob)
 }
 
-func (js *JobService) ListJobs(userID, tokenID uuid.UUID) ([]models.Job, error) {
-	if userID != tokenID {
-		return nil, utils.UnauthorizedActionError
-	}
-
+func (js *JobService) ListJobs(userID uuid.UUID) ([]models.Job, error) {
 	return js.jobRepository.List(userID)
 }
 

@@ -53,11 +53,7 @@ func (cs *CustomerService) CreateCustomer(customer *models.CreateCustomerRequest
 	return cs.customerRepository.Create(validCustomer)
 }
 
-func (cs *CustomerService) ListCustomers(userID, tokenID uuid.UUID) ([]models.Customer, error) {
-	if userID != tokenID {
-		return nil, utils.UnauthorizedActionError
-	}
-
+func (cs *CustomerService) ListCustomers(userID uuid.UUID) ([]models.Customer, error) {
 	return cs.customerRepository.List(userID)
 }
 
