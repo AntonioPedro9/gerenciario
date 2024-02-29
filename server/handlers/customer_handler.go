@@ -23,6 +23,7 @@ func NewCustomerHandler(customerService *services.CustomerService) *CustomerHand
  * It accepts a JSON body with the customer details.
  * Returns 201 if the customer is created successfully.
  * Returns 400 if the request fails to bind to JSON.
+ * Returns 401 if token userID does not match request userID
  * Returns 500 for internal server errors.
 **/
 func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
@@ -30,6 +31,18 @@ func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 	if err := c.ShouldBindJSON(&customer); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
+		return
+	}
+
+	tokenID, err := utils.GetUserIdFromToken(c)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
+		return
+	}
+
+	if customer.UserID != tokenID {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token userID does not match request userID"})
 		return
 	}
 
