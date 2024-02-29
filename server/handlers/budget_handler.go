@@ -93,14 +93,14 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	budget, err := bh.budgetService.GetBudget(budgetID, tokenID)
+	budget, err := bh.budgetService.GetBudget(budgetID, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -135,14 +135,14 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID, tokenID)
+	budgetServices, err := bh.budgetService.GetBudgetServices(budgetID, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -177,14 +177,14 @@ func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := bh.budgetService.DeleteBudget(budgetID, tokenID); err != nil {
+	if err := bh.budgetService.DeleteBudget(budgetID, userID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

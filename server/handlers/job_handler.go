@@ -93,14 +93,14 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	job, err := jh.jobService.GetJob(jobID, tokenID)
+	job, err := jh.jobService.GetJob(jobID, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -125,7 +125,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -139,7 +139,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	updatedJob, err := jh.jobService.UpdateJob(&job, tokenID)
+	updatedJob, err := jh.jobService.UpdateJob(&job, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -174,14 +174,14 @@ func (jh *JobHandler) DeleteJob(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := jh.jobService.DeleteJob(jobID, tokenID); err != nil {
+	if err := jh.jobService.DeleteJob(jobID, userID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

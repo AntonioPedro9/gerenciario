@@ -93,14 +93,14 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	customer, err := ch.customerService.GetCustomer(customerID, tokenID)
+	customer, err := ch.customerService.GetCustomer(customerID, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -125,7 +125,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -139,7 +139,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	updatedCustomer, err := ch.customerService.UpdateCustomer(&customer, tokenID)
+	updatedCustomer, err := ch.customerService.UpdateCustomer(&customer, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -174,14 +174,14 @@ func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetIDFromToken(tokenString)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := ch.customerService.DeleteCustomer(customerID, tokenID); err != nil {
+	if err := ch.customerService.DeleteCustomer(customerID, userID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
