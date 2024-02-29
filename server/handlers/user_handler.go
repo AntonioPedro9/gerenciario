@@ -82,14 +82,7 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
  *Returns 500 for internal server errors.
 **/
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -103,7 +96,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedUser, err := uh.userService.UpdateUser(&user, tokenID)
+	updatedUser, err := uh.userService.UpdateUser(&user, userID)
 	if err != nil {
 		log.Error(err)
 
@@ -138,14 +131,7 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	tokenID, err := utils.GetIDFromToken(tokenString)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})

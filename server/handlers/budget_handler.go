@@ -44,14 +44,7 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -86,14 +79,7 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 	}
 	budgetID := uint(parsedBudgetID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -128,14 +114,7 @@ func (bh *BudgetHandler) GetBudgetServices(c *gin.Context) {
 	}
 	budgetID := uint(parsedBudgetID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -170,14 +149,7 @@ func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 	}
 	budgetID := uint(parsedID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})

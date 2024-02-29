@@ -44,14 +44,7 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) ListJobs(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -86,14 +79,7 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 	}
 	jobID := uint(parsedJobID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -118,14 +104,7 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) UpdateJob(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -167,14 +146,7 @@ func (jh *JobHandler) DeleteJob(c *gin.Context) {
 	}
 	jobID := uint(parsedID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})

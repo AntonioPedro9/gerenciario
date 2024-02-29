@@ -44,14 +44,7 @@ func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) ListCustomers(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -86,14 +79,7 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 	}
 	customerID := uint(parsedCustomerID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -118,14 +104,7 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
@@ -167,14 +146,7 @@ func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
 	}
 	customerID := uint(parsedID)
 
-	tokenString, err := c.Cookie("Authorization")
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "No token provided"})
-		return
-	}
-
-	userID, err := utils.GetIDFromToken(tokenString)
+	userID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
