@@ -41,12 +41,7 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 		return
 	}
 
-	if budget.UserID != tokenID {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token userID does not match request userID"})
-		return
-	}
-
-	if err := bh.budgetService.CreateBudget(&budget); err != nil {
+	if err := bh.budgetService.CreateBudget(&budget, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -70,14 +65,14 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (bh *BudgetHandler) ListBudgets(c *gin.Context) {
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	budgets, err := bh.budgetService.ListBudgets(userID)
+	budgets, err := bh.budgetService.ListBudgets(tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -110,14 +105,14 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	budget, err := bh.budgetService.GetBudget(budgetID, userID)
+	budget, err := bh.budgetService.GetBudget(budgetID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -150,14 +145,14 @@ func (bh *BudgetHandler) GetBudgetJobs(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	budgetServices, err := bh.budgetService.GetBudgetJobs(budgetID, userID)
+	budgetServices, err := bh.budgetService.GetBudgetJobs(budgetID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -190,14 +185,14 @@ func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	if err := bh.budgetService.DeleteBudget(budgetID, userID); err != nil {
+	if err := bh.budgetService.DeleteBudget(budgetID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

@@ -17,7 +17,11 @@ func NewBudgetService(budgetRepository *repositories.BudgetRepository) *BudgetSe
 	return &BudgetService{budgetRepository}
 }
 
-func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest) error {
+func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest, tokenID uuid.UUID) error {
+	if budget.UserID != tokenID {
+		return utils.UnauthorizedActionError
+	}
+
 	validBudget := &models.Budget{
 		UserID:       budget.UserID,
 		CustomerID:   budget.CustomerID,

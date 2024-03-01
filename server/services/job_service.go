@@ -4,6 +4,7 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
+	"server/utils/validations"
 
 	"github.com/google/uuid"
 )
@@ -16,22 +17,19 @@ func NewJobService(jobRepository *repositories.JobRepository) *JobService {
 	return &JobService{jobRepository}
 }
 
-func (js *JobService) CreateJob(job *models.CreateJobRequest) error {
-	if !utils.IsValidName(job.Name) {
-		return utils.InvalidNameError
+func (js *JobService) CreateJob(job *models.CreateJobRequest, tokenID uuid.UUID) error {
+	if job.UserID != tokenID {
+		return utils.UnauthorizedActionError
 	}
 
-	if job.Duration < 0 {
-		return utils.InvalidDurationError
-	}
-
-	if job.Price < 0 {
-		return utils.InvalidPriceError
+	err := validations.ValidateCreateJobRequest(job)
+	if err != nil {
+		return err
 	}
 
 	validJob := &models.Job{
 		Name:        utils.CapitalizeText(job.Name),
-		Description: utils.CapitalizeText(job.Description),
+		Description: job.Description,
 		Duration:    job.Duration,
 		Price:       job.Price,
 		UserID:      job.UserID,
@@ -62,18 +60,6 @@ func (js *JobService) UpdateJob(job *models.UpdateJobRequest, tokenID uuid.UUID)
 		return nil, utils.UnauthorizedActionError
 	}
 
-	if job.Name != nil && !utils.IsValidName(*job.Name) {
-		return nil, utils.InvalidNameError
-	}
-
-	if job.Duration != nil && *job.Duration <= 0 {
-		return nil, utils.InvalidDurationError
-	}
-
-	if job.Price != nil && *job.Price <= 0 {
-		return nil, utils.InvalidPriceError
-	}
-
 	existingJob, err := js.jobRepository.GetJobById(job.ID)
 	if err != nil {
 		return nil, err
@@ -82,14 +68,14 @@ func (js *JobService) UpdateJob(job *models.UpdateJobRequest, tokenID uuid.UUID)
 		return nil, utils.NotFoundError
 	}
 
+	err = validations.ValidateUpdateJobRequest(job)
+	if err != nil {
+		return nil, err
+	}
+
 	if job.Name != nil {
 		capitalizedName := utils.CapitalizeText(*job.Name)
 		job.Name = &capitalizedName
-	}
-
-	if job.Description != nil {
-		capitalizedDescription := utils.CapitalizeText(*job.Description)
-		job.Description = &capitalizedDescription
 	}
 
 	updatedJob, err := js.jobRepository.Update(job)

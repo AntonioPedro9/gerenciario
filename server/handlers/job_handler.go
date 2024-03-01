@@ -41,12 +41,7 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 		return
 	}
 
-	if job.UserID != tokenID {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token userID does not match request userID"})
-		return
-	}
-
-	if err := jh.jobService.CreateJob(&job); err != nil {
+	if err := jh.jobService.CreateJob(&job, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -70,14 +65,14 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (jh *JobHandler) ListJobs(c *gin.Context) {
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	jobs, err := jh.jobService.ListJobs(userID)
+	jobs, err := jh.jobService.ListJobs(tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -110,14 +105,14 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	job, err := jh.jobService.GetJob(jobID, userID)
+	job, err := jh.jobService.GetJob(jobID, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -143,13 +138,6 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (jh *JobHandler) UpdateJob(c *gin.Context) {
-	userID, err := utils.GetUserIdFromToken(c)
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
-		return
-	}
-
 	var job models.UpdateJobRequest
 	if err := c.ShouldBindJSON(&job); err != nil {
 		log.Error(err)
@@ -157,7 +145,14 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	updatedJob, err := jh.jobService.UpdateJob(&job, userID)
+	tokenID, err := utils.GetUserIdFromToken(c)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
+		return
+	}
+
+	updatedJob, err := jh.jobService.UpdateJob(&job, tokenID)
 	if err != nil {
 		log.Error(err)
 
@@ -190,14 +185,14 @@ func (jh *JobHandler) DeleteJob(c *gin.Context) {
 		return
 	}
 
-	userID, err := utils.GetUserIdFromToken(c)
+	tokenID, err := utils.GetUserIdFromToken(c)
 	if err != nil {
 		log.Error(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
 		return
 	}
 
-	if err := jh.jobService.DeleteJob(jobID, userID); err != nil {
+	if err := jh.jobService.DeleteJob(jobID, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)

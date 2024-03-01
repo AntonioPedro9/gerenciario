@@ -4,6 +4,7 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
+	"server/utils/validations"
 
 	"github.com/google/uuid"
 )
@@ -16,24 +17,21 @@ func NewCustomerService(customerRepository *repositories.CustomerRepository) *Cu
 	return &CustomerService{customerRepository}
 }
 
-func (cs *CustomerService) CreateCustomer(customer *models.CreateCustomerRequest) error {
-	var formattedCPF string
-	var err error
+func (cs *CustomerService) CreateCustomer(customer *models.CreateCustomerRequest, tokenID uuid.UUID) error {
+	if customer.UserID != tokenID {
+		return utils.UnauthorizedActionError
+	}
 	
+	err := validations.ValidateCreateCustomerRequest(customer)
+	if err != nil {
+		return nil
+	}
+
+	var formattedCPF string
 	if customer.CPF != "" {
 		formattedCPF, err = utils.FormatCPF(customer.CPF)
 		if err != nil {
 			return err
-		}
-	}
-
-	if !utils.IsValidName(customer.Name) {
-		return utils.InvalidNameError
-	}
-
-	if customer.Email != "" {
-		if !utils.IsValidEmail(customer.Email) {
-			return utils.InvalidEmailError
 		}
 	}
 
@@ -83,26 +81,17 @@ func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest
 		return nil, utils.NotFoundError
 	}
 
+	err = validations.ValidateUpdateCustomerRequest(customer)
+	if err != nil {
+		return nil, err
+	}
+
 	if customer.CPF != nil {
 		formattedCPF, err := utils.FormatCPF(*customer.CPF)
 		if err != nil {
 			return nil, utils.InvalidCpfError
 		}
 		customer.CPF = &formattedCPF
-	}
-
-	if customer.Name != nil {
-		if !utils.IsValidName(*customer.Name) {
-			return nil, utils.InvalidNameError
-		}
-		capitalizedName := utils.CapitalizeText(*customer.Name)
-		customer.Name = &capitalizedName
-	}
-
-	if customer.Email != nil {
-		if !utils.IsValidEmail(*customer.Email) {
-			return nil, utils.InvalidEmailError
-		}
 	}
 
 	if customer.Phone != nil {
