@@ -29,7 +29,7 @@ export default function CreateBudget() {
 
   const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/customers/list/${userID}`, { withCredentials: true });
+      const response = await api.get(`/customers/list/`, { withCredentials: true });
       setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
@@ -38,7 +38,7 @@ export default function CreateBudget() {
 
   const fetchJobs = async () => {
     try {
-      const response = await api.get(`/jobs/list/${userID}`, { withCredentials: true });
+      const response = await api.get(`/jobs/list/`, { withCredentials: true });
       setJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

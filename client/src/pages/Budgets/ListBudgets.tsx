@@ -3,14 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
-import getUserID from "../../utils/getUserID";
 
 import { IListBudgets } from "../../types/Budget";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 
 export default function ListBudgets() {
-  const userID = getUserID() || "";
   const [budgets, setBudgets] = useState<IListBudgets[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -18,7 +16,7 @@ export default function ListBudgets() {
 
   const fetchBudgets = async () => {
     try {
-      const response = await api.get(`/budgets/list/${userID}`, { withCredentials: true });
+      const response = await api.get(`/budgets/list/`, { withCredentials: true });
       setBudgets(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

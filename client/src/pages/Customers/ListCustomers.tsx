@@ -3,19 +3,17 @@ import { Link } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
-import getUserID from "../../utils/getUserID";
 import { formatPhone } from "../../utils/formatPhone";
 
 import { ICustomer } from "../../types/Customer";
 
 export default function ListCustomers() {
-  const userID = getUserID() || "";
   const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/customers/list/${userID}`, { withCredentials: true });
+      const response = await api.get(`/customers/list/`, { withCredentials: true });
       setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
