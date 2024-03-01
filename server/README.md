@@ -2,9 +2,9 @@
 
 **1.1.** Crie um banco de dados Postgres.
 
-**1.2.** Crie um arquivo .env na raiz do projeto.
+**1.2.** Crie um arquivo `.env` na raiz do projeto.
 
-**1.3.** Preencha o arquivo .env com as informações do banco de dados no seguinte modelo:
+**1.3.** Preencha o arquivo `.env` com as informações do banco de dados no seguinte modelo:
 
 ```
 PORT=8080
@@ -17,7 +17,7 @@ SECRET=sua_chave
 
 ## Passo 2: Executar a aplicação
 
-**3.1.** No terminal, na pasta do projeto, use o seguinte comando para executar a aplicação:
+**2.1.** No terminal, na pasta do projeto, use o seguinte comando para executar a aplicação:
 
 ```
 $ go run ./cmd/main.go
