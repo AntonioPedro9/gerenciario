@@ -9,7 +9,7 @@ export default function BottomNavbar() {
 
   return (
     isLoggedIn && (
-      <Navbar bg="dark" variant="dark" style={{ position: "fixed", bottom: 0, width: "100%" }}>
+      <Navbar bg="dark" variant="dark" style={{ width: "100%" }}>
         <Container>
           <Nav className="mx-auto justify-content-between w-100">
             <NavDropdown drop="up" title="Clientes" menuVariant="dark">

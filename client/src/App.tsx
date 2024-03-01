@@ -7,7 +7,9 @@ export default function App() {
   return (
     <>
       <TopNavbar />
-      <Outlet />
+      <main className="my-container">
+        <Outlet />
+      </main>
       <BottomNavbar />
     </>
   );
