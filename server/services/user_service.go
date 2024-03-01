@@ -27,8 +27,8 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 	if !utils.IsValidEmail(user.Email) {
 		return utils.InvalidEmailError
 	}
-	if len(user.Password) < 8 {
-		return utils.WeakPasswordError
+	if len(user.Password) < 8 || len(user.Password) > 128 {
+		return utils.PasswordLengthError
 	}
 
 	/**
@@ -93,8 +93,8 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 		capitalizedName := utils.CapitalizeText(*user.Name)
 		user.Name = &capitalizedName
 	}
-	if user.Password != nil && len(*user.Password) < 8 {
-		return nil, utils.WeakPasswordError
+	if user.Password != nil && (len(*user.Password) < 8 || len(*user.Password) > 128) {
+		return nil, utils.PasswordLengthError
 	}
 
 	/**
