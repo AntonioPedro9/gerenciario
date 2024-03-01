@@ -54,7 +54,7 @@ func main() {
 	{
 		userGroup.POST("/", userHandler.CreateUser)
 		// userGroup.GET("/list", userHandler.ListUsers)
-		userGroup.PUT("/", middlewares.RequireAuth, userHandler.UpdateUser)
+		userGroup.PATCH("/", middlewares.RequireAuth, userHandler.UpdateUser)
 		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
 		userGroup.POST("/login", userHandler.LoginUser)
 	}
@@ -67,10 +67,9 @@ func main() {
 		customerGroup.POST("/", middlewares.RequireAuth, customerHandler.CreateCustomer)
 		customerGroup.GET("/list/", middlewares.RequireAuth, customerHandler.ListCustomers)
 		customerGroup.GET("/:customerID", middlewares.RequireAuth, customerHandler.GetCustomer)
-		customerGroup.PUT("/", middlewares.RequireAuth, customerHandler.UpdateCustomer)
+		customerGroup.PATCH("/", middlewares.RequireAuth, customerHandler.UpdateCustomer)
 		customerGroup.DELETE("/:customerID", middlewares.RequireAuth, customerHandler.DeleteCustomer)
 	}
-
 
 	jobRepository := repositories.NewJobRepository(db)
 	jobService := services.NewJobService(jobRepository)

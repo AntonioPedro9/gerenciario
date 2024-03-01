@@ -26,19 +26,3 @@ func ValidateCreateUserRequest(user *models.CreateUserRequest) error {
 
 	return nil
 }
-
-func ValidateUpdateUserRequest(user *models.UpdateUserRequest) error {
-	if user.Name != nil {
-		if len(*user.Name) < 2 {
-			return utils.InvalidNameError
-		}
-	}
-
-	if user.Password != nil {
-		if len(*user.Password) < 8 || len(*user.Password) > 128 {
-			return utils.PasswordLengthError
-		}
-	}
-
-	return nil
-}

@@ -57,23 +57,13 @@ func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
 }
 
 func (ur *UserRepository) Update(user *models.UpdateUserRequest) (*models.User, error) {
-	updateData := make(map[string]interface{})
-
-	if user.Name != nil {
-		updateData["name"] = *user.Name
-	}
-
-	if user.Password != nil {
-		updateData["password"] = *user.Password
-	}
-
-	err := ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(updateData).Error
+	err := ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(user).Error
 	if err != nil {
 		return nil, err
 	}
 
 	updatedUser := &models.User{}
-	
+
 	err = ur.db.Where("id = ?", user.ID).First(updatedUser).Error
 	if err != nil {
 		return nil, err

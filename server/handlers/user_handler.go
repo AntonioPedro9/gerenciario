@@ -82,13 +82,6 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
-	userID, err := utils.GetUserIdFromToken(c)
-	if err != nil {
-		log.Error(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
-		return
-	}
-
 	var user models.UpdateUserRequest
 	if err := c.ShouldBindJSON(&user); err != nil {
 		log.Error(err)
@@ -96,7 +89,14 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedUser, err := uh.userService.UpdateUser(&user, userID)
+	tokenID, err := utils.GetUserIdFromToken(c)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
+		return
+	}
+
+	updatedUser, err := uh.userService.UpdateUser(&user, tokenID)
 	if err != nil {
 		log.Error(err)
 
