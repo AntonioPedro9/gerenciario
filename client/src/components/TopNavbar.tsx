@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Button } from "react-bootstrap";
-
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function TopNavbar() {

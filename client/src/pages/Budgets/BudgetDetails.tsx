@@ -4,12 +4,12 @@ import { Card, Table } from "react-bootstrap";
 import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
+import formatDate from "../../utils/formatDate";
+import formatCurrency from "../../utils/formatCurrency";
+import formatPhone from "../../utils/formatPhone";
 
 import { IListBudgets } from "../../types/Budget";
 import { IJob } from "../../types/Job";
-import { formatDate } from "../../utils/formatDate";
-import { formatCurrency } from "../../utils/formatCurrency";
-import { formatPhone } from "../../utils/formatPhone";
 
 export default function BudgetDetails() {
   const budgetID = useParams().budgetID;

@@ -1,8 +1,8 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
-import Cookies from "js-cookie";
 import { Navigate } from "react-router-dom";
 
 import api from "../service/api";
+import Cookies from "js-cookie";
 
 interface IAuthContext {
   isLoggedIn: boolean;

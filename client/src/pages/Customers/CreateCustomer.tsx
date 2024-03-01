@@ -7,9 +7,9 @@ import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import { customerSchema } from "../../utils/validations";
 
 import { ICreateCustomerRequest } from "../../types/Customer";
+import { customerSchema } from "../../utils/validations";
 
 export default function CreateCustomer() {
   const userID = getUserID() || "";

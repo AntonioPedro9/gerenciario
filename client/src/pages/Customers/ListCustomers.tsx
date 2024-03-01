@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
-import { formatPhone } from "../../utils/formatPhone";
+import formatPhone from "../../utils/formatPhone";
 
 import { ICustomer } from "../../types/Customer";
 

@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
+import formatCurrency from "../../utils/formatCurrency";
 
 import { IJob } from "../../types/Job";
-import { formatCurrency } from "../../utils/formatCurrency";
 
 export default function ListJobs() {
   const [jobs, setJobs] = useState<IJob[]>([]);

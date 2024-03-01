@@ -7,9 +7,9 @@ import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
 import getUserID from "../../utils/getUserID";
-import { jobSchema } from "../../utils/validations";
 
 import { ICreateJobRequest } from "../../types/Job";
+import { jobSchema } from "../../utils/validations";
 
 export default function CreateJob() {
   const userID = getUserID() || "";
