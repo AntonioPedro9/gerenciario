@@ -3,8 +3,8 @@ package utils
 import "regexp"
 
 func FormatEmail(email string) (string, error) {
-	if len(email) == 0 {
-		return "", InvalidEmailError
+	if email == "" {
+		return email, nil
 	}
 
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)

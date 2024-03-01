@@ -5,6 +5,10 @@ import (
 )
 
 func FormatCPF(cpf string) (string, error) {
+	if cpf == "" {
+		return cpf, nil
+	}
+	
 	re := regexp.MustCompile(`\D`)
 	digits := re.ReplaceAllString(cpf, "")
 
