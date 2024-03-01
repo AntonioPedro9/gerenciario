@@ -53,7 +53,7 @@ export default function CustomerDetails() {
       };
 
       try {
-        const response = await api.put("/customers/", updatedCustomerData, { withCredentials: true });
+        const response = await api.patch("/customers/", updatedCustomerData, { withCredentials: true });
         setCustomer(response.data);
         if (response.status === 200) goBack();
       } catch (error: any) {

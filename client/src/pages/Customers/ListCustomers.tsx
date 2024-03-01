@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
@@ -10,6 +10,8 @@ import { ICustomer } from "../../types/Customer";
 export default function ListCustomers() {
   const [customers, setCustomers] = useState<ICustomer[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   const fetchCustomers = async () => {
     try {
@@ -60,10 +62,8 @@ export default function ListCustomers() {
               </thead>
               <tbody>
                 {filteredCustomers.map((customer) => (
-                  <tr key={customer.id}>
-                    <td>
-                      <Link to={`/customers/${customer.id}`}>{customer.name}</Link>
-                    </td>
+                  <tr key={customer.id} onClick={() => navigate(`/customers/${customer.id}`)} style={{ cursor: "pointer" }}>
+                    <td>{customer.name}</td>
                     <td style={{ whiteSpace: "nowrap" }}>{formatPhone(customer.phone)}</td>
                   </tr>
                 ))}

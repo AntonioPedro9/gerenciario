@@ -57,7 +57,7 @@ export default function JobDetails() {
       };
 
       try {
-        const response = await api.put("/jobs/", updatedJobData, { withCredentials: true });
+        const response = await api.patch("/jobs/", updatedJobData, { withCredentials: true });
         setJob(response.data);
         if (response.status === 200) goBack();
       } catch (error: any) {

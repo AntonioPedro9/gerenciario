@@ -46,7 +46,7 @@ export default function ListBudgets() {
         <Card.Title className="mb-3">Buscar orçamento</Card.Title>
 
         <InputGroup className="mb-3">
-          <Form.Control placeholder="Cliente" onChange={handleInputChange} />
+          <Form.Control placeholder="Nome do cliente" onChange={handleInputChange} />
           <InputGroup.Text>
             <span className="material-symbols-outlined">search</span>
           </InputGroup.Text>

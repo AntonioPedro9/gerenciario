@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, InputGroup, Form, Table } from "react-bootstrap";
 
 import api from "../../service/api";
@@ -10,6 +10,8 @@ import { IJob } from "../../types/Job";
 export default function ListJobs() {
   const [jobs, setJobs] = useState<IJob[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   const fetchJobs = async () => {
     try {
@@ -60,10 +62,8 @@ export default function ListJobs() {
               </thead>
               <tbody>
                 {filteredJobs.map((job) => (
-                  <tr key={job.id}>
-                    <td>
-                      <Link to={`/jobs/${job.id}`}>{job.name}</Link>
-                    </td>
+                  <tr key={job.id} onClick={() => navigate(`/jobs/${job.id}`)} style={{ cursor: "pointer" }}>
+                    <td>{job.name}</td>
                     <td>{formatCurrency(job.price)}</td>
                   </tr>
                 ))}
