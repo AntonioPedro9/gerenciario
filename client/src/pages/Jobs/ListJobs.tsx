@@ -70,7 +70,9 @@ export default function ListJobs() {
               </tbody>
             </Table>
           </>
-        ) : null}
+        ) : (
+          <p>Carregando...</p>
+        )}
       </Card.Body>
     </Card>
   );

@@ -73,7 +73,9 @@ export default function ListBudgets() {
               </tbody>
             </Table>
           </>
-        ) : null}
+        ) : (
+          <p>Carregando...</p>
+        )}
       </Card.Body>
     </Card>
   );

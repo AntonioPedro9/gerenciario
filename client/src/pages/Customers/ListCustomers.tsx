@@ -70,7 +70,9 @@ export default function ListCustomers() {
               </tbody>
             </Table>
           </>
-        ) : null}
+        ) : (
+          <p>Carregando...</p>
+        )}
       </Card.Body>
     </Card>
   );
