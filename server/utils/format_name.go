@@ -2,8 +2,12 @@ package utils
 
 import "strings"
 
-func CapitalizeText(text string) string {
-	words := strings.Fields(text)
+func FormatName(name string) (string, error) {
+	if len(name) < 2 {
+		return "", InvalidNameError
+	}
+
+	words := strings.Fields(name)
 	capitalizedWords := make([]string, len(words))
 
 	for i, word := range words {
@@ -12,5 +16,7 @@ func CapitalizeText(text string) string {
 		capitalizedWords[i] = firstLetter + lowercaseWord[1:]
 	}
 
-	return strings.Join(capitalizedWords, " ")
+	capitalizedName := strings.Join(capitalizedWords, " ")
+
+	return capitalizedName, nil
 }

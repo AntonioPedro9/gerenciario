@@ -43,30 +43,13 @@ func (jr *JobRepository) GetJobById(id uint) (*models.Job, error) {
 }
 
 func (jr *JobRepository) Update(job *models.UpdateJobRequest) (*models.Job, error) {
-	updateData := make(map[string]interface{})
-
-	if job.Name != nil {
-		updateData["name"] = *job.Name
-	}
-
-	if job.Description != nil {
-		updateData["description"] = *job.Description
-	}
-
-	if job.Duration != nil {
-		updateData["duration"] = *job.Duration
-	}
-
-	if job.Price != nil {
-		updateData["price"] = *job.Price
-	}
-
-	err := jr.db.Model(&models.Job{}).Where("id = ?", job.ID).Updates(updateData).Error
+	err := jr.db.Model(&models.Job{}).Where("id = ?", job.ID).Updates(job).Error
 	if err != nil {
 		return nil, err
 	}
 
 	updatedJob := &models.Job{}
+
 	err = jr.db.Where("id = ?", job.ID).First(updatedJob).Error
 	if err != nil {
 		return nil, err

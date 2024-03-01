@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"regexp"
 )
 
@@ -10,7 +9,7 @@ func FormatCPF(cpf string) (string, error) {
 	digits := re.ReplaceAllString(cpf, "")
 
 	if len(digits) != 11 {
-		return "", errors.New("invalid CPF")
+		return "", InvalidCpfError
 	}
 
 	return digits, nil

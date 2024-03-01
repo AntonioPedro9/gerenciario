@@ -43,30 +43,13 @@ func (cr *CustomerRepository) GetCustomerById(id uint) (*models.Customer, error)
 }
 
 func (cr *CustomerRepository) Update(customer *models.UpdateCustomerRequest) (*models.Customer, error) {
-	updateData := make(map[string]interface{})
-
-	if customer.CPF != nil {
-		updateData["cpf"] = *customer.CPF
-	}
-
-	if customer.Name != nil {
-		updateData["name"] = *customer.Name
-	}
-
-	if customer.Email != nil {
-		updateData["email"] = *customer.Email
-	}
-
-	if customer.Phone != nil {
-		updateData["phone"] = *customer.Phone
-	}
-
-	err := cr.db.Model(&models.Customer{}).Where("id = ?", customer.ID).Updates(updateData).Error
+	err := cr.db.Model(&models.Customer{}).Where("id = ?", customer.ID).Updates(customer).Error
 	if err != nil {
 		return nil, err
 	}
 
 	updatedCustomer := &models.Customer{}
+
 	err = cr.db.Where("id = ?", customer.ID).First(updatedCustomer).Error
 	if err != nil {
 		return nil, err

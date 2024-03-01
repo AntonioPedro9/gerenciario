@@ -4,7 +4,6 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
-	"server/utils/validations"
 
 	"github.com/google/uuid"
 )
@@ -21,29 +20,28 @@ func (cs *CustomerService) CreateCustomer(customer *models.CreateCustomerRequest
 	if customer.UserID != tokenID {
 		return utils.UnauthorizedActionError
 	}
-	
-	err := validations.ValidateCreateCustomerRequest(customer)
+
+	formattedCPF, err := utils.FormatCPF(customer.CPF)
 	if err != nil {
-		return nil
+		return err
 	}
-
-	var formattedCPF string
-	if customer.CPF != "" {
-		formattedCPF, err = utils.FormatCPF(customer.CPF)
-		if err != nil {
-			return err
-		}
+	formattedName, err := utils.FormatName(customer.Name)
+	if err != nil {
+		return err
 	}
-
+	formattedEmail, err := utils.FormatEmail(customer.Email)
+	if err != nil {
+		return err
+	}
 	formattedPhone, err := utils.FormatPhone(customer.Phone)
 	if err != nil {
-		return utils.InvalidPhoneError
+		return err
 	}
 
 	validCustomer := &models.Customer{
 		CPF:    formattedCPF,
-		Name:   utils.CapitalizeText(customer.Name),
-		Email:  customer.Email,
+		Name:   formattedName,
+		Email:  formattedEmail,
 		Phone:  formattedPhone,
 		UserID: customer.UserID,
 	}
@@ -81,23 +79,34 @@ func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest
 		return nil, utils.NotFoundError
 	}
 
-	err = validations.ValidateUpdateCustomerRequest(customer)
-	if err != nil {
-		return nil, err
-	}
-
 	if customer.CPF != nil {
 		formattedCPF, err := utils.FormatCPF(*customer.CPF)
 		if err != nil {
-			return nil, utils.InvalidCpfError
+			return nil, err
 		}
 		customer.CPF = &formattedCPF
+	}
+
+	if customer.Name != nil {
+		formattedName, err := utils.FormatName(*customer.Name)
+		if err != nil {
+			return nil, err
+		}
+		customer.Name = &formattedName
+	}
+
+	if customer.Email != nil {
+		formattedEmail, err := utils.FormatEmail(*customer.Email)
+		if err != nil {
+			return nil, err
+		}
+		customer.Email = &formattedEmail
 	}
 
 	if customer.Phone != nil {
 		formattedPhone, err := utils.FormatPhone(*customer.Phone)
 		if err != nil {
-			return nil, utils.InvalidPhoneError
+			return nil, err
 		}
 		customer.Phone = &formattedPhone
 	}

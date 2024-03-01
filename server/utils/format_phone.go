@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"regexp"
 )
 
@@ -14,7 +13,7 @@ func FormatPhone(phone string) (string, error) {
 	}
 
 	if len(digits) != 11 {
-		return "", errors.New("invalid phone number lenght")
+		return "", InvalidPhoneError
 	}
 
 	return digits, nil

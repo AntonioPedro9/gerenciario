@@ -4,7 +4,6 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
-	"server/utils/validations"
 
 	"github.com/google/uuid"
 )
@@ -22,13 +21,16 @@ func (js *JobService) CreateJob(job *models.CreateJobRequest, tokenID uuid.UUID)
 		return utils.UnauthorizedActionError
 	}
 
-	err := validations.ValidateCreateJobRequest(job)
+	formattedName, err := utils.FormatName(job.Name)
 	if err != nil {
 		return err
 	}
+	if job.Price < 0 {
+		return utils.InvalidPriceError
+	}
 
 	validJob := &models.Job{
-		Name:        utils.CapitalizeText(job.Name),
+		Name:        formattedName,
 		Description: job.Description,
 		Duration:    job.Duration,
 		Price:       job.Price,
@@ -68,14 +70,16 @@ func (js *JobService) UpdateJob(job *models.UpdateJobRequest, tokenID uuid.UUID)
 		return nil, utils.NotFoundError
 	}
 
-	err = validations.ValidateUpdateJobRequest(job)
-	if err != nil {
-		return nil, err
+	if job.Name != nil {
+		formattedName, err := utils.FormatName(*job.Name)
+		if err != nil {
+			return nil, err
+		}
+		job.Name = &formattedName
 	}
 
-	if job.Name != nil {
-		capitalizedName := utils.CapitalizeText(*job.Name)
-		job.Name = &capitalizedName
+	if job.Price != nil && *job.Price < 0 {
+		return nil, utils.InvalidPriceError
 	}
 
 	updatedJob, err := js.jobRepository.Update(job)

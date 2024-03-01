@@ -22,15 +22,20 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest, tokenI
 		return utils.UnauthorizedActionError
 	}
 
+	formattedVehicle, err := utils.FormatName(budget.Vehicle)
+	if err != nil {
+		return err
+	}
+
 	validBudget := &models.Budget{
 		UserID:       budget.UserID,
 		CustomerID:   budget.CustomerID,
-		Vehicle:      utils.CapitalizeText(budget.Vehicle),
+		Vehicle:      formattedVehicle,
 		LicensePlate: strings.ToUpper(budget.LicensePlate),
 		Price:        budget.Price,
 	}
 
-	err := bs.budgetRepository.Create(validBudget)
+	err = bs.budgetRepository.Create(validBudget)
 	if err != nil {
 		return err
 	}

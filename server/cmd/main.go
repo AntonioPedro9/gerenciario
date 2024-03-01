@@ -35,7 +35,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000"}
-	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowMethods = []string{"GET", "POST", "PATCH", "DELETE", "OPTIONS"}
 	config.AllowHeaders = []string{"Authorization", "Content-Type"}
 	config.AllowCredentials = true
 	r.Use(cors.New(config))
@@ -79,7 +79,7 @@ func main() {
 		jobGroup.POST("/", middlewares.RequireAuth, jobHandler.CreateJob)
 		jobGroup.GET("/list/", middlewares.RequireAuth, jobHandler.ListJobs)
 		jobGroup.GET("/:jobID", middlewares.RequireAuth, jobHandler.GetJob)
-		jobGroup.PUT("/", middlewares.RequireAuth, jobHandler.UpdateJob)
+		jobGroup.PATCH("/", middlewares.RequireAuth, jobHandler.UpdateJob)
 		jobGroup.DELETE("/:jobID", middlewares.RequireAuth, jobHandler.DeleteJob)
 	}
 

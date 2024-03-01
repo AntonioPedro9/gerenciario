@@ -4,7 +4,6 @@ import (
 	"server/models"
 	"server/repositories"
 	"server/utils"
-	"server/utils/validations"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -19,11 +18,6 @@ func NewUserService(userRepository *repositories.UserRepository) *UserService {
 }
 
 func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
-	err := validations.ValidateCreateUserRequest(user)
-	if err != nil {
-		return err
-	}
-
 	existingUser, err := us.userRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
@@ -32,6 +26,14 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 		return utils.EmailInUseError
 	}
 
+	formattedName, err := utils.FormatName(user.Name)
+	if err != nil {
+		return err
+	}
+	formattedEmail, err := utils.FormatEmail(user.Email)
+	if err != nil {
+		return err
+	}
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return err
@@ -44,8 +46,8 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 
 	validUser := &models.User{
 		ID:       userID,
-		Name:     utils.CapitalizeText(user.Name),
-		Email:    user.Email,
+		Name:     formattedName,
+		Email:    formattedEmail,
 		Password: hashedPassword,
 	}
 
@@ -70,20 +72,19 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 	}
 
 	if user.Name != nil {
-		capitalizedName := utils.CapitalizeText(*user.Name)
-		user.Name = &capitalizedName
-
-		if len(*user.Name) < 2 {
-			return nil, utils.InvalidNameError
+		formattedName, err := utils.FormatName(*user.Name)
+		if err != nil {
+			return nil, err
 		}
+		user.Name = &formattedName
 	}
-
+	
 	if user.Password != nil {
-		passwordLength := len(*user.Password)
-
-		if passwordLength < 8 || passwordLength > 128 {
-			return nil, utils.PasswordLengthError
+		hashedPassword, err := utils.HashPassword(*user.Password)
+		if err != nil {
+			return nil, err
 		}
+		user.Password = &hashedPassword
 	}
 
 	updatedUser, err := us.userRepository.Update(user)
