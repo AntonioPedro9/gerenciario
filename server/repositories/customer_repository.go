@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"server/models"
+	"server/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func (cr *CustomerRepository) GetCustomerById(id uint) (*models.Customer, error)
 
 	if err := cr.db.Where("id = ?", id).First(&customer).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return nil, utils.NotFoundError
 		}
 		return nil, err
 	}

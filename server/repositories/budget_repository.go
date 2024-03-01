@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"server/models"
+	"server/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -28,6 +29,7 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 	var response []models.ListBudgetsResponse
 
 	if err := br.db.Where("user_id = ?", userID).Find(&budgets).Error; err != nil {
+		br.db.Rollback()
 		return nil, err
 	}
 
@@ -37,6 +39,7 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 			if err == gorm.ErrRecordNotFound {
 				continue
 			} else {
+				br.db.Rollback()
 				return nil, err
 			}
 		}
@@ -56,27 +59,31 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 		})
 	}
 
+	if len(response) == 0 {
+		return []models.ListBudgetsResponse{}, nil
+	}
+
 	return response, nil
 }
 
 func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse, error) {
 	var budget models.Budget
-	var response models.ListBudgetsResponse
-
 	if err := br.db.Where("id = ?", id).First(&budget).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, utils.NotFoundError
+		}
 		return nil, err
 	}
 
 	var customer models.Customer
-	if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
+	if err := br.db.Where("id = ?", id).First(&customer).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
-		} else {
-			return nil, err
+			return nil, utils.NotFoundError
 		}
+		return nil, err
 	}
 
-	response = models.ListBudgetsResponse{
+	response := models.ListBudgetsResponse{
 		UserID:        budget.UserID,
 		ID:            budget.ID,
 		CustomerID:    customer.ID,
@@ -100,7 +107,7 @@ func (br *BudgetRepository) GetBudgetJobs(budgetID uint) ([]models.Job, error) {
 
 	if err := br.db.Where("budget_id = ?", budgetID).Find(&budgetJobs).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return nil, utils.NotFoundError
 		}
 		return nil, err
 	}

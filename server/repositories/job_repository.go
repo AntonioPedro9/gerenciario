@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"server/models"
+	"server/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -34,7 +35,7 @@ func (jr *JobRepository) GetJobById(id uint) (*models.Job, error) {
 
 	if err := jr.db.Where("id = ?", id).First(&job).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			return nil, utils.NotFoundError
 		}
 		return nil, err
 	}
