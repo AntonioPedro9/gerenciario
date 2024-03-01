@@ -41,7 +41,7 @@ export default function ListBudgets() {
   });
 
   return (
-    <Card className="mx-auto my-4" style={{ width: "24rem" }}>
+    <Card className="mx-auto m-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Buscar orçamento</Card.Title>
 
@@ -54,7 +54,7 @@ export default function ListBudgets() {
 
         {filteredBudgets.length > 0 ? (
           <>
-            <Table striped bordered hover>
+            <Table style={{ marginBottom: "0" }} striped bordered hover>
               <thead>
                 <tr>
                   <th>Data</th>

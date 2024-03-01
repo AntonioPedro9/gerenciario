@@ -38,7 +38,7 @@ export default function ListCustomers() {
   });
 
   return (
-    <Card className="mx-auto my-4" style={{ width: "24rem" }}>
+    <Card className="mx-auto m-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Buscar cliente</Card.Title>
 
@@ -51,7 +51,7 @@ export default function ListCustomers() {
 
         {filteredCustomers.length > 0 ? (
           <>
-            <Table striped bordered hover>
+            <Table style={{ marginBottom: "0" }} striped bordered hover>
               <thead>
                 <tr>
                   <th>Nome</th>

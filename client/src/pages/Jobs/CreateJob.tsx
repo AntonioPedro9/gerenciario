@@ -66,7 +66,7 @@ export default function CreateJob() {
   };
 
   return (
-    <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
+    <Card className="mx-auto m-4" style={{ width: "24rem" }}>
       <Card.Body>
         <Card.Title className="mb-3">Cadastrar serviço</Card.Title>
 
