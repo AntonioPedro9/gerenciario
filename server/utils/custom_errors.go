@@ -20,16 +20,16 @@ var (
 		StatusCode: http.StatusBadRequest,
 		Message:    "Invalid email",
 	}
-	WeakPasswordError = &CustomError{
+	PasswordLengthError = &CustomError{
 		StatusCode: http.StatusBadRequest,
-		Message:    "Password must be at least 8 characters long",
+		Message:    "InvalidPasswordLength",
 	}
 	EmailInUseError = &CustomError{
 		StatusCode: http.StatusConflict,
 		Message:    "Email already in use",
 	}
 	UnauthorizedActionError = &CustomError{
-		StatusCode: http.StatusForbidden,
+		StatusCode: http.StatusUnauthorized,
 		Message:    "Unauthorized action",
 	}
 	NotFoundError = &CustomError{
