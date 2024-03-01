@@ -76,7 +76,7 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse,
 	}
 
 	var customer models.Customer
-	if err := br.db.Where("id = ?", id).First(&customer).Error; err != nil {
+	if err := br.db.Where("id = ?", budget.CustomerID).First(&customer).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, utils.NotFoundError
 		}
@@ -99,7 +99,6 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse,
 
 	return &response, nil
 }
-
 
 func (br *BudgetRepository) GetBudgetJobs(budgetID uint) ([]models.Job, error) {
 	var budgetJobs []models.BudgetJob
