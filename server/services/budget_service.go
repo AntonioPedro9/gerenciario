@@ -26,6 +26,9 @@ func (bs *BudgetService) CreateBudget(budget *models.CreateBudgetRequest, tokenI
 	if err != nil {
 		return err
 	}
+	if budget.Price < 0 {
+		return utils.InvalidPriceError
+	}
 
 	validBudget := &models.Budget{
 		UserID:       budget.UserID,
