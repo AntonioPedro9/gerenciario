@@ -20,23 +20,37 @@ func (ur *UserRepository) Create(user *models.User) error {
 }
 
 func (ur *UserRepository) List() ([]models.ListUserResponse, error) {
-	var users []models.ListUserResponse
-
-	if err := ur.db.Find(&users).Error; err != nil {
+	var userModels []models.User
+	if err := ur.db.Find(&userModels).Error; err != nil {
 		return nil, err
+	}
+
+	var users []models.ListUserResponse
+	for _, userModel := range userModels {
+		userResponse := models.ListUserResponse{
+			ID:    userModel.ID,
+			Name:  userModel.Name,
+			Email: userModel.Email,
+		}
+		users = append(users, userResponse)
 	}
 
 	return users, nil
 }
 
 func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.ListUserResponse, error) {
-	var user models.ListUserResponse
-
+	var user models.User
 	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err
 	}
 
-	return &user, nil
+	userResponse := models.ListUserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+	}
+
+	return &userResponse, nil
 }
 
 func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {

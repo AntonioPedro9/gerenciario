@@ -24,13 +24,13 @@ type UpdateUserRequest struct {
 	Password *string   `json:"password,omitempty"`
 }
 
-type LoginUserResquest struct {
-	Email    string
-	Password string
+type LoginUserRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type ListUserResponse struct {
-	ID        uuid.UUID  `json:"id"`
-	Name      string     `json:"name"`
-	Email     string     `json:"email"`
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
 }

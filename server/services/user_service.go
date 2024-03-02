@@ -123,7 +123,7 @@ func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {
 	return us.userRepository.Delete(id)
 }
 
-func (us *UserService) LoginUser(loginUserRequest *models.LoginUserResquest) (string, error) {
+func (us *UserService) LoginUser(loginUserRequest *models.LoginUserRequest) (string, error) {
 	existingUser, err := us.userRepository.GetUserByEmail(loginUserRequest.Email)
 	if err != nil || existingUser == nil {
 		return "", utils.InvalidEmailOrPasswordError

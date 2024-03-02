@@ -203,7 +203,7 @@ func (uh *UserHandler) DeleteUser(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (uh *UserHandler) LoginUser(c *gin.Context) {
-	var loginUserRequest models.LoginUserResquest
+	var loginUserRequest models.LoginUserRequest
 	if err := c.ShouldBindJSON(&loginUserRequest); err != nil {
 		log.Error(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to bind JSON request"})
