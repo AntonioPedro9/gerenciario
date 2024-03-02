@@ -73,6 +73,48 @@ func (uh *UserHandler) ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+/** 
+ * Gets a user by ID.
+ * It requires userID as a path parameter and extracts userID from JWT token.
+ * Returns 200 along with the user details.
+ * Returns 400 if the user ID fails to parse.
+ * Returns 401 if the token is unauthorized.
+ * Returns 500 for internal server errors.
+**/
+func (uh *UserHandler) GetUser(c *gin.Context) {
+	paramUserID := c.Param("userID")
+
+	userID, err := uuid.Parse(paramUserID)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid param ID"})
+		return
+	}
+
+	tokenID, err := utils.GetUserIdFromToken(c)
+	if err != nil {
+		log.Error(err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized action"})
+		return
+	}
+
+	user, err := uh.userService.GetUser(userID, tokenID)
+	if err != nil {
+		log.Error(err)
+
+		customError, ok := err.(*utils.CustomError)
+		if !ok {
+			c.JSON(http.StatusInternalServerError, nil)
+			return
+		}
+
+		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 /**
  * Updates a user.
  * It accepts a JSON body with the user details.
@@ -96,8 +138,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updatedUser, err := uh.userService.UpdateUser(&user, tokenID)
-	if err != nil {
+	if err := uh.userService.UpdateUser(&user, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -110,7 +151,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedUser)
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /**
@@ -122,7 +163,7 @@ func (uh *UserHandler) UpdateUser(c *gin.Context) {
  * Returns 500 for internal server errors.
 **/
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
-	paramUserID := c.Param("id")
+	paramUserID := c.Param("userID")
 
 	userID, err := uuid.Parse(paramUserID)
 	if err != nil {

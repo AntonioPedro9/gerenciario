@@ -43,20 +43,12 @@ func (jr *JobRepository) GetJobById(id uint) (*models.Job, error) {
 	return &job, nil
 }
 
-func (jr *JobRepository) Update(job *models.UpdateJobRequest) (*models.Job, error) {
+func (jr *JobRepository) Update(job *models.UpdateJobRequest) error {
 	err := jr.db.Model(&models.Job{}).Where("id = ?", job.ID).Updates(job).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	updatedJob := &models.Job{}
-
-	err = jr.db.Where("id = ?", job.ID).First(updatedJob).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedJob, nil
+	return nil
 }
 
 func (jr *JobRepository) Delete(jobID uint) error {

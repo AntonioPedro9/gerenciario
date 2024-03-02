@@ -152,8 +152,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	updatedCustomer, err := ch.customerService.UpdateCustomer(&customer, tokenID)
-	if err != nil {
+	if err := ch.customerService.UpdateCustomer(&customer, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -166,7 +165,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedCustomer)
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /** 

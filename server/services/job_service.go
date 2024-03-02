@@ -57,37 +57,32 @@ func (js *JobService) GetJob(jobID uint, tokenID uuid.UUID) (*models.Job, error)
 	return job, nil
 }
 
-func (js *JobService) UpdateJob(job *models.UpdateJobRequest, tokenID uuid.UUID) (*models.Job, error) {
+func (js *JobService) UpdateJob(job *models.UpdateJobRequest, tokenID uuid.UUID) error {
 	if job.UserID != tokenID {
-		return nil, utils.UnauthorizedActionError
+		return utils.UnauthorizedActionError
 	}
 
 	existingJob, err := js.jobRepository.GetJobById(job.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if existingJob == nil {
-		return nil, utils.NotFoundError
+		return utils.NotFoundError
 	}
 
 	if job.Name != nil {
 		formattedName, err := utils.FormatName(*job.Name)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		job.Name = &formattedName
 	}
 
 	if job.Price != nil && *job.Price < 0 {
-		return nil, utils.InvalidPriceError
+		return utils.InvalidPriceError
 	}
 
-	updatedJob, err := js.jobRepository.Update(job)
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedJob, nil
+	return js.jobRepository.Update(job)
 }
 
 func (js *JobService) DeleteJob(jobID uint, tokenID uuid.UUID) error {

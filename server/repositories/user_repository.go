@@ -29,6 +29,16 @@ func (ur *UserRepository) List() ([]models.User, error) {
 	return users, nil
 }
 
+func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
+	var user models.User
+
+	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	var count int64
@@ -46,30 +56,12 @@ func (ur *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
-	var user models.User
-
-	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
-func (ur *UserRepository) Update(user *models.UpdateUserRequest) (*models.User, error) {
+func (ur *UserRepository) Update(user *models.UpdateUserRequest) error {
 	err := ur.db.Model(&models.User{}).Where("id = ?", user.ID).Updates(user).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	updatedUser := &models.User{}
-
-	err = ur.db.Where("id = ?", user.ID).First(updatedUser).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedUser, nil
+	return nil
 }
 
 func (ur *UserRepository) Delete(id uuid.UUID) error {

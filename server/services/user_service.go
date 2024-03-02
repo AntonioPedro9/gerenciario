@@ -58,23 +58,36 @@ func (us *UserService) ListUsers() ([]models.User, error) {
 	return us.userRepository.List()
 }
 
-func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) (*models.User, error) {
+func (us *UserService) GetUser(userID uuid.UUID, tokenID uuid.UUID) (*models.User, error) {
+	user, err := us.userRepository.GetUserById(userID)
+	if err != nil {
+		return nil, err
+	}
+
 	if user.ID != tokenID {
 		return nil, utils.UnauthorizedActionError
 	}
 
+	return user, nil
+}
+
+func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.UUID) error {
+	if user.ID != tokenID {
+		return utils.UnauthorizedActionError
+	}
+
 	existingUser, err := us.userRepository.GetUserById(user.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if existingUser == nil {
-		return nil, utils.NotFoundError
+		return utils.NotFoundError
 	}
 
 	if user.Name != nil {
 		formattedName, err := utils.FormatName(*user.Name)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		user.Name = &formattedName
 	}
@@ -82,17 +95,16 @@ func (us *UserService) UpdateUser(user *models.UpdateUserRequest, tokenID uuid.U
 	if user.Password != nil {
 		hashedPassword, err := utils.HashPassword(*user.Password)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		user.Password = &hashedPassword
 	}
 
-	updatedUser, err := us.userRepository.Update(user)
-	if err != nil {
-		return nil, err
+	if err := us.userRepository.Update(user); err != nil {
+		return err
 	}
 
-	return updatedUser, nil
+	return nil
 }
 
 func (us *UserService) DeleteUser(id, tokenID uuid.UUID) error {

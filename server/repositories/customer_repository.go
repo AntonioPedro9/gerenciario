@@ -43,20 +43,12 @@ func (cr *CustomerRepository) GetCustomerById(id uint) (*models.Customer, error)
 	return &customer, nil
 }
 
-func (cr *CustomerRepository) Update(customer *models.UpdateCustomerRequest) (*models.Customer, error) {
+func (cr *CustomerRepository) Update(customer *models.UpdateCustomerRequest) error {
 	err := cr.db.Model(&models.Customer{}).Where("id = ?", customer.ID).Updates(customer).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-
-	updatedCustomer := &models.Customer{}
-
-	err = cr.db.Where("id = ?", customer.ID).First(updatedCustomer).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedCustomer, nil
+	return nil
 }
 
 func (cr *CustomerRepository) Delete(customerID uint) error {

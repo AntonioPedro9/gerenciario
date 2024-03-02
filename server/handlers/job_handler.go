@@ -152,8 +152,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	updatedJob, err := jh.jobService.UpdateJob(&job, tokenID)
-	if err != nil {
+	if err := jh.jobService.UpdateJob(&job, tokenID); err != nil {
 		log.Error(err)
 
 		customError, ok := err.(*utils.CustomError)
@@ -166,7 +165,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, updatedJob)
+	c.JSON(http.StatusNoContent, nil)
 }
 
 /** 

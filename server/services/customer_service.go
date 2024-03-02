@@ -66,23 +66,23 @@ func (cs *CustomerService) GetCustomer(customerID uint, tokenID uuid.UUID) (*mod
 	return customer, nil
 }
 
-func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest, tokenID uuid.UUID) (*models.Customer, error) {	
+func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest, tokenID uuid.UUID) error {	
 	if customer.UserID != tokenID {
-		return nil, utils.UnauthorizedActionError
+		return utils.UnauthorizedActionError
 	}
 
 	existingCustomer, err := cs.customerRepository.GetCustomerById(customer.ID)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	if existingCustomer == nil {
-		return nil, utils.NotFoundError
+		return utils.NotFoundError
 	}
 
 	if customer.CPF != nil {
 		formattedCPF, err := utils.FormatCPF(*customer.CPF)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		customer.CPF = &formattedCPF
 	}
@@ -90,7 +90,7 @@ func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest
 	if customer.Name != nil {
 		formattedName, err := utils.FormatName(*customer.Name)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		customer.Name = &formattedName
 	}
@@ -98,7 +98,7 @@ func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest
 	if customer.Email != nil {
 		formattedEmail, err := utils.FormatEmail(*customer.Email)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		customer.Email = &formattedEmail
 	}
@@ -106,17 +106,12 @@ func (cs *CustomerService) UpdateCustomer(customer *models.UpdateCustomerRequest
 	if customer.Phone != nil {
 		formattedPhone, err := utils.FormatPhone(*customer.Phone)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		customer.Phone = &formattedPhone
 	}
 
-	updatedCustomer, err := cs.customerRepository.Update(customer)
-	if err != nil {
-		return nil, err
-	}
-
-	return updatedCustomer, nil
+	return cs.customerRepository.Update(customer);
 }
 
 func (cs *CustomerService) DeleteCustomer(customerID uint, tokenID uuid.UUID) error {
