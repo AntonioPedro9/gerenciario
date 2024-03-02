@@ -54,8 +54,9 @@ func main() {
 	{
 		userGroup.POST("/", userHandler.CreateUser)
 		// userGroup.GET("/list", userHandler.ListUsers)
+		userGroup.GET("/:userID", middlewares.RequireAuth, userHandler.GetUser)
 		userGroup.PATCH("/", middlewares.RequireAuth, userHandler.UpdateUser)
-		userGroup.DELETE("/:id", middlewares.RequireAuth, userHandler.DeleteUser)
+		userGroup.DELETE("/:userID", middlewares.RequireAuth, userHandler.DeleteUser)
 		userGroup.POST("/login", userHandler.LoginUser)
 	}
 
