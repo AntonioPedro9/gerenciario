@@ -19,8 +19,8 @@ func (ur *UserRepository) Create(user *models.User) error {
 	return ur.db.Create(user).Error
 }
 
-func (ur *UserRepository) List() ([]models.User, error) {
-	var users []models.User
+func (ur *UserRepository) List() ([]models.ListUserResponse, error) {
+	var users []models.ListUserResponse
 
 	if err := ur.db.Find(&users).Error; err != nil {
 		return nil, err
@@ -29,8 +29,8 @@ func (ur *UserRepository) List() ([]models.User, error) {
 	return users, nil
 }
 
-func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.User, error) {
-	var user models.User
+func (ur *UserRepository) GetUserById(id uuid.UUID) (*models.ListUserResponse, error) {
+	var user models.ListUserResponse
 
 	if err := ur.db.Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, err

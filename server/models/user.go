@@ -28,3 +28,9 @@ type LoginUserResquest struct {
 	Email    string
 	Password string
 }
+
+type ListUserResponse struct {
+	ID        uuid.UUID  `json:"id"`
+	Name      string     `json:"name"`
+	Email     string     `json:"email"`
+}

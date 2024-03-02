@@ -54,11 +54,11 @@ func (us *UserService) CreateUser(user *models.CreateUserRequest) error {
 	return us.userRepository.Create(validUser)
 }
 
-func (us *UserService) ListUsers() ([]models.User, error) {
+func (us *UserService) ListUsers() ([]models.ListUserResponse, error) {
 	return us.userRepository.List()
 }
 
-func (us *UserService) GetUser(userID uuid.UUID, tokenID uuid.UUID) (*models.User, error) {
+func (us *UserService) GetUser(userID uuid.UUID, tokenID uuid.UUID) (*models.ListUserResponse, error) {
 	user, err := us.userRepository.GetUserById(userID)
 	if err != nil {
 		return nil, err
