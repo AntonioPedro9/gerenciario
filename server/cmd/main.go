@@ -92,7 +92,7 @@ func main() {
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
 		budgetGroup.GET("/list/", middlewares.RequireAuth, budgetHandler.ListBudgets)
 		budgetGroup.GET("/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudget)
-		budgetGroup.GET("/list/jobs/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetJobs)
+		budgetGroup.GET("/jobs/:budgetID", middlewares.RequireAuth, budgetHandler.GetBudgetJobs)
 		budgetGroup.DELETE("/:budgetID", middlewares.RequireAuth, budgetHandler.DeleteBudget)
 	}
 

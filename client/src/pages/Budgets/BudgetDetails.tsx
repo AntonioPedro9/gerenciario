@@ -30,7 +30,7 @@ export default function BudgetDetails() {
 
   const fetchBudgetJobs = async () => {
     try {
-      const response = await api.get(`/budgets/list/jobs/${budgetID}`, { withCredentials: true });
+      const response = await api.get(`/budgets/jobs/${budgetID}`, { withCredentials: true });
       setBudgetJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
