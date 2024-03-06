@@ -23,7 +23,7 @@ func (cr *CustomerRepository) Create(customer *models.Customer) error {
 func (cr *CustomerRepository) List(userID uuid.UUID) ([]models.Customer, error) {
 	var customers []models.Customer
 
-	if err := cr.db.Where("user_id = ?", userID).Find(&customers).Error; err != nil {
+	if err := cr.db.Where("user_id = ?", userID).Order("name").Find(&customers).Error; err != nil {
 		return nil, err
 	}
 

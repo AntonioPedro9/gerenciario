@@ -23,7 +23,7 @@ func (jr *JobRepository) Create(job *models.Job) error {
 func (jr *JobRepository) List(userID uuid.UUID) ([]models.Job, error) {
 	var jobs []models.Job
 
-	if err := jr.db.Where("user_id = ?", userID).Find(&jobs).Error; err != nil {
+	if err := jr.db.Where("user_id = ?", userID).Order("name").Find(&jobs).Error; err != nil {
 		return nil, err
 	}
 
