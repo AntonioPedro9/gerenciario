@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
-
 import { AuthContext } from "../contexts/AuthContext";
 
 export default function BottomNavbar() {
@@ -9,7 +8,7 @@ export default function BottomNavbar() {
 
   return (
     isLoggedIn && (
-      <Navbar bg="dark" variant="dark" style={{ width: "100%" }}>
+      <Navbar bg="dark" variant="dark" fixed="bottom" style={{ width: "100%" }}>
         <Container>
           <Nav className="mx-auto justify-content-between w-100">
             <NavDropdown drop="up" title="Clientes" menuVariant="dark">

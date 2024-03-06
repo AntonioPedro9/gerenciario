@@ -7,10 +7,6 @@ body::-webkit-scrollbar {
   width: 0;
 }
 
-.my-container {
-  min-height: calc(100vh - 66px - 56px - 24px); /* window size - top navbar - bottom navbar - margin */
-}
-
 .text-red {
   color: red;
 }

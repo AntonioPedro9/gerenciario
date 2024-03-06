@@ -2,14 +2,14 @@ import { Outlet } from "react-router-dom";
 
 import TopNavbar from "./components/TopNavbar";
 import BottomNavbar from "./components/BottomNavbar";
+import SpaceContainer from "./components/SpaceContainer";
 
 export default function App() {
   return (
     <>
       <TopNavbar />
-      <main className="my-container">
-        <Outlet />
-      </main>
+      <Outlet />
+      <SpaceContainer />
       <BottomNavbar />
     </>
   );
