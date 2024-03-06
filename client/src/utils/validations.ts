@@ -21,6 +21,7 @@ const budgetSchema = yup.object().shape({
   vehicle: yup.string().required("Preencha todos os campos obrigatórios"),
   licensePlate: yup.string().required("Preencha todos os campos obrigatórios"),
   price: yup.number().min(0, "O preço deve ser maior ou igual a zero"),
+  jobIDs: yup.array().min(1, "Deve haver pelo menos 1 serviço no orçamento"),
 });
 
 export { customerSchema, jobSchema, budgetSchema };
