@@ -10,3 +10,19 @@ body::-webkit-scrollbar {
 .text-red {
   color: red;
 }
+
+.date-picker-button {
+  font-size: 1rem;
+  font-weight: 400;
+  display: block;
+  width: calc(350px - 94px);
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem 0 0 0.375rem;
+  outline: none;
+}
+
+.date-picker-button:focus {
+  outline: none;
+  box-shadow: none;
+}

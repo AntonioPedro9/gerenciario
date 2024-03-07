@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card, Table } from "react-bootstrap";
-import { SubmitButton } from "../../components/SubmitButton";
+import { Card, Table, InputGroup, Form, Button } from "react-bootstrap";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import api from "../../service/api";
 import formatDate from "../../utils/formatDate";
@@ -15,6 +17,7 @@ export default function BudgetDetails() {
   const budgetID = useParams().budgetID;
   const [budget, setBudget] = useState<IListBudgets | null>(null);
   const [budgetJobs, setBudgetJobs] = useState<IJob[]>([]);
+  const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
 
   const navigate = useNavigate();
   const goBack = () => navigate("/budgets/list");
@@ -71,7 +74,6 @@ export default function BudgetDetails() {
         {budget ? (
           <>
             <Card.Title className="mb-3">Orçamento de serviço</Card.Title>
-
             <p>
               <strong>Data:</strong> {formatDate(budget.budgetDate)} <br />
               <strong>Cliente:</strong> {budget.customerName} <br />
@@ -101,7 +103,18 @@ export default function BudgetDetails() {
               <strong>Preço final: {formatCurrency(budget.price)}</strong>
             </p>
 
-            <SubmitButton text="Aprovar orçamento" />
+            <InputGroup style={{ width: "100%" }}>
+              <DatePicker
+                className="date-picker-button"
+                placeholderText="Data de agendamento"
+                dateFormat="dd/MM/yyyy"
+                selected={scheduledDate}
+                onChange={(date) => setScheduledDate(date)}
+              />
+              <Button variant="dark" id="">
+                Agendar
+              </Button>
+            </InputGroup>
           </>
         ) : (
           <p>Carregando...</p>
