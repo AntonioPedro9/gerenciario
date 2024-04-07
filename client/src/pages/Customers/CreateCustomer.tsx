@@ -19,7 +19,7 @@ export default function CreateCustomer() {
   const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/customers/list");
+  const goBack = () => navigate("/customers/all");
 
   const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);

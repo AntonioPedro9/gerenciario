@@ -15,7 +15,7 @@ export default function ListJobs() {
 
   const fetchJobs = async () => {
     try {
-      const response = await api.get(`/jobs/list/`, { withCredentials: true });
+      const response = await api.get(`/jobs/all`, { withCredentials: true });
       setJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

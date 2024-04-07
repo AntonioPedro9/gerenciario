@@ -16,7 +16,7 @@ export default function JobDetails() {
   const [price, setPrice] = useState<number | "">(0);
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/jobs/list");
+  const goBack = () => navigate("/jobs/all");
 
   const fetchJobData = async () => {
     try {
@@ -59,7 +59,7 @@ export default function JobDetails() {
       try {
         const response = await api.patch("/jobs/", updatedJobData, { withCredentials: true });
         setJob(response.data);
-        if (response.status === 200) goBack();
+        if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
       }

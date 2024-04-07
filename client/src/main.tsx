@@ -66,7 +66,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/customers/list",
+        path: "/customers/all",
         element: (
           <PrivateRoute>
             <ListCustomers />
@@ -90,7 +90,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/jobs/list",
+        path: "/jobs/all",
         element: (
           <PrivateRoute>
             <ListJobs />
@@ -114,7 +114,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/budgets/list",
+        path: "/budgets/all",
         element: (
           <PrivateRoute>
             <ListBudgets />

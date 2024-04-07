@@ -15,7 +15,7 @@ export default function ListCustomers() {
 
   const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/customers/list/`, { withCredentials: true });
+      const response = await api.get(`/customers/all`, { withCredentials: true });
       setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

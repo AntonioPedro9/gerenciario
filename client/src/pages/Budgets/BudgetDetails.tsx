@@ -20,7 +20,7 @@ export default function BudgetDetails() {
   const [scheduledDate, setScheduledDate] = useState<Date | null>(null);
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/budgets/list");
+  const goBack = () => navigate("/budgets/all");
 
   const fetchBudget = async () => {
     try {

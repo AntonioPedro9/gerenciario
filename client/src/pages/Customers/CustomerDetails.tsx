@@ -16,7 +16,7 @@ export default function CustomerDetails() {
   const [phone, setPhone] = useState("");
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/customers/list");
+  const goBack = () => navigate("/customers/all");
 
   const fetchCustomerData = async () => {
     try {
@@ -55,7 +55,7 @@ export default function CustomerDetails() {
       try {
         const response = await api.patch("/customers/", updatedCustomerData, { withCredentials: true });
         setCustomer(response.data);
-        if (response.status === 200) goBack();
+        if (response.status === 204) goBack();
       } catch (error: any) {
         alert(error.response.data.error);
       }

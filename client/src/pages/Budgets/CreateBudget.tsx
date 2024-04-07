@@ -25,11 +25,11 @@ export default function CreateBudget() {
   const [jobs, setJobs] = useState<IJob[]>([]);
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/budgets/list");
+  const goBack = () => navigate("/budgets/all");
 
   const fetchCustomers = async () => {
     try {
-      const response = await api.get(`/customers/list/`, { withCredentials: true });
+      const response = await api.get(`/customers/all`, { withCredentials: true });
       setCustomers(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);
@@ -38,7 +38,7 @@ export default function CreateBudget() {
 
   const fetchJobs = async () => {
     try {
-      const response = await api.get(`/jobs/list/`, { withCredentials: true });
+      const response = await api.get(`/jobs/all`, { withCredentials: true });
       setJobs(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

@@ -19,7 +19,7 @@ export default function CreateJob() {
   const [price, setPrice] = useState<number | "">(0);
 
   const navigate = useNavigate();
-  const goBack = () => navigate("/jobs/list");
+  const goBack = () => navigate("/jobs/all");
 
   const handleTextChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setter(e.target.value);
