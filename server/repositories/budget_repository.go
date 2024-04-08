@@ -53,9 +53,11 @@ func (br *BudgetRepository) List(userID uuid.UUID) ([]models.ListBudgetsResponse
 			BudgetJobs:    budget.BudgetJobs,
 			BudgetDate:    budget.BudgetDate,
 			ScheduledDate: budget.ScheduledDate,
+			ScheduledTime: budget.ScheduledTime,
 			Vehicle:       budget.Vehicle,
 			LicensePlate:  budget.LicensePlate,
 			Price:         budget.Price,
+			Completed:     budget.Completed,
 		})
 	}
 
@@ -92,9 +94,11 @@ func (br *BudgetRepository) GetBudgetById(id uint) (*models.ListBudgetsResponse,
 		BudgetJobs:    budget.BudgetJobs,
 		BudgetDate:    budget.BudgetDate,
 		ScheduledDate: budget.ScheduledDate,
+		ScheduledTime: budget.ScheduledTime,
 		Vehicle:       budget.Vehicle,
 		LicensePlate:  budget.LicensePlate,
 		Price:         budget.Price,
+		Completed:     budget.Completed,
 	}
 
 	return &response, nil
