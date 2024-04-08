@@ -78,7 +78,7 @@ export default function JobDetails() {
   };
 
   return (
-    <Card className="mx-auto mt-4" style={{ width: "24rem" }}>
+    <Card className="mx-auto m-4" style={{ width: "24rem" }}>
       <Card.Header className="d-flex justify-content-between align-items-center">
         <span className="material-symbols-outlined" role="button" onClick={goBack}>
           arrow_back
