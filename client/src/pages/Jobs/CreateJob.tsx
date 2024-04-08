@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Form } from "react-bootstrap";
 
-import { TextInput, NumberInput } from "../../components/CustomInputs";
+import { TextInput, NumberInput, PriceInput } from "../../components/CustomInputs";
 import { SubmitButton } from "../../components/SubmitButton";
 
 import api from "../../service/api";
@@ -74,7 +74,7 @@ export default function CreateJob() {
           <TextInput label="Nome" id="name" value={name} onChange={handleTextChange(setName)} required />
           <TextInput label="Descrição" id="description" value={description} onChange={handleTextChange(setDescription)} />
           <NumberInput label="Duração (horas)" id="duration" value={duration} onChange={handleNumberChange(setDuration)} />
-          <NumberInput label="Preço" id="price" value={price} onChange={handleNumberChange(setPrice)} />
+          <PriceInput label="Preço" id="price" value={price} onChange={handleNumberChange(setPrice)} />
           <SubmitButton text="Cadastrar" />
         </Form>
       </Card.Body>

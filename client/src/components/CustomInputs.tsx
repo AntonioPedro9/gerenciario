@@ -81,6 +81,21 @@ export function PhoneInput({ label, id, value, onChange, required }: ICustomInpu
   );
 }
 
+export function PriceInput({ label, id, value, onChange, required }: ICustomInput) {
+  return (
+    <Form.Group className="mb-3" controlId={id}>
+      <Form.Label>
+        {label}
+        {required ? <span className="text-red"> *</span> : null}
+      </Form.Label>
+      <InputGroup>
+        <InputGroup.Text>R$</InputGroup.Text>
+        <Form.Control type="tel" name={id} autoComplete="off" onChange={onChange} value={value} />
+      </InputGroup>
+    </Form.Group>
+  );
+}
+
 export function SelectInput({ label, id, required, options, onSelect }: ISelectInput) {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = event.target.value;

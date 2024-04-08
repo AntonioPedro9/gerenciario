@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Card, Form, Button } from "react-bootstrap";
-import { TextInput, NumberInput } from "../../components/CustomInputs";
+import { TextInput, NumberInput, PriceInput } from "../../components/CustomInputs";
 
 import api from "../../service/api";
 
@@ -96,7 +96,7 @@ export default function JobDetails() {
               <TextInput label="Nome" id="name" value={name} onChange={handleTextChange(setName)} required />
               <TextInput label="Descrição" id="description" value={description} onChange={handleTextChange(setDescription)} />
               <NumberInput label="Duração (horas)" id="duration" value={duration} onChange={handleNumberChange(setDuration)} />
-              <NumberInput label="Preço" id="price" value={price} onChange={handleNumberChange(setPrice)} />
+              <PriceInput label="Preço" id="price" value={price} onChange={handleNumberChange(setPrice)} />
 
               <Button variant="dark" type="button" style={{ width: "100%" }} onClick={handleUpdateJob}>
                 Salvar alterações
