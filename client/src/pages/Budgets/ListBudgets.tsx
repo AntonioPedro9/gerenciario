@@ -16,7 +16,7 @@ export default function ListBudgets() {
 
   const fetchBudgets = async () => {
     try {
-      const response = await api.get(`/budgets/list/`, { withCredentials: true });
+      const response = await api.get(`/budgets/all`, { withCredentials: true });
       setBudgets(response.data);
     } catch (error: any) {
       console.error(error.response.data.error);

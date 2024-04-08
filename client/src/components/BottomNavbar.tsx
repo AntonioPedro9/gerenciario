@@ -15,7 +15,7 @@ export default function BottomNavbar() {
               <NavDropdown.Item as={Link} to="/customers/create">
                 Cadastrar
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/customers/list">
+              <NavDropdown.Item as={Link} to="/customers/all">
                 Buscar
               </NavDropdown.Item>
             </NavDropdown>
@@ -24,7 +24,7 @@ export default function BottomNavbar() {
               <NavDropdown.Item as={Link} to="/jobs/create">
                 Cadastrar
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/jobs/list">
+              <NavDropdown.Item as={Link} to="/jobs/all">
                 Buscar
               </NavDropdown.Item>
             </NavDropdown>
@@ -33,7 +33,7 @@ export default function BottomNavbar() {
               <NavDropdown.Item as={Link} to="/budgets/create">
                 Cadastrar
               </NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/budgets/list">
+              <NavDropdown.Item as={Link} to="/budgets/all">
                 Buscar
               </NavDropdown.Item>
             </NavDropdown>
