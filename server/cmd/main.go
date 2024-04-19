@@ -47,10 +47,12 @@ func main() {
 	// database.ClearTestDatabase(db)
 	database.CreateDatabaseTables(db)
 
+	api := r.Group("/api")
+
 	userRepository := repositories.NewUserRepository(db)
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-	userGroup := r.Group("/users")
+	userGroup := api.Group("/users")
 	{
 		userGroup.POST("/", userHandler.CreateUser)
 		// userGroup.GET("/all", userHandler.ListUsers)
@@ -63,7 +65,7 @@ func main() {
 	customerRepository := repositories.NewCustomerRepository(db)
 	customerService := services.NewCustomerService(customerRepository)
 	customerHandler := handlers.NewCustomerHandler(customerService)
-	customerGroup := r.Group("/customers")
+	customerGroup := api.Group("/customers")
 	{
 		customerGroup.POST("/", middlewares.RequireAuth, customerHandler.CreateCustomer)
 		customerGroup.GET("/all", middlewares.RequireAuth, customerHandler.ListCustomers)
@@ -75,7 +77,7 @@ func main() {
 	jobRepository := repositories.NewJobRepository(db)
 	jobService := services.NewJobService(jobRepository)
 	jobHandler := handlers.NewJobHandler(jobService)
-	jobGroup := r.Group("/jobs")
+	jobGroup := api.Group("/jobs")
 	{
 		jobGroup.POST("/", middlewares.RequireAuth, jobHandler.CreateJob)
 		jobGroup.GET("/all", middlewares.RequireAuth, jobHandler.ListJobs)
@@ -87,7 +89,7 @@ func main() {
 	budgetRepository := repositories.NewBudgetRepository(db)
 	budgetService := services.NewBudgetService(budgetRepository)
 	budgetHandler := handlers.NewBudgetHandler(budgetService)
-	budgetGroup := r.Group("/budgets")
+	budgetGroup := api.Group("/budgets")
 	{
 		budgetGroup.POST("/", middlewares.RequireAuth, budgetHandler.CreateBudget)
 		budgetGroup.GET("/all", middlewares.RequireAuth, budgetHandler.ListBudgets)
