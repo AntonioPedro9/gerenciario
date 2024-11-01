@@ -1,1 +1,1 @@
-![App screenshot.](./screenshot.png)
+![Databse diagram.](./diagram.png)
