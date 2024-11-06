@@ -52,11 +52,13 @@ func main() {
 	// repositories
 	userRepository := repositories.NewUserRepository(db)
 	customerRepository := repositories.NewCustomerRepository(db)
+	jobRepository := repositories.NewJobRepository(db)
 
 	// routes
 	routes.SetupAuthRoutes(r, userRepository)
 	routes.SetupUserRoutes(r, userRepository)
 	routes.SetupCustomerRoutes(r, customerRepository, userRepository)
+	routes.SetupJobRoutes(r, jobRepository, userRepository)
 
 	r.Run()
 }
