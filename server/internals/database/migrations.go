@@ -8,10 +8,10 @@ import (
 )
 
 func RunMigrations(db *gorm.DB) {
-	_ = db.Migrator().DropTable(&models.User{}, &models.Customer{})
+	_ = db.Migrator().DropTable(&models.User{}, &models.Customer{}, &models.Job{}, &models.Budget{})
 
-	err := db.AutoMigrate(&models.User{}, &models.Customer{})
+	err := db.AutoMigrate(&models.User{}, &models.Customer{}, &models.Job{}, &models.Budget{})
 	if err != nil {
-		log.Fatal("Failed to run database migrations:", err)
+		log.Fatal("Failed to run database migrations: ", err)
 	}
 }

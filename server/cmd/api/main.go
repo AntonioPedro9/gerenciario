@@ -53,12 +53,14 @@ func main() {
 	userRepository := repositories.NewUserRepository(db)
 	customerRepository := repositories.NewCustomerRepository(db)
 	jobRepository := repositories.NewJobRepository(db)
+	budgetRepository := repositories.NewBudgetRepository(db)
 
 	// routes
 	routes.SetupAuthRoutes(r, userRepository)
 	routes.SetupUserRoutes(r, userRepository)
 	routes.SetupCustomerRoutes(r, customerRepository, userRepository)
 	routes.SetupJobRoutes(r, jobRepository, userRepository)
+	routes.SetupBudgetRoutes(r, budgetRepository, userRepository)
 
 	r.Run()
 }
