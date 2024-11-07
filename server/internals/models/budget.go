@@ -18,11 +18,6 @@ type Budget struct {
 	Jobs     []Job    `gorm:"many2many:budget_jobs;constraint:OnDelete:CASCADE"`
 }
 
-type BudgetJob struct {
-	BudgetId uint `gorm:"primaryKey"`
-	JobId    uint `gorm:"primaryKey"`
-}
-
 type CreateBudgetRequest struct {
 	CustomerId     uint      `json:"customer_id"     validate:"required"`
 	TotalPrice     float32   `json:"total_price"     validate:"required,gt=0"`

@@ -13,7 +13,6 @@ func RunMigrations(db *gorm.DB) {
 		&models.Customer{}, 
 		&models.Job{}, 
 		&models.Budget{}, 
-		&models.BudgetJob{},
 	)
 	if err != nil {
 		log.Fatal("Failed to run database migrations: ", err)
