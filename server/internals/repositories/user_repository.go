@@ -51,13 +51,13 @@ func (ur *UserRepository) GetById(id uint) (*models.GetUserResponse, error) {
 
 	result := ur.db.First(&user, id)
 
+	if result.RowsAffected == 0 {
+		return nil, errors.NotFoundError
+	}
+
 	if result.Error != nil {
 		logs.LogError(result.Error)
 		return nil, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, errors.NotFoundError
 	}
 
 	return &models.GetUserResponse{

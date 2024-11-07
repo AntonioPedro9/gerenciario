@@ -48,13 +48,13 @@ func (cr *CustomerRepository) GetById(customerId, tokenUserId uint) (*models.Get
 
 	result := cr.db.Where("id = ? AND user_id = ?", customerId, tokenUserId).First(&customer)
 
+	if result.RowsAffected == 0 {
+		return nil, errors.NotFoundError
+	}
+
 	if result.Error != nil {
 		logs.LogError(result.Error)
 		return nil, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, errors.NotFoundError
 	}
 
 	return &models.GetCustomerResponse{

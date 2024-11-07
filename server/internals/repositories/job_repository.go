@@ -49,13 +49,13 @@ func (jr *JobRepository) GetById(jobId, tokenUserId uint) (*models.GetJobRespons
 
 	result := jr.db.Where("id = ? AND user_id = ?", jobId, tokenUserId).First(&job)
 
+	if result.RowsAffected == 0 {
+		return nil, errors.NotFoundError
+	}
+
 	if result.Error != nil {
 		logs.LogError(result.Error)
 		return nil, result.Error
-	}
-
-	if result.RowsAffected == 0 {
-		return nil, errors.NotFoundError
 	}
 
 	return &models.GetJobResponse{
