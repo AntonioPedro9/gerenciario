@@ -15,7 +15,7 @@ type Budget struct {
 
 	User     User     `gorm:"foreignKey:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Customer Customer `gorm:"foreignKey:CustomerId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
-	Jobs     []Job    `gorm:"many2many:budget_jobs"`
+	Jobs     []Job    `gorm:"many2many:budget_jobs;constraint:OnDelete:CASCADE"`
 }
 
 type BudgetJob struct {
