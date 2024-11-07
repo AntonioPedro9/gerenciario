@@ -9,7 +9,7 @@ type Job struct {
 	AfterSalesDays uint    `gorm:"type:integer"`
 	Price          float32 `gorm:"type:numeric(10,2);not null"`
 
-	User User `gorm:"foreignKey:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	User User `gorm:"foreignKey:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"-"` 
 }
 
 type CreateJobRequest struct {
