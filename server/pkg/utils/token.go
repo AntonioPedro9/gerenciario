@@ -10,6 +10,13 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+var (
+	accessTokenExpiration  = time.Minute * 30
+	refreshTokenExpiration = time.Hour * 24 * 7
+	accessTokenSecretKey   = "ACCESS_SECRET"
+	refreshTokenSecretKey  = "REFRESH_SECRET"
+)
+
 func generateToken(sub uint, secret string, expiration time.Duration) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": sub,
@@ -25,12 +32,12 @@ func generateToken(sub uint, secret string, expiration time.Duration) (string, e
 }
 
 func GenerateAccessAndRefreshToken(sub uint) (string, string, error) {
-	accessToken, err := generateToken(sub, os.Getenv("ACCESS_SECRET"), time.Minute*1)
+	accessToken, err := generateToken(sub, os.Getenv(accessTokenSecretKey), accessTokenExpiration)
 	if err != nil {
 		return "", "", err
 	}
 
-	refreshToken, err := generateToken(sub, os.Getenv("REFRESH_SECRET"), time.Hour*24*7)
+	refreshToken, err := generateToken(sub, os.Getenv(refreshTokenSecretKey), refreshTokenExpiration)
 	if err != nil {
 		return "", "", err
 	}
@@ -49,11 +56,11 @@ func verifyToken(tokenString, secret string) (*jwt.Token, error) {
 }
 
 func VerifyAccessToken(tokenString string) (*jwt.Token, error) {
-	return verifyToken(tokenString, os.Getenv("ACCESS_SECRET"))
+	return verifyToken(tokenString, os.Getenv(accessTokenSecretKey))
 }
 
 func VerifyRefreshToken(tokenString string) (*jwt.Token, error) {
-	return verifyToken(tokenString, os.Getenv("REFRESH_SECRET"))
+	return verifyToken(tokenString, os.Getenv(refreshTokenSecretKey))
 }
 
 func GetUserIdFromAccessToken(c *gin.Context) (uint, error) {
