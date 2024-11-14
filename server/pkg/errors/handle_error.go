@@ -11,15 +11,28 @@ import (
 )
 
 func HandleError(c *gin.Context, err error) {
-	if customError, ok := err.(*CustomError); ok {
-		c.JSON(customError.StatusCode, gin.H{"error": customError.Message})
-	} else if validatorError, ok := err.(validator.ValidationErrors); ok {
-		validationErrors := formatValidationErrors(validatorError)
-		c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
-	} else {
-		logs.LogError(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro do servidor interno"})
+	switch e := err.(type) {
+	case *CustomError:
+		handleCustomError(c, e)
+	case validator.ValidationErrors:
+		handleValidationError(c, e)
+	default:
+		handleServerError(c, err)
 	}
+}
+
+func handleCustomError(c *gin.Context, err *CustomError) {
+	c.JSON(err.StatusCode, gin.H{"error": err.Message})
+}
+
+func handleValidationError(c *gin.Context, err validator.ValidationErrors) {
+	validationErrors := formatValidationErrors(err)
+	c.JSON(http.StatusBadRequest, gin.H{"errors": validationErrors})
+}
+
+func handleServerError(c *gin.Context, err error) {
+	logs.LogError(err)
+	c.JSON(http.StatusInternalServerError, gin.H{"error": "erro do servidor interno"})
 }
 
 func formatValidationErrors(ve validator.ValidationErrors) map[string]string {
