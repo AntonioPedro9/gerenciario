@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"net/http"
 	"os"
 	"server/pkg/errors"
 	"time"
@@ -50,7 +49,7 @@ func verifyToken(tokenString, secret string) (*jwt.Token, error) {
 		return []byte(secret), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, errors.NewCustomError(http.StatusUnauthorized, err.Error())
+		return nil, errors.InvalidTokenError
 	}
 	return token, nil
 }
