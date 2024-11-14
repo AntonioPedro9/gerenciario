@@ -40,7 +40,7 @@ func (ah *AuthHandler) Auth(c *gin.Context) {
 	c.SetCookie("RefreshToken", refreshToken, cookieExpirationTime, "", "", false, true)
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.JSON(http.StatusOK, gin.H{
-		"accessToken": accessToken, 
+		"accessToken":  accessToken,
 		"refreshToken": refreshToken,
 	})
 }

@@ -15,8 +15,8 @@ type JobHandlerInterface interface {
 	CreateJob(c *gin.Context)
 	GetJob(c *gin.Context)
 	GetUserJobs(c *gin.Context)
-	// UpdateJob(c *gin.Context)
-	// DeleteJob(c *gin.Context)
+	UpdateJob(c *gin.Context)
+	DeleteJob(c *gin.Context)
 }
 
 type JobHandler struct {
