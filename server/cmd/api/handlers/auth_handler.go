@@ -11,6 +11,7 @@ import (
 
 type AuthHandlerInterface interface {
 	Auth(c *gin.Context)
+	Refresh(c *gin.Context)
 }
 
 type AuthHandler struct {
@@ -28,14 +29,37 @@ func (ah *AuthHandler) Auth(c *gin.Context) {
 		return
 	}
 
-	tokenString, err := ah.authService.Auth(&user)
+	accessToken, refreshToken, err := ah.authService.Auth(&user)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	expirationTime := 3600 * 24 * 30
-	c.SetCookie("Authorization", tokenString, expirationTime, "", "", false, true)
+	cookieExpirationTime := 3600 * 24 * 30
+	c.SetCookie("Authorization", accessToken, cookieExpirationTime, "", "", false, true)
+	c.SetCookie("RefreshToken", refreshToken, cookieExpirationTime, "", "", false, true)
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{
+		"accessToken": accessToken, 
+		"refreshToken": refreshToken,
+	})
+}
+
+func (ah *AuthHandler) Refresh(c *gin.Context) {
+	refreshTokenString, err := c.Cookie("RefreshToken")
+	if err != nil {
+		errors.HandleError(c, errors.CookieNotFoundError)
+		return
+	}
+
+	newAccessToken, err := ah.authService.Refresh(refreshTokenString)
+	if err != nil {
+		errors.HandleError(c, err)
+		return
+	}
+
+	cookieExpirationTime := 3600 * 24 * 30
+	c.SetCookie("Authorization", newAccessToken, cookieExpirationTime, "", "", false, true)
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.JSON(http.StatusOK, gin.H{"token": newAccessToken})
 }

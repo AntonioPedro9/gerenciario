@@ -58,9 +58,9 @@ func main() {
 	// routes
 	routes.SetupAuthRoutes(r, userRepository)
 	routes.SetupUserRoutes(r, userRepository)
-	routes.SetupCustomerRoutes(r, customerRepository, userRepository)
-	routes.SetupJobRoutes(r, jobRepository, userRepository)
-	routes.SetupBudgetRoutes(r, budgetRepository, userRepository)
+	routes.SetupCustomerRoutes(r, customerRepository)
+	routes.SetupJobRoutes(r, jobRepository)
+	routes.SetupBudgetRoutes(r, budgetRepository)
 
 	r.Run()
 }

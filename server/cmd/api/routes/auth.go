@@ -13,5 +13,6 @@ func SetupAuthRoutes(r *gin.Engine, userRepository *repositories.UserRepository)
 	authHandler := handlers.NewAuthHandler(authService)
 
 	api := r.Group("/api")
-	api.POST("/auth", authHandler.Auth)
+	api.POST("/auth/token", authHandler.Auth)
+	api.POST("/auth/refresh", authHandler.Refresh)
 }

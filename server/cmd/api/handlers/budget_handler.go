@@ -6,6 +6,7 @@ import (
 	services "server/internals/services"
 	"server/pkg/errors"
 	"server/pkg/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +33,7 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -47,19 +48,19 @@ func (bh *BudgetHandler) CreateBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) GetBudget(c *gin.Context) {
-	budgetId, err := utils.GetIdFromParam(c)
+	budgetId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	budget, err := bh.budgetService.GetBudget(budgetId, tokenUserId)
+	budget, err := bh.budgetService.GetBudget(uint(budgetId), tokenUserId)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -69,7 +70,7 @@ func (bh *BudgetHandler) GetBudget(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) GetUserBudgets(c *gin.Context) {
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -85,19 +86,19 @@ func (bh *BudgetHandler) GetUserBudgets(c *gin.Context) {
 }
 
 func (bh *BudgetHandler) DeleteBudget(c *gin.Context) {
-	budgetId, err := utils.GetIdFromParam(c)
+	budgetId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	if err := bh.budgetService.DeleteBudget(budgetId, tokenUserId); err != nil {
+	if err := bh.budgetService.DeleteBudget(uint(budgetId), tokenUserId); err != nil {
 		errors.HandleError(c, err)
 		return
 	}

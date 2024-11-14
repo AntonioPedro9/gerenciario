@@ -42,7 +42,7 @@ func (uh *UserHandler) CreateUser(c *gin.Context) {
 }
 
 func (uh *UserHandler) GetUser(c *gin.Context) {
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -64,7 +64,7 @@ func (uh *UserHandler) UpdateUserData(c *gin.Context) {
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -85,7 +85,7 @@ func (uh *UserHandler) UpdateUserPassword(c *gin.Context) {
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -100,7 +100,7 @@ func (uh *UserHandler) UpdateUserPassword(c *gin.Context) {
 }
 
 func (uh *UserHandler) DeleteUser(c *gin.Context) {
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return

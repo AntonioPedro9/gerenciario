@@ -14,7 +14,7 @@ func SetupUserRoutes(r *gin.Engine, userRepository *repositories.UserRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
 	api := r.Group("/api")
-	auth := api.Group("", middlewares.AuthMiddleware(userRepository))
+	auth := api.Group("", middlewares.AuthMiddleware())
 
 	api.POST("/users", userHandler.CreateUser)
 	auth.GET("/users/me", userHandler.GetUser)

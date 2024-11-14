@@ -6,6 +6,7 @@ import (
 	services "server/internals/services"
 	"server/pkg/errors"
 	"server/pkg/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +34,7 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -48,19 +49,19 @@ func (jh *JobHandler) CreateJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) GetJob(c *gin.Context) {
-	jobId, err := utils.GetIdFromParam(c)
+	jobId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	job, err := jh.jobService.GetJob(jobId, tokenUserId)
+	job, err := jh.jobService.GetJob(uint(jobId), tokenUserId)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -70,7 +71,7 @@ func (jh *JobHandler) GetJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) GetUserJobs(c *gin.Context) {
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -86,13 +87,13 @@ func (jh *JobHandler) GetUserJobs(c *gin.Context) {
 }
 
 func (jh *JobHandler) UpdateJob(c *gin.Context) {
-	jobId, err := utils.GetIdFromParam(c)
+	jobId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -104,7 +105,7 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 		return
 	}
 
-	if err := jh.jobService.UpdateJob(jobId, tokenUserId, &data); err != nil {
+	if err := jh.jobService.UpdateJob(uint(jobId), tokenUserId, &data); err != nil {
 		errors.HandleError(c, err)
 		return
 	}
@@ -113,19 +114,19 @@ func (jh *JobHandler) UpdateJob(c *gin.Context) {
 }
 
 func (jh *JobHandler) DeleteJob(c *gin.Context) {
-	jobId, err := utils.GetIdFromParam(c)
+	jobId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	if err := jh.jobService.DeleteJob(jobId, tokenUserId); err != nil {
+	if err := jh.jobService.DeleteJob(uint(jobId), tokenUserId); err != nil {
 		errors.HandleError(c, err)
 		return
 	}

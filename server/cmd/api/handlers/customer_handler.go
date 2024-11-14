@@ -6,6 +6,7 @@ import (
 	services "server/internals/services"
 	"server/pkg/errors"
 	"server/pkg/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +34,7 @@ func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -48,19 +49,19 @@ func (ch *CustomerHandler) CreateCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
-	customerId, err := utils.GetIdFromParam(c)
+	customerId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	customer, err := ch.customerService.GetCustomer(customerId, tokenUserId)
+	customer, err := ch.customerService.GetCustomer(uint(customerId), tokenUserId)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -70,7 +71,7 @@ func (ch *CustomerHandler) GetCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) GetUserCustomers(c *gin.Context) {
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -86,13 +87,13 @@ func (ch *CustomerHandler) GetUserCustomers(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
-	customerId, err := utils.GetIdFromParam(c)
+	customerId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
@@ -104,7 +105,7 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	if err := ch.customerService.UpdateCustomer(customerId, tokenUserId, &data); err != nil {
+	if err := ch.customerService.UpdateCustomer(uint(customerId), tokenUserId, &data); err != nil {
 		errors.HandleError(c, err)
 		return
 	}
@@ -113,19 +114,19 @@ func (ch *CustomerHandler) UpdateCustomer(c *gin.Context) {
 }
 
 func (ch *CustomerHandler) DeleteCustomer(c *gin.Context) {
-	customerId, err := utils.GetIdFromParam(c)
+	customerId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	tokenUserId, err := utils.GetUserIdFromToken(c)
+	tokenUserId, err := utils.GetUserIdFromAccessToken(c)
 	if err != nil {
 		errors.HandleError(c, err)
 		return
 	}
 
-	if err := ch.customerService.DeleteCustomer(customerId, tokenUserId); err != nil {
+	if err := ch.customerService.DeleteCustomer(uint(customerId), tokenUserId); err != nil {
 		errors.HandleError(c, err)
 		return
 	}

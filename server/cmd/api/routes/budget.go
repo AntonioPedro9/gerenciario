@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupBudgetRoutes(r *gin.Engine, budgetRepository *repositories.BudgetRepository, userRepository *repositories.UserRepository) {
+func SetupBudgetRoutes(r *gin.Engine, budgetRepository *repositories.BudgetRepository) {
 	budgetService := services.NewBudgetService(budgetRepository)
 	budgetHandler := handlers.NewBudgetHandler(budgetService)
 
 	api := r.Group("/api")
-	auth := api.Group("", middlewares.AuthMiddleware(userRepository))
+	auth := api.Group("", middlewares.AuthMiddleware())
 
 	auth.POST("/budgets", budgetHandler.CreateBudget)
 	auth.GET("/budgets/:id", budgetHandler.GetBudget)

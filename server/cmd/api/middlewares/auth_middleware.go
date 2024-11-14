@@ -1,30 +1,37 @@
 package middlewares
 
 import (
-	"server/internals/repositories"
-	"server/pkg/errors"
-	"server/pkg/utils"
+	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
-func AuthMiddleware(userRepository *repositories.UserRepository) gin.HandlerFunc {
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userId, err := utils.GetUserIdFromToken(c)
+		accessTokenString, err := c.Cookie("Authorization")
 		if err != nil {
-			errors.HandleError(c, err)
-			c.Abort()
 			return
 		}
 
-		user, err := userRepository.GetById(userId)
-		if err != nil {
-			errors.HandleError(c, errors.NotFoundError)
-			c.Abort()
+		accessToken, err := jwt.Parse(accessTokenString, func(token *jwt.Token) (interface{}, error) {
+			return []byte(os.Getenv("ACCESS_SECRET")), nil
+		})
+		if err != nil || !accessToken.Valid {
+			if err == err.(*jwt.ValidationError) {
+				// implementar um novo access token a partir do refresh token
+			}
 			return
 		}
 
-		c.Set("user", user)
+		claims, ok := accessToken.Claims.(jwt.MapClaims)
+		if !ok {
+			return
+		}
+
+		userId := uint(claims["sub"].(float64))
+		
+		c.Set("x-user-id", userId)
 		c.Next()
 	}
 }

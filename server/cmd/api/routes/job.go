@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupJobRoutes(r *gin.Engine, jobRepository *repositories.JobRepository, userRepository *repositories.UserRepository) {
+func SetupJobRoutes(r *gin.Engine, jobRepository *repositories.JobRepository) {
 	jobService := services.NewJobService(jobRepository)
 	jobHandler := handlers.NewJobHandler(jobService)
 
 	api := r.Group("/api")
-	auth := api.Group("", middlewares.AuthMiddleware(userRepository))
+	auth := api.Group("", middlewares.AuthMiddleware())
 
 	auth.POST("/jobs", jobHandler.CreateJob)
 	auth.GET("/jobs/:id", jobHandler.GetJob)

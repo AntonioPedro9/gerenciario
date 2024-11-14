@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupCustomerRoutes(r *gin.Engine, customerRepository *repositories.CustomerRepository, userRepository *repositories.UserRepository) {
+func SetupCustomerRoutes(r *gin.Engine, customerRepository *repositories.CustomerRepository) {
 	customerService := services.NewCustomerService(customerRepository)
 	customerHandler := handlers.NewCustomerHandler(customerService)
 
 	api := r.Group("/api")
-	auth := api.Group("", middlewares.AuthMiddleware(userRepository))
+	auth := api.Group("", middlewares.AuthMiddleware())
 
 	auth.POST("/customers", customerHandler.CreateCustomer)
 	auth.GET("/customers/:id", customerHandler.GetCustomer)

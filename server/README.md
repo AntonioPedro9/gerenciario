@@ -28,16 +28,17 @@ $ docker run --name=database -e POSTGRES_PASSWORD=senha_do_seu_banco_de_dados -d
 
 ## Variáveis de ambiente
 
-Para se conectar ao banco de dados e assinar o token de autenticação JWT é necessário criar um arquivo `.env` na raiz do projeto e definir algumas variáveis de ambiente, exemplo:
+Para se conectar ao banco de dados e assinar os tokens de autenticação é necessário criar um arquivo `.env` na raiz do projeto e definir algumas variáveis de ambiente, exemplo:
 
 ```
 CONNECTION_STRING="user=postgres password=password host=localhost port=5432 dbname=postgres sslmode=disable"
-SECRET=c1260015a47cb673a75577a7af075c9ff968ace63d30c59d2bdde25ff904ff94
+ACCESS_SECRET=c1260015a47cb673a75577a7af075c9ff968ace63d30c59d2bdde25ff904ff94
+REFRESH_SECRET=c1260015a47cb673a75577a7af075c9ff968ace63d30c59d2bdde25ff904ff94
 ```
 
 **CONNECTION_STRING:** Substitua com as informações do seu banco de dados (usuário, senha, host e nome do banco), a porta é 5432, padrão do Postgres.
 
-**SECRET:** Use uma string aleatória forte, essa variável será usada para assinar o token JWT. Você pode gerar uma seguindo esse [passo a passo](https://mojitocoder.medium.com/generate-a-random-jwt-secret-22a89e8be00d).
+**ACCESS_SECRET e REFRESH_SECRET:** Use uma string aleatória forte, essas variáveis serão usadas para assinar os token JWT. Você pode gerar essas strings seguindo esse [passo a passo](https://mojitocoder.medium.com/generate-a-random-jwt-secret-22a89e8be00d).
 
 ## Executando a aplicação
 

@@ -9,10 +9,10 @@ import (
 
 func RunMigrations(db *gorm.DB) {
 	err := db.AutoMigrate(
-		&models.User{}, 
-		&models.Customer{}, 
-		&models.Job{}, 
-		&models.Budget{}, 
+		&models.User{},
+		&models.Customer{},
+		&models.Job{},
+		&models.Budget{},
 	)
 	if err != nil {
 		log.Fatal("Failed to run database migrations: ", err)
